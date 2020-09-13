@@ -14,26 +14,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        print("Application moved from Not Running to In-Active: \(#function)")
+        Logger.appDelegateLog(stateFrom: "Not Running", stateTo: "In-Active")
         return true
     }
     
     func applicationWillResignActive(_ application: UIApplication) {
-        print("Application moved from Active to In-Active: \(#function)")
+        Logger.appDelegateLog(stateFrom: "Active", stateTo: "In-Active")
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
-        print("Application moved from In-Active to Active: \(#function)")
+        Logger.appDelegateLog(stateFrom: "In-Active", stateTo: "Active")
     }
     
     func applicationDidEnterBackground(_ application: UIApplication) {
-        print("Application moved from In-Active to Background: \(#function)")
+        Logger.appDelegateLog(stateFrom: "In-Active", stateTo: "Background")
     }
     
     func applicationWillEnterForeground(_ application: UIApplication) {
-        print("Application moved from Background to In-Active: \(#function)")
+        Logger.appDelegateLog(stateFrom: "Background", stateTo: "In-Active")
     }
     func applicationWillTerminate(_ application: UIApplication) {
-        print("Application moved from Background to Terminated: \(#function)")
+        Logger.appDelegateLog(stateFrom: "Background", stateTo: "Terminated")
     }
 }

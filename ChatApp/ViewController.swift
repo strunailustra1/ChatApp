@@ -12,37 +12,37 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(#function)
+        Logger.vcLog()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print(#function)
+        Logger.vcLog()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print(#function)
+        Logger.vcLog()
     }
   
     override func viewWillLayoutSubviews() {
         //super.viewWillLayoutSubviews() не вызывается, так как по умолчанию данный метод ничего не делает
-        print(#function)
+        Logger.vcLog()
     }
     
     override func viewDidLayoutSubviews() {
         //super.viewDidLayoutSubviews() не вызывается, так как по умолчанию данный метод ничего не делает
-        print(#function)
+        Logger.vcLog()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        print(#function)
+        Logger.vcLog()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        print(#function)
+        Logger.vcLog()
     }
 }
 

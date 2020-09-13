@@ -12,6 +12,7 @@
 		1E30F124250B944100DDF8DC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E30F122250B944100DDF8DC /* Main.storyboard */; };
 		1E30F126250B944700DDF8DC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1E30F125250B944700DDF8DC /* Assets.xcassets */; };
 		1E30F129250B944700DDF8DC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E30F127250B944700DDF8DC /* LaunchScreen.storyboard */; };
+		1E6B8FC2250E319800A5632E /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6B8FC1250E319800A5632E /* Logger.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		1E30F125250B944700DDF8DC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1E30F128250B944700DDF8DC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1E30F12A250B944700DDF8DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1E6B8FC1250E319800A5632E /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +58,7 @@
 			children = (
 				1E30F11C250B944100DDF8DC /* AppDelegate.swift */,
 				1E30F120250B944100DDF8DC /* ViewController.swift */,
+				1E6B8FC1250E319800A5632E /* Logger.swift */,
 				1E30F122250B944100DDF8DC /* Main.storyboard */,
 				1E30F125250B944700DDF8DC /* Assets.xcassets */,
 				1E30F127250B944700DDF8DC /* LaunchScreen.storyboard */,
@@ -136,6 +139,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1E30F121250B944100DDF8DC /* ViewController.swift in Sources */,
+				1E6B8FC2250E319800A5632E /* Logger.swift in Sources */,
 				1E30F11D250B944100DDF8DC /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -216,6 +220,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				"OTHER_SWIFT_FLAGS[arch=*]" = "-D DEBUG";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
