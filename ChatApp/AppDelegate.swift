@@ -14,32 +14,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        Logger.appDelegateLog(stateFrom: "Not Running", stateTo: "In-Active")
+        Logger.appDelegateLog(stateFrom: "Not Running", stateTo: "Inactive")
         return true
     }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        Logger.appDelegateLog(stateFrom: "In-Active", stateTo: "In-Active")
+        Logger.appDelegateLog(stateFrom: "Inactive", stateTo: "Inactive")
         return true
     }
     
     func applicationWillResignActive(_ application: UIApplication) {
-        Logger.appDelegateLog(stateFrom: "Active", stateTo: "In-Active")
+        Logger.appDelegateLog(stateFrom: "Active", stateTo: "Inactive")
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
-        Logger.appDelegateLog(stateFrom: "In-Active", stateTo: "Active")
+        Logger.appDelegateLog(stateFrom: "Inactive", stateTo: "Active")
     }
     
     func applicationDidEnterBackground(_ application: UIApplication) {
-        Logger.appDelegateLog(stateFrom: "In-Active", stateTo: "Background")
+        Logger.appDelegateLog(stateFrom: "Inactive", stateTo: "Background")
     }
     
     func applicationWillEnterForeground(_ application: UIApplication) {
-        Logger.appDelegateLog(stateFrom: "Background", stateTo: "In-Active")
+        Logger.appDelegateLog(stateFrom: "Background", stateTo: "Inactive")
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
-        Logger.appDelegateLog(stateFrom: "Background", stateTo: "Not Running")
+        Logger.appDelegateLog(stateFrom: "Background", stateTo: "across Suspended to Not Running")
     }
 }
