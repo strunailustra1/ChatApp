@@ -22,9 +22,15 @@ class Logger {
         #endif
     }
     
-    static func vcLog(functionName: String = #function) {
+    static func vcLog(stateFrom: String, stateTo: String, functionName: String = #function) {
         #if DEBUG
-        os_log("%s", log: viewCycle, type: .debug, functionName)
+        os_log("View Controller moved from %s to %s: %s", log: viewCycle, type: .debug, stateFrom, stateTo, functionName)
+        #endif
+    }
+    
+    static func vcLog(description: String, functionName: String = #function) {
+        #if DEBUG
+        os_log("View Controller: %s - %s", log: viewCycle, type: .debug, description, functionName)
         #endif
     }
 }

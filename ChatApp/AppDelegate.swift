@@ -13,8 +13,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         Logger.appDelegateLog(stateFrom: "Not Running", stateTo: "In-Active")
+        return true
+    }
+    
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        Logger.appDelegateLog(stateFrom: "In-Active", stateTo: "In-Active")
         return true
     }
     
@@ -33,7 +38,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillEnterForeground(_ application: UIApplication) {
         Logger.appDelegateLog(stateFrom: "Background", stateTo: "In-Active")
     }
+    
     func applicationWillTerminate(_ application: UIApplication) {
-        Logger.appDelegateLog(stateFrom: "Background", stateTo: "Terminated")
+        Logger.appDelegateLog(stateFrom: "Background", stateTo: "Not Running")
     }
 }
