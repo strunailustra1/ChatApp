@@ -11,10 +11,10 @@ import os.log
 
 class Logger {
     
-    private static var subsystem = Bundle.main.bundleIdentifier!
+    private static var subsystem = Bundle.main.bundleIdentifier
     
-    private static let appCycle = OSLog(subsystem: subsystem, category: "app cycle")
-    private static let viewCycle = OSLog(subsystem: subsystem, category: "view cycle")
+    private static let appCycle = OSLog(subsystem: subsystem ?? "", category: "app cycle")
+    private static let viewCycle = OSLog(subsystem: subsystem ?? "", category: "view cycle")
     
     static func appDelegateLog(stateFrom: String, stateTo: String, functionName: String = #function) {
         #if DEBUG

@@ -26,12 +26,12 @@ class ViewController: UIViewController {
     }
   
     override func viewWillLayoutSubviews() {
-        //super.viewWillLayoutSubviews() не вызывается, так как по умолчанию данный метод ничего не делает
+        super.viewWillLayoutSubviews()
         Logger.vcLog(description: "view is about to layout its subviews")
     }
     
     override func viewDidLayoutSubviews() {
-        //super.viewDidLayoutSubviews() не вызывается, так как по умолчанию данный метод ничего не делает
+        super.viewDidLayoutSubviews()
         Logger.vcLog(description: "view has just laid out its subviews")
     }
     
