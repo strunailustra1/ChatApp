@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:ChatApp.xcodeproj">
+      location = "group:/Users/nataliamirnaya/Desktop/ChatApp/ChatApp/Roboto-Regular.ttf">
+   </FileRef>
+   <FileRef
+      location = "self:">
    </FileRef>
 </Workspace>

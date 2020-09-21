@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina4_7" orientation="portrait" appearance="light"/>
+    <device id="retina4_0" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
@@ -13,15 +13,76 @@
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="ChatApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pWe-C6-oVl">
+                                <rect key="frame" x="48" y="505" width="224" height="33"/>
+                                <color key="backgroundColor" red="0.78519607049999995" green="0.76280641950000005" blue="0.78058276289999995" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="Button">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Marina Dudarenko" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WU8-7B-hDA">
+                                <rect key="frame" x="32" y="238" width="256" height="29"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1ny-me-rWh">
+                                <rect key="frame" x="67.5" y="21" width="185" height="185"/>
+                                <color key="backgroundColor" red="0.89411764709999997" green="0.90980392160000001" blue="0.16862745100000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="1ny-me-rWh" secondAttribute="height" multiplier="1:1" id="j0Z-ao-0Bs"/>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BAS-C4-V3h">
+                                <rect key="frame" x="212.5" y="180" width="40" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="BAS-C4-V3h" secondAttribute="height" multiplier="1:1" id="Igk-OH-FVZ"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="40" id="qLs-my-g3I"/>
+                                </constraints>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="251" text="UX/UI designer, web-designer Moscow, Russia" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cZb-zR-a3S">
+                                <rect key="frame" x="51" y="299" width="218" height="38.5"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="218" id="Jmw-JU-kDU"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="16"/>
+                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="WU8-7B-hDA" firstAttribute="top" secondItem="1ny-me-rWh" secondAttribute="bottom" constant="32" id="64j-OE-sxU"/>
+                            <constraint firstItem="WU8-7B-hDA" firstAttribute="width" secondItem="6Tk-OE-BBY" secondAttribute="width" multiplier="300:375" id="70z-nv-XlZ"/>
+                            <constraint firstItem="BAS-C4-V3h" firstAttribute="centerY" secondItem="1ny-me-rWh" secondAttribute="bottom" constant="-6" id="7Xs-JE-v84"/>
+                            <constraint firstItem="1ny-me-rWh" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="21" id="MMY-Mh-g46"/>
+                            <constraint firstItem="1ny-me-rWh" firstAttribute="width" secondItem="6Tk-OE-BBY" secondAttribute="height" multiplier="188:568" constant="-2.9436619718309771" id="Mpd-DU-K6U"/>
+                            <constraint firstItem="cZb-zR-a3S" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Reb-am-mB2"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="pWe-C6-oVl" secondAttribute="bottom" constant="30" id="XwW-1r-Hb1"/>
+                            <constraint firstItem="pWe-C6-oVl" firstAttribute="width" secondItem="6Tk-OE-BBY" secondAttribute="width" multiplier="263:375" id="f5a-nd-b8k"/>
+                            <constraint firstItem="1ny-me-rWh" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="mpi-Bo-kGj"/>
+                            <constraint firstItem="WU8-7B-hDA" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="pfF-UA-Vyr"/>
+                            <constraint firstItem="1ny-me-rWh" firstAttribute="trailing" secondItem="BAS-C4-V3h" secondAttribute="trailing" id="tiw-N1-Lp4"/>
+                            <constraint firstItem="pWe-C6-oVl" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="wyQ-st-s7R"/>
+                            <constraint firstItem="cZb-zR-a3S" firstAttribute="top" secondItem="WU8-7B-hDA" secondAttribute="bottom" constant="32" id="y8z-bK-drU"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
+                    <connections>
+                        <outlet property="careerAndCityLabel" destination="cZb-zR-a3S" id="mAo-xW-K79"/>
+                        <outlet property="editButton" destination="BAS-C4-V3h" id="Cyc-fS-FQD"/>
+                        <outlet property="fullNameLabel" destination="WU8-7B-hDA" id="u5I-nC-fhW"/>
+                        <outlet property="photoView" destination="1ny-me-rWh" id="Q0O-iS-ujG"/>
+                        <outlet property="saveButton" destination="pWe-C6-oVl" id="WUG-VE-zCx"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="139" y="127"/>
+            <point key="canvasLocation" x="136.875" y="125.70422535211267"/>
         </scene>
     </scenes>
 </document>
