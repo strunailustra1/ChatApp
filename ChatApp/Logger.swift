@@ -33,4 +33,10 @@ class Logger {
         os_log("View Controller: %s - %s", log: viewCycle, type: .debug, description, functionName)
         #endif
     }
+    
+    static func vcLog(frame: String) {
+        #if DEBUG
+        os_log("Frame size: %s", log: viewCycle, type: .debug, frame)
+        #endif
+    }
 }

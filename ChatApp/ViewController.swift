@@ -18,18 +18,24 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIPicker
     @IBOutlet weak var logoLabel: UILabel!
     
     required init?(coder aDecoder: NSCoder) {
-        // print(saveButton.frame) на момент инициализации контроллера еще неизвестны размеры элементов, расположенных на экране, все значения равны nil
         super.init(coder: aDecoder)
+        /*
+         На момент инициализации контроллера еще не проинициализированы аутлеты,
+         расположенные на экране, все значения равны nil.
+         Аутлеты будут проинициализированы в loadView().
+         */
+        // Logger.vcLog(frame: "\(saveButton.frame)")
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(saveButton.frame)
+        
         setupSaveAction()
         setupEditAction()
-        setupLabelFont()
+        setupLabelsFont()
         
         Logger.vcLog(description: "has loaded its view hierarchy into memory")
+        Logger.vcLog(frame: "\(saveButton.frame)")
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -39,8 +45,13 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIPicker
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print(saveButton.frame)
-        //во viewDidLoad() приведен расчет значений для девайса, выбранного в storyboard, во viewDidAppear() уже известны и отрисованы размеры девайса в симуляторе
+        
+        /*
+         В viewDidLoad() приведен расчет значений для девайса, выбранного в storyboard.
+         В viewDidAppear() уже известны и отрисованы размеры девайса в симуляторе.
+         */
+        Logger.vcLog(frame: "\(saveButton.frame)")
+        
         Logger.vcLog(stateFrom: "Appearing", stateTo: "Appeared")
     }
     
@@ -70,16 +81,14 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIPicker
     }
     
     @IBAction func editAction(_ sender: UIButton) {
+        let alert = UIAlertController(title: nil, message: "Edit photo", preferredStyle: .actionSheet)
         
-        let alert = UIAlertController(title: nil, message: "Choose Option", preferredStyle: .actionSheet)
-        
-        let galleryAction = UIAlertAction(title: "Choose in gallery", style: .default, handler: { _ in self.useGallery()
-            
+        let galleryAction = UIAlertAction(title: "Choose in gallery", style: .default, handler: { [unowned self] _ in
+            self.getImage(from: .photoLibrary)
         })
-        let photoAction = UIAlertAction(title: "Photo", style: .default, handler: { _ in
-            self.useCamera()
+        let photoAction = UIAlertAction(title: "Photo", style: .default, handler: { [unowned self] _ in
+            self.getImage(from: .camera)
         })
-        
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
         
         alert.addAction(galleryAction)
@@ -87,63 +96,44 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIPicker
         alert.addAction(cancelAction)
         
         self.present(alert, animated: true, completion: nil)
+        
         alert.pruneNegativeWidthConstraints()
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true)
         
-        if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
-            self.photoView.image = image
-            self.logoLabel.isHidden = true
-        } else {
-            print("error")
-        }
+        guard let image = info[.editedImage] as? UIImage else { return }
+        self.photoView.image = image
+        self.logoLabel.isHidden = true
     }
     
-//    private func getImage(fromSourceType sourceType: UIImagePickerController.SourceType) {
-//
-//        if UIImagePickerController.isSourceTypeAvailable(sourceType) {
-//
-//            let imagePickerController = UIImagePickerController()
-//            imagePickerController.delegate = self
-//            imagePickerController.sourceType = sourceType
-//            self.present(imagePickerController, animated: true)
-//        }
-//    }
-    
-    func useCamera() {
-        let pickerControl = UIImagePickerController()
+    private func getImage(from sourceType: UIImagePickerController.SourceType) {
+        let pickerController = UIImagePickerController()
         
-        if !UIImagePickerController.isSourceTypeAvailable(.camera) {
-            let alertController = UIAlertController(title: nil, message: "Camera is not available now", preferredStyle: .alert)
-            let okAction = UIAlertAction(title: "Ok", style: .default, handler: { (alert: UIAlertAction!) in
-            })
+        if !UIImagePickerController.isSourceTypeAvailable(sourceType) {
+            let message = sourceType == .camera ? "Camera is not available on this device" : "Gallery is not available now"
+            let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "Ok", style: .default)
             alertController.addAction(okAction)
             self.present(alertController, animated: true, completion: nil)
         } else {
-            pickerControl.sourceType = .camera
-            pickerControl.allowsEditing = true
-            pickerControl.showsCameraControls = true
-            pickerControl.delegate = self
-            self.present(pickerControl, animated: true)
+            pickerController.delegate = self
+            pickerController.sourceType = sourceType
+            pickerController.allowsEditing = true
+            if pickerController.sourceType == .camera {
+                pickerController.showsCameraControls = true
+            }
+            if pickerController.sourceType == .photoLibrary {
+                pickerController.modalPresentationStyle = .fullScreen
+            }
+            self.present(pickerController, animated: true)
         }
-    }
-    
-    func useGallery() {
-        let pickerControl = UIImagePickerController()
-        
-        pickerControl.sourceType = .photoLibrary
-        pickerControl.delegate = self
-        pickerControl.allowsEditing = true
-        self.present(pickerControl, animated: true)
-        
     }
     
     private func setupSaveAction() {
         saveButton.layer.backgroundColor = UIColor(red: 0.965, green: 0.965, blue: 0.965, alpha: 1).cgColor
         saveButton.setTitleColor(UIColor(red: 0, green: 0.478, blue: 1, alpha: 1), for: .normal)
-        saveButton.titleLabel?.font = UIFont(name: "SFProText-Semibold", size: 19)
         saveButton.clipsToBounds = true
         saveButton.setTitle("Save", for: .normal)
     }
@@ -151,18 +141,15 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIPicker
     private func setupEditAction() {
         editButton.layer.backgroundColor = .none
         editButton.tintColor = UIColor(red: 0, green: 0.478, blue: 1, alpha: 1)
-        editButton.titleLabel?.font = UIFont(name: "SFProText-Semibold", size: 16)
         editButton.setTitle("Edit", for: .normal)
     }
     
-    private func setupLabelFont() {
-        fullNameLabel.font = UIFont(name: "SFProDisplay-Bold", size: 24)
-        descriptionLabel.font = UIFont(name: "SFProText-Regular", size: 16)
+    private func setupLabelsFont() {
         let paragraphStyleOne = NSMutableParagraphStyle()
         paragraphStyleOne.lineHeightMultiple = 1.15
         descriptionLabel.attributedText = NSMutableAttributedString(string: "UX/UI designer, web-designer\nMoscow, Russia", attributes: [NSAttributedString.Key.kern: -0.33, NSAttributedString.Key.paragraphStyle: paragraphStyleOne])
         
-        logoLabel.font = UIFont(name: "Roboto-Regular", size: 120)
+        logoLabel.font = UIFont(name: "Roboto-Regular", size: 116)
     }
 }
 
