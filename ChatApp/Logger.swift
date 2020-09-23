@@ -16,6 +16,7 @@ class Logger {
     private static let appCycle = OSLog(subsystem: subsystem ?? "", category: "app cycle")
     private static let viewCycle = OSLog(subsystem: subsystem ?? "", category: "view cycle")
     
+    
     static func appDelegateLog(stateFrom: String, stateTo: String, functionName: String = #function) {
         #if DEBUG
         os_log("Application moved from %s to %s: %s", log: appCycle, type: .debug, stateFrom, stateTo, functionName)

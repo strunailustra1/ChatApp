@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ProfileViewController: UIViewController, UINavigationControllerDelegate, UIPickerViewDelegate, UIImagePickerControllerDelegate {
+class ProfileViewController: UIViewController {
     
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var photoView: UIImageView!
@@ -30,9 +30,9 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupSaveAction()
-        setupEditAction()
-        setupLabelsFont()
+        setupSaveButton()
+        setupEditButton()
+        setupLabels()
         
         Logger.vcLog(description: "has loaded its view hierarchy into memory")
         Logger.vcLog(frame: "\(saveButton.frame)")
@@ -57,17 +57,27 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        saveButton.layer.cornerRadius = 14
         Logger.vcLog(description: "view is about to layout its subviews")
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        
         photoView.layer.cornerRadius = photoView.frame.width / 2
         photoView.clipsToBounds = true
+        
         logoLabel.layer.cornerRadius = logoLabel.frame.width / 2
         logoLabel.clipsToBounds = true
+        
+        saveButton.layer.cornerRadius = 14
+        
+        if view.frame.width < 375 { // Iphone SE
+            logoLabel.font = UIFont(name: "Roboto-Regular", size: 80)
+        }
+        
         Logger.vcLog(description: "view has just laid out its subviews")
+        
+        print(photoView.frame.width)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -81,34 +91,10 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
     }
     
     @IBAction func editAction(_ sender: UIButton) {
-        let alert = UIAlertController(title: nil, message: "Edit photo", preferredStyle: .actionSheet)
-        
-        let galleryAction = UIAlertAction(title: "Choose in gallery", style: .default, handler: { [unowned self] _ in
-            self.getImage(from: .photoLibrary)
-        })
-        let photoAction = UIAlertAction(title: "Photo", style: .default, handler: { [unowned self] _ in
-            self.getImage(from: .camera)
-        })
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-        
-        alert.addAction(galleryAction)
-        alert.addAction(photoAction)
-        alert.addAction(cancelAction)
-        
-        self.present(alert, animated: true, completion: nil)
-        
-        alert.pruneNegativeWidthConstraints()
+        presentEditAlert()
     }
     
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        picker.dismiss(animated: true)
-        
-        guard let image = info[.editedImage] as? UIImage else { return }
-        self.photoView.image = image
-        self.logoLabel.isHidden = true
-    }
-    
-    private func getImage(from sourceType: UIImagePickerController.SourceType) {
+    private func presentPickerController(from sourceType: UIImagePickerController.SourceType) {
         let pickerController = UIImagePickerController()
         
         if !UIImagePickerController.isSourceTypeAvailable(sourceType) {
@@ -122,34 +108,74 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
             pickerController.sourceType = sourceType
             pickerController.allowsEditing = true
             if pickerController.sourceType == .camera {
+                pickerController.cameraCaptureMode = .photo
                 pickerController.showsCameraControls = true
             }
             if pickerController.sourceType == .photoLibrary {
                 pickerController.modalPresentationStyle = .fullScreen
             }
-            self.present(pickerController, animated: true)
+            self.present(pickerController, animated: true, completion: nil)
         }
     }
     
-    private func setupSaveAction() {
+    private func presentEditAlert() {
+        let alert = UIAlertController(title: nil, message: "Edit photo", preferredStyle: .actionSheet)
+        
+        let galleryAction = UIAlertAction(title: "Choose in gallery", style: .default, handler: { [unowned self] _ in
+            self.presentPickerController(from: .photoLibrary)
+        })
+        let photoAction = UIAlertAction(title: "Take photo", style: .default, handler: { [unowned self] _ in
+            self.presentPickerController(from: .camera)
+        })
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        
+        alert.addAction(galleryAction)
+        alert.addAction(photoAction)
+        alert.addAction(cancelAction)
+        
+        alert.pruneNegativeWidthConstraints()
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    private func setupSaveButton() {
         saveButton.layer.backgroundColor = UIColor(red: 0.965, green: 0.965, blue: 0.965, alpha: 1).cgColor
         saveButton.setTitleColor(UIColor(red: 0, green: 0.478, blue: 1, alpha: 1), for: .normal)
         saveButton.clipsToBounds = true
         saveButton.setTitle("Save", for: .normal)
     }
     
-    private func setupEditAction() {
+    private func setupEditButton() {
         editButton.layer.backgroundColor = .none
-        editButton.tintColor = UIColor(red: 0, green: 0.478, blue: 1, alpha: 1)
+        editButton.setTitleColor(UIColor(red: 0, green: 0.478, blue: 1, alpha: 1), for: .normal)
         editButton.setTitle("Edit", for: .normal)
     }
     
-    private func setupLabelsFont() {
-        let paragraphStyleOne = NSMutableParagraphStyle()
-        paragraphStyleOne.lineHeightMultiple = 1.15
-        descriptionLabel.attributedText = NSMutableAttributedString(string: "UX/UI designer, web-designer\nMoscow, Russia", attributes: [NSAttributedString.Key.kern: -0.33, NSAttributedString.Key.paragraphStyle: paragraphStyleOne])
+    private func setupLabels() {
+        fullNameLabel.text = "Marina Dudarenko"
+        logoLabel.text = "MD"
         
-        logoLabel.font = UIFont(name: "Roboto-Regular", size: 116)
+        let descriptionParagraphStyle = NSMutableParagraphStyle()
+        descriptionParagraphStyle.lineHeightMultiple = 1.15
+        descriptionLabel.attributedText = NSMutableAttributedString(string: "UX/UI designer, web-designer\nMoscow, Russia", attributes: [NSAttributedString.Key.kern: -0.33, NSAttributedString.Key.paragraphStyle: descriptionParagraphStyle])
+
+        logoLabel.font = UIFont(name: "Roboto-Regular", size: 120)
+        logoLabel.textColor = UIColor(red: 0.212, green: 0.216, blue: 0.22, alpha: 1)
+    }
+}
+
+extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true, completion: nil)
+        
+        guard let image = info[.editedImage] as? UIImage else { return }
+        photoView.image = image
+        photoView.contentMode = photoView.frame.width > photoView.frame.height ? .scaleAspectFit : .scaleAspectFill
+        logoLabel.isHidden = true
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
     }
 }
 
