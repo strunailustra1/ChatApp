@@ -34,13 +34,13 @@ class ProfileViewController: UIViewController {
         setupEditButton()
         setupLabels()
         
-        Logger.vcLog(description: "has loaded its view hierarchy into memory")
-        Logger.vcLog(frame: "\(saveButton.frame)")
+        Logger.shared.vcLog(description: "has loaded its view hierarchy into memory")
+        Logger.shared.vcLog(frame: "\(saveButton.frame)")
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        Logger.vcLog(stateFrom: "Disappeared", stateTo: "Appearing")
+        Logger.shared.vcLog(stateFrom: "Disappeared", stateTo: "Appearing")
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -50,14 +50,14 @@ class ProfileViewController: UIViewController {
          В viewDidLoad() приведен расчет значений для девайса, выбранного в storyboard.
          В viewDidAppear() уже известны и отрисованы размеры девайса в симуляторе.
          */
-        Logger.vcLog(frame: "\(saveButton.frame)")
+        Logger.shared.vcLog(frame: "\(saveButton.frame)")
         
-        Logger.vcLog(stateFrom: "Appearing", stateTo: "Appeared")
+        Logger.shared.vcLog(stateFrom: "Appearing", stateTo: "Appeared")
     }
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        Logger.vcLog(description: "view is about to layout its subviews")
+        Logger.shared.vcLog(description: "view is about to layout its subviews")
     }
     
     override func viewDidLayoutSubviews() {
@@ -75,19 +75,17 @@ class ProfileViewController: UIViewController {
             logoLabel.font = UIFont(name: "Roboto-Regular", size: 80)
         }
         
-        Logger.vcLog(description: "view has just laid out its subviews")
-        
-        print(photoView.frame.width)
+        Logger.shared.vcLog(description: "view has just laid out its subviews")
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        Logger.vcLog(stateFrom: "Appeared", stateTo: "Disappearing")
+        Logger.shared.vcLog(stateFrom: "Appeared", stateTo: "Disappearing")
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        Logger.vcLog(stateFrom: "Disappearing", stateTo: "Disappeared")
+        Logger.shared.vcLog(stateFrom: "Disappearing", stateTo: "Disappeared")
     }
     
     @IBAction func editAction(_ sender: UIButton) {
