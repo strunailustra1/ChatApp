@@ -10,6 +10,13 @@ import UIKit
 
 class ProfileViewController: UIViewController {
     
+    static func storyboardInstance() -> ProfileViewController? {
+        let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
+        return storyboard.instantiateInitialViewController() as? ProfileViewController
+    }
+
+ //   let profile = ProfileViewController.storyboardInstance()
+    
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var photoView: UIImageView!
     @IBOutlet weak var editButton: UIButton!
