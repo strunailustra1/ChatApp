@@ -9,12 +9,7 @@
 import UIKit
 
 class ConversationsListViewController: UIViewController {
-    
-    static func storyboardInstance() -> ConversationsListViewController? {
-        let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
-        return storyboard.instantiateInitialViewController() as? ConversationsListViewController
-    }
-    
+
     private let cellIdentifier = String(describing: ConversationCell.self)
     
     private lazy var tableView: UITableView = {
@@ -25,12 +20,17 @@ class ConversationsListViewController: UIViewController {
         return tableView
     }()
     
-    private var conversation = [[ConversationCellModel]]()
+    private var conversationList = [[ConversationCellModel]]()
+    
+    static func storyboardInstance() -> ConversationsListViewController? {
+        let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
+        return storyboard.instantiateInitialViewController() as? ConversationsListViewController
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(tableView)
-        conversation = Conversation.getMessages()
+        conversationList = Conversation.getMessages()
         self.tableView.rowHeight = 89
     }
 }
@@ -41,13 +41,13 @@ extension ConversationsListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        conversation[section].count
+        conversationList[section].count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? ConversationCell else { return UITableViewCell()}
-        cell.configure(with: conversation[indexPath.section][indexPath.row])
+        cell.configure(with: conversationList[indexPath.section][indexPath.row])
         
         return cell
     }
@@ -58,9 +58,12 @@ extension ConversationsListViewController: UITableViewDataSource {
 }
 
 extension ConversationsListViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // let message = conversation[indexPath.section][indexPath.row]
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {        
         if let conversationVC = ConversationViewController.storyboardInstance() {
+            let conversation = conversationList[indexPath.section][indexPath.row]
+            if conversation.message != "" {
+               conversationVC.messageList = MessageSet.getMessages()
+            }
             navigationController?.pushViewController(conversationVC, animated: true)
         }
     }

@@ -15,7 +15,7 @@ class ConversationCell: UITableViewCell, ConfigurableView {
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var messageLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
-    
+    //todo два dateFormatter
     static let dateFormatter = DateFormatter()
     static let startOfDay = Calendar.current.startOfDay(for: Date())
     
@@ -28,7 +28,8 @@ class ConversationCell: UITableViewCell, ConfigurableView {
         dateLabel.text = ConversationCell.dateFormatter.string(from: model.date)
         
         messageLabel.text = model.message != "" ? model.message : "No messages yet"
-        backgroundColor = model.isOnline == true ? UIColor(red: 0.894, green: 0.908, blue: 0.17, alpha: 0.1) : .white
+        dateLabel.text = model.message != "" ? ConversationCell.dateFormatter.string(from: model.date) : ""
+        backgroundColor = model.isOnline == true ? UIColor(red: 1, green: 0.988, blue: 0.474, alpha: 0.3) : .white
         messageLabel.font = model.hasUnreadMessages == true ? .boldSystemFont(ofSize: 13) : .systemFont(ofSize: 13)
     }
 }
@@ -40,8 +41,6 @@ struct ConversationCellModel {
     let isOnline: Bool
     let hasUnreadMessages: Bool
 }
-
-let foo = Date(timeIntervalSinceNow: -100)
 
 class Conversation {
     
@@ -56,7 +55,7 @@ class Conversation {
                           "Ex Lorem veniam veniam irure sunt adipisicing culpa.",
                           "Dolore veniam Lorem occaecat veniam irure laborum est amet.",
                           "Amet enim do laborum tempor nisi aliqua ad adipisicing.",
-                          "AVoluptate irure aliquip consectetur commodo ex ex.",
+                          "Voluptate irure aliquip consectetur commodo ex ex.",
                           "Aliqua mollit nisi incididunt id eu consequat eu cupidatat.",
                           "Dolore veniam Lorem occaecat veniam irure laborum est amet.",
                           "Voluptate irure aliquip consectetur commodo ex ex.",
@@ -86,9 +85,8 @@ class Conversation {
     
     static func getMessages() -> [[ConversationCellModel]] {
         var conversations = [[ConversationCellModel]]()
-        
-        conversations.append([])
-        conversations.append([])
+
+        conversations.append(contentsOf: [[], []])
         
         for index in 0..<name.count {
             let conversation = ConversationCellModel(name: name[index],
@@ -96,59 +94,12 @@ class Conversation {
                                                      date: date[index],
                                                      isOnline: isOnline[index],
                                                      hasUnreadMessages: hasUnreadMessages[index])
+            if isOnline[index] == false && message[index] == "" {
+                continue
+            }
             conversations[isOnline[index] ? 0 : 1].append(conversation)
         }
         
         return conversations
     }
 }
-
-//private let conversations = [ConversationModel(name: "Ronald Robertson",
-//                                               message: "An suas viderer pro. Vis cu magna altera, ex his vivendo atomorum.",
-//                                               date: "24-07", isOnline: false,
-//                                               hasUnreadMessages: false),
-//                             ConversationModel(name: "Johnny Watson",
-//                                               message: "Reprehenderit mollit excepteur labore deserunt officia laboris eiusmod cillum eu duis",
-//                                               date: "24-07",
-//                                               isOnline: true,
-//                                               hasUnreadMessages: true),
-//                             ConversationModel(name: "Martha Craig",
-//                                               message: "Aliqua mollit nisi incididunt id eu consequat eu cupidatat.",
-//                                               date: "24-07",
-//                                               isOnline: true,
-//                                               hasUnreadMessages: false),
-//                             ConversationModel(name: "Arthur Bell",
-//                                               message: "Voluptate irure aliquip consectetur commodo ex ex.",
-//                                               date: "24-07",
-//                                               isOnline: true,
-//                                               hasUnreadMessages: true),
-//                             ConversationModel(name: "Jane Warren",
-//                                               message: "Ex Lorem veniam veniam irure sunt adipisicing culpa.",
-//                                               date: "24-07",
-//                                               isOnline: true,
-//                                               hasUnreadMessages: false),
-//                             ConversationModel(name: "Morris Henry",
-//                                               message: "Dolore veniam Lorem occaecat veniam irure laborum est amet.",
-//                                               date: "24-07",
-//                                               isOnline: false,
-//                                               hasUnreadMessages: true),
-//                             ConversationModel(name: "Irma Flores",
-//                                               message: "Amet enim do laborum tempor nisi aliqua ad adipisicing.",
-//                                               date: "24-07",
-//                                               isOnline: true,
-//                                               hasUnreadMessages: false),
-//                             ConversationModel(name: "Colin Williams",
-//                                               message: "AVoluptate irure aliquip consectetur commodo ex ex.",
-//                                               date: "24-07",
-//                                               isOnline: false,
-//                                               hasUnreadMessages: true),
-//                             ConversationModel(name: "Jane Henry",
-//                                               message: "Aliqua mollit nisi incididunt id eu consequat eu cupidatat.",
-//                                               date: "24-07",
-//                                               isOnline: false,
-//                                               hasUnreadMessages: false),
-//                             ConversationModel(name: "Arthur Hailey",
-//                                               message: "Dolore veniam Lorem occaecat veniam irure laborum est amet.",
-//                                               date: "24-07",
-//                                               isOnline: false,
-//                                               hasUnreadMessages: true)]

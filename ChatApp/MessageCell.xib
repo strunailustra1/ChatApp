@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <device id="retina4_0" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
@@ -17,38 +17,40 @@
                 <rect key="frame" x="0.0" y="0.0" width="385" height="124"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="text" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ri6-pd-iZW">
-                        <rect key="frame" x="196" y="75" width="169" height="31"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" systemColor="systemYellowColor" red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                        <userDefinedRuntimeAttributes>
-                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                <integer key="value" value="14"/>
-                            </userDefinedRuntimeAttribute>
-                        </userDefinedRuntimeAttributes>
-                    </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="text" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="06b-Q5-0q0">
-                        <rect key="frame" x="20" y="23" width="169" height="31"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" red="0.75002996479999995" green="0.9602311254" blue="0.64472388520000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                        <userDefinedRuntimeAttributes>
-                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                <integer key="value" value="14"/>
-                            </userDefinedRuntimeAttribute>
-                        </userDefinedRuntimeAttributes>
-                    </label>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="P6G-Fw-u57">
+                        <rect key="frame" x="16" y="10" width="289" height="104"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gTb-CS-7yy">
+                                <rect key="frame" x="8" y="8" width="273" height="88"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="0.87450980392156863" green="0.87450980392156863" blue="0.87450980392156863" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="gTb-CS-7yy" firstAttribute="top" secondItem="P6G-Fw-u57" secondAttribute="top" constant="8" id="QGa-zi-Uaj"/>
+                            <constraint firstItem="gTb-CS-7yy" firstAttribute="leading" secondItem="P6G-Fw-u57" secondAttribute="leading" constant="8" id="ZJB-mQ-gvX"/>
+                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="50" id="azk-mG-fgc"/>
+                            <constraint firstAttribute="trailing" secondItem="gTb-CS-7yy" secondAttribute="trailing" constant="8" id="fpL-kN-3yR"/>
+                            <constraint firstAttribute="bottom" secondItem="gTb-CS-7yy" secondAttribute="bottom" constant="8" id="hye-6u-hj1"/>
+                        </constraints>
+                    </view>
                 </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="P6G-Fw-u57" secondAttribute="bottom" constant="10" id="BGO-Oo-knY"/>
+                    <constraint firstItem="P6G-Fw-u57" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="UTK-lc-MlY"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="P6G-Fw-u57" secondAttribute="trailing" constant="16" id="amc-w7-NtN"/>
+                    <constraint firstItem="P6G-Fw-u57" firstAttribute="width" secondItem="H2p-sc-9uM" secondAttribute="width" multiplier="0.75" id="cUt-s5-bzb"/>
+                    <constraint firstItem="P6G-Fw-u57" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="ivv-lg-gVW"/>
+                </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
-                <outlet property="messageLabel" destination="06b-Q5-0q0" id="MYa-Ms-tDX"/>
-                <outlet property="upComingLabel" destination="ri6-pd-iZW" id="Kpe-Xb-GQ0"/>
+                <outlet property="bubleView" destination="P6G-Fw-u57" id="2ZW-dy-elL"/>
+                <outlet property="leadingConstraint" destination="UTK-lc-MlY" id="Zsp-m4-vfP"/>
+                <outlet property="messageLabel" destination="gTb-CS-7yy" id="60p-hi-Ugg"/>
+                <outlet property="trailingConstraint" destination="amc-w7-NtN" id="Dxf-0w-bxC"/>
             </connections>
             <point key="canvasLocation" x="-42.753623188405797" y="85.714285714285708"/>
         </tableViewCell>
