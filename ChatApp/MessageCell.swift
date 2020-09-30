@@ -65,7 +65,7 @@ class MessageProvider {
     static func getMessages() -> [[Message]] {
         var messages = [Message]()
         
-        for _ in 0..<7 {
+        for _ in 0..<12 {
             let message = Message(text: messageText.randomElement() ?? "",
                                   date: date.randomElement() ?? Date.init(),
                                   isUpcomingMessage: [true, false].randomElement() ?? false)

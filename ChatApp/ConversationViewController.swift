@@ -52,9 +52,10 @@ class ConversationViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
         if messageList.count > 0 {
             let indexPath = IndexPath(row: messageList[messageList.count - 1].count - 1, section: messageList.count - 1)
-            self.tableView.scrollToRow(at: indexPath, at: UITableView.ScrollPosition.middle, animated: true)
+            tableView.scrollToRow(at: indexPath, at: UITableView.ScrollPosition.middle, animated: true)
         }
     }
 }

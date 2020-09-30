@@ -9,9 +9,7 @@
 import UIKit
 
 class MessageSectionHeader: UITableViewHeaderFooterView, ConfigurableView {
-    
-    typealias ConfigurationModel = MessageSectionHeaderModel
-    
+
     @IBOutlet weak var sectionNameLabel: UILabel!
     @IBOutlet weak var sectionView: UIView!
     
@@ -21,6 +19,8 @@ class MessageSectionHeader: UITableViewHeaderFooterView, ConfigurableView {
         dateFormatter.dateFormat = "E, MMM d"
         return dateFormatter
     }()
+    
+    typealias ConfigurationModel = MessageSectionHeaderModel
     
     struct MessageSectionHeaderModel {
         let date: Date

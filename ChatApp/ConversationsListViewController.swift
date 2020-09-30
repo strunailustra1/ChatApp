@@ -88,13 +88,13 @@ extension ConversationsListViewController: UITableViewDelegate {
 extension ConversationsListViewController {
     private func setupNavigationContoller() {
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.title = "Tinkoff Chat"
         navigationController?.navigationBar.largeTitleTextAttributes = [
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 34, weight: UIFont.Weight.bold)
         ]
         navigationController?.navigationBar.titleTextAttributes = [
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.bold)
         ]
+        navigationItem.title = "Tinkoff Chat"
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
         
         if let image = ProfileStorage.shared.profileImage {
@@ -113,9 +113,9 @@ extension ConversationsListViewController {
         } else {
             let button = UIButton(type: .system)
             button.addTarget(self, action: #selector(editProfile), for: .touchUpInside)
-            button.frame =  CGRect(x: 0, y: 0, width: 40, height: 40)
+            button.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
             button.clipsToBounds = true
-            button.setTitle("MD", for: .normal)
+            button.setTitle(ProfileStorage.shared.initials, for: .normal)
             button.layer.cornerRadius = button.frame.width / 2
             button.backgroundColor = UIColor(red: 0.894, green: 0.908, blue: 0.17, alpha: 1)
             button.setTitleColor(UIColor(red: 0.212, green: 0.216, blue: 0.22, alpha: 1), for: .normal)
@@ -124,4 +124,3 @@ extension ConversationsListViewController {
         }
     }
 }
-
