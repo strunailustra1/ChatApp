@@ -18,10 +18,10 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="P6G-Fw-u57">
-                        <rect key="frame" x="16" y="10" width="289" height="104"/>
+                        <rect key="frame" x="16" y="10" width="269.5" height="104"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gTb-CS-7yy">
-                                <rect key="frame" x="8" y="8" width="273" height="88"/>
+                                <rect key="frame" x="8" y="8" width="253.5" height="88"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -41,7 +41,7 @@
                     <constraint firstAttribute="bottom" secondItem="P6G-Fw-u57" secondAttribute="bottom" constant="10" id="BGO-Oo-knY"/>
                     <constraint firstItem="P6G-Fw-u57" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="UTK-lc-MlY"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="P6G-Fw-u57" secondAttribute="trailing" constant="16" id="amc-w7-NtN"/>
-                    <constraint firstItem="P6G-Fw-u57" firstAttribute="width" secondItem="H2p-sc-9uM" secondAttribute="width" multiplier="0.75" id="cUt-s5-bzb"/>
+                    <constraint firstItem="P6G-Fw-u57" firstAttribute="width" secondItem="H2p-sc-9uM" secondAttribute="width" multiplier="0.7" id="cUt-s5-bzb"/>
                     <constraint firstItem="P6G-Fw-u57" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="ivv-lg-gVW"/>
                 </constraints>
             </tableViewCellContentView>

@@ -20,7 +20,7 @@ class ConversationsListViewController: UIViewController {
         return tableView
     }()
     
-    private var conversationList = [[ConversationCellModel]]()
+    private var conversationList = [[ConversationCell.ConversationCellModel]]()
     
     static func storyboardInstance() -> ConversationsListViewController? {
         let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
@@ -29,7 +29,7 @@ class ConversationsListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        conversationList = Conversation.getMessages()
+        conversationList = ConversationProvider.getMessages()
         setupNavigationContoller()
         view.addSubview(tableView)
     }
@@ -77,7 +77,7 @@ extension ConversationsListViewController: UITableViewDelegate {
         if let conversationVC = ConversationViewController.storyboardInstance() {
             let conversation = conversationList[indexPath.section][indexPath.row]
             if conversation.message != "" {
-                conversationVC.messageList = MessageSet.getMessages()
+                conversationVC.messageList = MessageProvider.getMessages()
             }
             conversationVC.conversation = conversation
             navigationController?.pushViewController(conversationVC, animated: true)

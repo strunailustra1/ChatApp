@@ -24,7 +24,7 @@ class MessageCell: UITableViewCell, ConfigurableView {
     func configure(with model: ConfigurationModel) {
         messageLabel.text = model.text
         bubleView.layer.cornerRadius = 8
-        messageLabel.font = UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.regular)
+        messageLabel.font = UIFont.systemFont(ofSize: 16, weight: .regular)
         messageLabel.textColor = .black
     }
 }
@@ -46,20 +46,13 @@ struct Message {
     }()
 }
 
-class MessageSet {
+class MessageProvider {
     static let messageText = [
         "An suas viderer pro. Vis cu magna altera, ex his vivendo atomorum.",
         "Voluptate irure aliquip consectetur commodo ex ex.",
         "Ex Lorem veniam veniam irure sunt adipisicing culpa.",
         "Dolore veniam Lorem occaecat veniam irure laborum est amet.",
         "Amet enim do laborum tempor nisi aliqua ad adipisicing.",
-        "Dolore veniam Lorem occaecat veniam irure laborum est amet.",
-        "An suas viderer pro. Vis cu magna altera, ex his vivendo atomorum.",
-        "Ex Lorem veniam veniam irure sunt adipisicing culpa.",
-        "Dolore veniam Lorem occaecat veniam irure laborum est amet.",
-        "Voluptate irure aliquip consectetur commodo ex ex.",
-        "Amet enim do laborum tempor nisi aliqua ad adipisicing.",
-        "An suas viderer pro. Vis cu magna altera, ex his vivendo atomorum.",
     ]
     
     static let date = [Date(timeIntervalSinceNow: -196400), Date(timeIntervalSinceNow: -195000),
@@ -69,18 +62,17 @@ class MessageSet {
                        Date(timeIntervalSinceNow: -12400), Date(timeIntervalSinceNow: -5600),
                        Date(timeIntervalSinceNow: -2400), Date(timeIntervalSinceNow: -1200)]
     
-    static let isUpcomingMessage = [true, false, true, false, false, false, true, true, true, false, false, true]
-    
     static func getMessages() -> [[Message]] {
         var messages = [Message]()
-        for index in 0..<messageText.count {
-            let message = Message(text: messageText[index],
-                                  date: date[index],
-                                  isUpcomingMessage: isUpcomingMessage[index])
+        
+        for _ in 0..<7 {
+            let message = Message(text: messageText.randomElement() ?? "",
+                                  date: date.randomElement() ?? Date.init(),
+                                  isUpcomingMessage: [true, false].randomElement() ?? false)
             messages.append(message)
         }
         
-        messages = messages.sorted(by: { $0.date < $1.date })
+        messages.sort { $0.date < $1.date }
         
         var dayDict = [String: Int]()
         var index = 0

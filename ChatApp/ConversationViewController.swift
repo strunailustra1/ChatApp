@@ -23,7 +23,7 @@ class ConversationViewController: UIViewController {
         tableView.delegate = self
         tableView.separatorStyle = .none
         
-        //todo обрабатывать пустой список сообщений
+        //TODO:- обрабатывать пустой список сообщений
         
         return tableView
     }()
@@ -36,7 +36,7 @@ class ConversationViewController: UIViewController {
     }()
     
     var messageList = [[Message]]()
-    var conversation: ConversationCellModel?
+    var conversation: ConversationCell.ConversationCellModel?
     
     static func storyboardInstance() -> ConversationViewController? {
         let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
@@ -56,14 +56,6 @@ class ConversationViewController: UIViewController {
             let indexPath = IndexPath(row: messageList[messageList.count - 1].count - 1, section: messageList.count - 1)
             self.tableView.scrollToRow(at: indexPath, at: UITableView.ScrollPosition.middle, animated: true)
         }
-    }
-    
-    private func setupNavigationController() {
-        navigationItem.title = conversation?.name
-        navigationItem.largeTitleDisplayMode = .never
-        navigationController?.navigationBar.titleTextAttributes = [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.semibold)
-        ]
     }
 }
 
@@ -109,5 +101,34 @@ extension ConversationViewController: UITableViewDelegate {
         headerView.configure(with: .init(date: message.date))
         
         return headerView
+    }
+}
+
+extension ConversationViewController {
+    private func setupNavigationController() {
+        let navView = UIView()
+        
+        let label = UILabel()
+        label.text = conversation?.name
+        label.font =  UIFont.systemFont(ofSize: 16, weight: .semibold)
+        label.sizeToFit()
+        label.center = navView.center
+        label.textAlignment = .center
+        
+        let circle = UIView(frame: CGRect(
+            x: label.frame.origin.x - label.frame.size.height,
+            y: label.frame.origin.y + 2,
+            width: 14,
+            height: 14)
+        )
+        circle.backgroundColor = (conversation?.isOnline ?? false) ? .systemGreen : .systemGray
+        circle.layer.cornerRadius = circle.frame.width / 2
+        
+        navView.addSubview(label)
+        navView.addSubview(circle)
+        navView.sizeToFit()
+        
+        navigationItem.titleView = navView
+        navigationItem.largeTitleDisplayMode = .never
     }
 }
