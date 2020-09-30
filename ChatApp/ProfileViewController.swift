@@ -10,6 +10,13 @@ import UIKit
 
 class ProfileViewController: UIViewController {
     
+    static func storyboardInstance() -> ProfileViewController? {
+        let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
+        return storyboard.instantiateInitialViewController() as? ProfileViewController
+    }
+    
+    var closeHandler: (() -> ())?
+    
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var photoView: UIImageView!
     @IBOutlet weak var editButton: UIButton!
@@ -33,6 +40,7 @@ class ProfileViewController: UIViewController {
         setupSaveButton()
         setupEditButton()
         setupLabels()
+        setupNavigationContoller()
         
         Logger.shared.vcLog(description: "has loaded its view hierarchy into memory")
         Logger.shared.vcLog(frame: "\(saveButton.frame)")
@@ -41,6 +49,8 @@ class ProfileViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         Logger.shared.vcLog(stateFrom: "Disappeared", stateTo: "Appearing")
+        
+        //  setupNavigationContoller1()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -63,8 +73,7 @@ class ProfileViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        photoView.layer.cornerRadius = photoView.frame.width / 2
-        photoView.clipsToBounds = true
+        setupPhotoView()
         
         logoLabel.layer.cornerRadius = logoLabel.frame.width / 2
         logoLabel.clipsToBounds = true
@@ -150,15 +159,39 @@ class ProfileViewController: UIViewController {
     }
     
     private func setupLabels() {
-        fullNameLabel.text = "Marina Dudarenko"
-        logoLabel.text = "MD"
+        fullNameLabel.text = ProfileStorage.shared.fullname
+        logoLabel.text = ProfileStorage.shared.initials
         
         let descriptionParagraphStyle = NSMutableParagraphStyle()
         descriptionParagraphStyle.lineHeightMultiple = 1.15
-        descriptionLabel.attributedText = NSMutableAttributedString(string: "UX/UI designer, web-designer\nMoscow, Russia", attributes: [NSAttributedString.Key.kern: -0.33, NSAttributedString.Key.paragraphStyle: descriptionParagraphStyle])
-
+        descriptionLabel.attributedText = NSMutableAttributedString(string: ProfileStorage.shared.description, attributes: [NSAttributedString.Key.kern: -0.33, NSAttributedString.Key.paragraphStyle: descriptionParagraphStyle])
+        
         logoLabel.font = UIFont(name: "Roboto-Regular", size: 120)
         logoLabel.textColor = UIColor(red: 0.212, green: 0.216, blue: 0.22, alpha: 1)
+    }
+    
+    private func setupPhotoView() {
+        photoView.layer.cornerRadius = photoView.frame.width / 2
+        photoView.clipsToBounds = true
+        
+        if let image = ProfileStorage.shared.profileImage {
+            photoView.image = image
+            photoView.contentMode = photoView.frame.width > photoView.frame.height ? .scaleAspectFit : .scaleAspectFill
+            logoLabel.isHidden = true
+        }
+    }
+    
+    private func setupNavigationContoller() {
+        navigationController?.navigationBar.backgroundColor = UIColor(red: 0.969,
+                                                                      green: 0.969,
+                                                                      blue: 0.969,
+                                                                      alpha: 1)
+        navigationItem.title = "My Profile"
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(closeProfile))
+    }
+    
+    @objc func closeProfile() {
+        dismiss(animated: true, completion: closeHandler)
     }
 }
 
@@ -167,9 +200,8 @@ extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerCo
         picker.dismiss(animated: true, completion: nil)
         
         guard let image = info[.editedImage] as? UIImage else { return }
-        photoView.image = image
-        photoView.contentMode = photoView.frame.width > photoView.frame.height ? .scaleAspectFit : .scaleAspectFill
-        logoLabel.isHidden = true
+        ProfileStorage.shared.profileImage = image
+        setupPhotoView()
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
