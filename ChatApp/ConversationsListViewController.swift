@@ -29,51 +29,19 @@ class ConversationsListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(tableView)
         conversationList = Conversation.getMessages()
         setupNavigationContoller()
+        view.addSubview(tableView)
     }
-
-    private func setupNavigationContoller() {
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.title = "Tinkoff Chat"
-        navigationController?.navigationBar.largeTitleTextAttributes = [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 34, weight: UIFont.Weight.bold)
-        ]
-        navigationController?.navigationBar.titleTextAttributes = [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.bold)
-        ]
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
-        
-
-        let button = UIButton(type: .system)
-        button.addTarget(self, action: #selector(editProfile), for: .touchUpInside)
-        
-        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
-        button.layer.cornerRadius = view.frame.width / 2
-        imageView.addSubview(button)
-        
-        button.setTitle("MD", for: .normal)
-        button.setTitleColor(UIColor(red: 0, green: 0.478, blue: 1, alpha: 1), for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: UIFont.Weight.semibold)
-        button.backgroundColor = UIColor(red: 0.894, green: 0.908, blue: 0.17, alpha: 1)
-        let editButton = UIBarButtonItem(customView: button)
-        navigationItem.rightBarButtonItem = editButton
-        
-//        let button = UIButton(type: .system)
-//        button.setImage(UIImage(named: "pencil"), for: UIControl.State.normal)
-//        button.addTarget(self, action: #selector(editProfile), for: .touchUpInside)
-//        button.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
-//
-//        let barButton = UIBarButtonItem(customView: button)
-//        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "HH", style: .plain, target: self, action: #selector(editProfile))
-    }
-    
+ 
     @objc func editProfile() {
-        if let profileVC = ProfileViewController.storyboardInstance(){
+        if let profileVC = ProfileViewController.storyboardInstance() {
+            profileVC.closeHandler = { [unowned self] in
+                self.setupNavigationContoller()
+            }
             let navVC = UINavigationController(rootViewController: profileVC)
-            navigationController?.present(navVC, animated: true, completion: nil)
-            navigationController?.modalPresentationStyle = .popover
+            navVC.modalPresentationStyle = .popover
+            present(navVC, animated: true, completion: nil)
         }
     }
 }
@@ -113,6 +81,46 @@ extension ConversationsListViewController: UITableViewDelegate {
             }
             conversationVC.conversation = conversation
             navigationController?.pushViewController(conversationVC, animated: true)
+        }
+    }
+}
+
+extension ConversationsListViewController {
+    private func setupNavigationContoller() {
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.title = "Tinkoff Chat"
+        navigationController?.navigationBar.largeTitleTextAttributes = [
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 34, weight: UIFont.Weight.bold)
+        ]
+        navigationController?.navigationBar.titleTextAttributes = [
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.bold)
+        ]
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
+        
+        if let image = ProfileStorage.shared.profileImage {
+            let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+            imageView.image = image
+            imageView.layer.cornerRadius = imageView.frame.width / 2
+            imageView.backgroundColor = UIColor(red: 0.894, green: 0.908, blue: 0.17, alpha: 1)
+            imageView.clipsToBounds = true
+            imageView.contentMode = imageView.frame.width > imageView.frame.height ? .scaleAspectFit : .scaleAspectFill
+            imageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
+            imageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
+            
+            let profileTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.editProfile))
+            imageView.addGestureRecognizer(profileTapGestureRecognizer)
+            navigationItem.rightBarButtonItem = UIBarButtonItem(customView: imageView)
+        } else {
+            let button = UIButton(type: .system)
+            button.addTarget(self, action: #selector(editProfile), for: .touchUpInside)
+            button.frame =  CGRect(x: 0, y: 0, width: 40, height: 40)
+            button.clipsToBounds = true
+            button.setTitle("MD", for: .normal)
+            button.layer.cornerRadius = button.frame.width / 2
+            button.backgroundColor = UIColor(red: 0.894, green: 0.908, blue: 0.17, alpha: 1)
+            button.setTitleColor(UIColor(red: 0.212, green: 0.216, blue: 0.22, alpha: 1), for: .normal)
+            button.titleLabel?.font = UIFont(name: "Roboto-Regular", size: 22)
+            navigationItem.rightBarButtonItem = UIBarButtonItem(customView: button)
         }
     }
 }

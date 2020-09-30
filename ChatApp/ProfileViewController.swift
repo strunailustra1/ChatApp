@@ -15,7 +15,7 @@ class ProfileViewController: UIViewController {
         return storyboard.instantiateInitialViewController() as? ProfileViewController
     }
     
-    //   let profile = ProfileViewController.storyboardInstance()
+    var closeHandler: (() -> ())?
     
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var photoView: UIImageView!
@@ -50,7 +50,7 @@ class ProfileViewController: UIViewController {
         super.viewWillAppear(animated)
         Logger.shared.vcLog(stateFrom: "Disappeared", stateTo: "Appearing")
         
-      //  setupNavigationContoller1()
+        //  setupNavigationContoller1()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -73,8 +73,7 @@ class ProfileViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        photoView.layer.cornerRadius = photoView.frame.width / 2
-        photoView.clipsToBounds = true
+        setupPhotoView()
         
         logoLabel.layer.cornerRadius = logoLabel.frame.width / 2
         logoLabel.clipsToBounds = true
@@ -160,15 +159,26 @@ class ProfileViewController: UIViewController {
     }
     
     private func setupLabels() {
-        fullNameLabel.text = "Marina Dudarenko"
-        logoLabel.text = "MD"
+        fullNameLabel.text = ProfileStorage.shared.fullname
+        logoLabel.text = ProfileStorage.shared.initials
         
         let descriptionParagraphStyle = NSMutableParagraphStyle()
         descriptionParagraphStyle.lineHeightMultiple = 1.15
-        descriptionLabel.attributedText = NSMutableAttributedString(string: "UX/UI designer, web-designer\nMoscow, Russia", attributes: [NSAttributedString.Key.kern: -0.33, NSAttributedString.Key.paragraphStyle: descriptionParagraphStyle])
+        descriptionLabel.attributedText = NSMutableAttributedString(string: ProfileStorage.shared.description, attributes: [NSAttributedString.Key.kern: -0.33, NSAttributedString.Key.paragraphStyle: descriptionParagraphStyle])
         
         logoLabel.font = UIFont(name: "Roboto-Regular", size: 120)
         logoLabel.textColor = UIColor(red: 0.212, green: 0.216, blue: 0.22, alpha: 1)
+    }
+    
+    private func setupPhotoView() {
+        photoView.layer.cornerRadius = photoView.frame.width / 2
+        photoView.clipsToBounds = true
+        
+        if let image = ProfileStorage.shared.profileImage {
+            photoView.image = image
+            photoView.contentMode = photoView.frame.width > photoView.frame.height ? .scaleAspectFit : .scaleAspectFill
+            logoLabel.isHidden = true
+        }
     }
     
     private func setupNavigationContoller() {
@@ -215,7 +225,7 @@ class ProfileViewController: UIViewController {
     }
     
     @objc func closeProfile() {
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: closeHandler)
     }
 }
 
@@ -224,9 +234,8 @@ extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerCo
         picker.dismiss(animated: true, completion: nil)
         
         guard let image = info[.editedImage] as? UIImage else { return }
-        photoView.image = image
-        photoView.contentMode = photoView.frame.width > photoView.frame.height ? .scaleAspectFit : .scaleAspectFill
-        logoLabel.isHidden = true
+        ProfileStorage.shared.profileImage = image
+        setupPhotoView()
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
