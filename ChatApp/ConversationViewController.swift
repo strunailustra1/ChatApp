@@ -36,6 +36,7 @@ class ConversationViewController: UIViewController {
     }()
     
     var messageList = [[Message]]()
+    var conversation: ConversationCellModel?
     
     static func storyboardInstance() -> ConversationViewController? {
         let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
@@ -46,13 +47,23 @@ class ConversationViewController: UIViewController {
         super.viewDidLoad()
         
         view.addSubview(tableView)
+        setupNavigationController()
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         if messageList.count > 0 {
             let indexPath = IndexPath(row: messageList[messageList.count - 1].count - 1, section: messageList.count - 1)
             self.tableView.scrollToRow(at: indexPath, at: UITableView.ScrollPosition.middle, animated: true)
         }
+    }
+    
+    private func setupNavigationController() {
+        navigationItem.title = conversation?.name
+        navigationItem.largeTitleDisplayMode = .never
+        navigationController?.navigationBar.titleTextAttributes = [
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.semibold)
+        ]
     }
 }
 

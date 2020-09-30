@@ -14,8 +14,8 @@ class ProfileViewController: UIViewController {
         let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
         return storyboard.instantiateInitialViewController() as? ProfileViewController
     }
-
- //   let profile = ProfileViewController.storyboardInstance()
+    
+    //   let profile = ProfileViewController.storyboardInstance()
     
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var photoView: UIImageView!
@@ -40,6 +40,7 @@ class ProfileViewController: UIViewController {
         setupSaveButton()
         setupEditButton()
         setupLabels()
+        setupNavigationContoller()
         
         Logger.shared.vcLog(description: "has loaded its view hierarchy into memory")
         Logger.shared.vcLog(frame: "\(saveButton.frame)")
@@ -48,6 +49,8 @@ class ProfileViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         Logger.shared.vcLog(stateFrom: "Disappeared", stateTo: "Appearing")
+        
+      //  setupNavigationContoller1()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -163,9 +166,56 @@ class ProfileViewController: UIViewController {
         let descriptionParagraphStyle = NSMutableParagraphStyle()
         descriptionParagraphStyle.lineHeightMultiple = 1.15
         descriptionLabel.attributedText = NSMutableAttributedString(string: "UX/UI designer, web-designer\nMoscow, Russia", attributes: [NSAttributedString.Key.kern: -0.33, NSAttributedString.Key.paragraphStyle: descriptionParagraphStyle])
-
+        
         logoLabel.font = UIFont(name: "Roboto-Regular", size: 120)
         logoLabel.textColor = UIColor(red: 0.212, green: 0.216, blue: 0.22, alpha: 1)
+    }
+    
+    private func setupNavigationContoller() {
+        navigationController?.navigationBar.backgroundColor = UIColor(red: 0.969,
+                                                                      green: 0.969,
+                                                                      blue: 0.969,
+                                                                      alpha: 1)
+        navigationItem.title = "My Profile"
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(closeProfile))
+    }
+    
+    private func setupNavigationContoller1() {
+        navigationController?.navigationBar.backgroundColor = UIColor(red: 0.969,
+                                                                      green: 0.969,
+                                                                      blue: 0.969,
+                                                                      alpha: 1)
+        navigationController?.navigationBar.prefersLargeTitles = true
+        
+        navigationController?.navigationBar.largeTitleTextAttributes = [
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 26, weight: UIFont.Weight.bold)
+        ]
+        
+        let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 150, height: 30))
+        titleLabel.text = "My Profile"
+        titleLabel.font = UIFont.systemFont(ofSize: 26, weight: UIFont.Weight.bold)
+        
+        let btnControl = UIButton(type: .system)
+        btnControl.frame =  CGRect(x: 0, y: 0, width: 46, height: 22)
+        btnControl.tintColor = UIColor.systemBlue
+        btnControl.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: UIFont.Weight.semibold)
+        btnControl.addTarget(self, action: #selector(closeProfile), for: .touchUpInside)
+        btnControl.setTitle("Close", for: .normal)
+        
+        let customView = UIView(frame: CGRect(x: 0, y: 27, width: self.view.frame.width, height: 30))
+        customView.addSubview(titleLabel)
+        customView.addSubview(btnControl)
+        btnControl.translatesAutoresizingMaskIntoConstraints = false
+        customView.addConstraint(NSLayoutConstraint(item: btnControl, attribute: .trailing, relatedBy: .equal, toItem: customView, attribute: .trailing, multiplier: 1, constant: -17))
+        
+        let mainTitleView = UIView(frame: CGRect(x: 0, y: 27, width: self.view.frame.width, height: 30))
+        mainTitleView.addSubview(customView)
+        
+        navigationItem.titleView = mainTitleView
+    }
+    
+    @objc func closeProfile() {
+        dismiss(animated: true, completion: nil)
     }
 }
 

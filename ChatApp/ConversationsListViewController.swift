@@ -9,7 +9,7 @@
 import UIKit
 
 class ConversationsListViewController: UIViewController {
-
+    
     private let cellIdentifier = String(describing: ConversationCell.self)
     
     private lazy var tableView: UITableView = {
@@ -31,7 +31,50 @@ class ConversationsListViewController: UIViewController {
         super.viewDidLoad()
         view.addSubview(tableView)
         conversationList = Conversation.getMessages()
-        self.tableView.rowHeight = 89
+        setupNavigationContoller()
+    }
+
+    private func setupNavigationContoller() {
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.title = "Tinkoff Chat"
+        navigationController?.navigationBar.largeTitleTextAttributes = [
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 34, weight: UIFont.Weight.bold)
+        ]
+        navigationController?.navigationBar.titleTextAttributes = [
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.bold)
+        ]
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
+        
+
+        let button = UIButton(type: .system)
+        button.addTarget(self, action: #selector(editProfile), for: .touchUpInside)
+        
+        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+        button.layer.cornerRadius = view.frame.width / 2
+        imageView.addSubview(button)
+        
+        button.setTitle("MD", for: .normal)
+        button.setTitleColor(UIColor(red: 0, green: 0.478, blue: 1, alpha: 1), for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: UIFont.Weight.semibold)
+        button.backgroundColor = UIColor(red: 0.894, green: 0.908, blue: 0.17, alpha: 1)
+        let editButton = UIBarButtonItem(customView: button)
+        navigationItem.rightBarButtonItem = editButton
+        
+//        let button = UIButton(type: .system)
+//        button.setImage(UIImage(named: "pencil"), for: UIControl.State.normal)
+//        button.addTarget(self, action: #selector(editProfile), for: .touchUpInside)
+//        button.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+//
+//        let barButton = UIBarButtonItem(customView: button)
+//        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "HH", style: .plain, target: self, action: #selector(editProfile))
+    }
+    
+    @objc func editProfile() {
+        if let profileVC = ProfileViewController.storyboardInstance(){
+            let navVC = UINavigationController(rootViewController: profileVC)
+            navigationController?.present(navVC, animated: true, completion: nil)
+            navigationController?.modalPresentationStyle = .popover
+        }
     }
 }
 
@@ -55,6 +98,10 @@ extension ConversationsListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         section == 0 ? "Online" : "History"
     }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        89
+    }
 }
 
 extension ConversationsListViewController: UITableViewDelegate {
@@ -62,8 +109,9 @@ extension ConversationsListViewController: UITableViewDelegate {
         if let conversationVC = ConversationViewController.storyboardInstance() {
             let conversation = conversationList[indexPath.section][indexPath.row]
             if conversation.message != "" {
-               conversationVC.messageList = MessageSet.getMessages()
+                conversationVC.messageList = MessageSet.getMessages()
             }
+            conversationVC.conversation = conversation
             navigationController?.pushViewController(conversationVC, animated: true)
         }
     }

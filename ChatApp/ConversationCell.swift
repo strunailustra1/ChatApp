@@ -30,7 +30,13 @@ class ConversationCell: UITableViewCell, ConfigurableView {
         messageLabel.text = model.message != "" ? model.message : "No messages yet"
         dateLabel.text = model.message != "" ? ConversationCell.dateFormatter.string(from: model.date) : ""
         backgroundColor = model.isOnline == true ? UIColor(red: 1, green: 0.988, blue: 0.474, alpha: 0.3) : .white
-        messageLabel.font = model.hasUnreadMessages == true ? .boldSystemFont(ofSize: 13) : .systemFont(ofSize: 13)
+        messageLabel.font = model.hasUnreadMessages == true
+            ? UIFont.systemFont(ofSize: 13, weight: UIFont.Weight.bold)
+            : UIFont.systemFont(ofSize: 13, weight: UIFont.Weight.regular)
+        messageLabel.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.263, alpha: 0.6)
+        nameLabel.font = UIFont.systemFont(ofSize: 15, weight: UIFont.Weight.semibold)       
+        dateLabel.font = UIFont.systemFont(ofSize: 15, weight: UIFont.Weight.regular)
+        dateLabel.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.263, alpha: 0.6)
     }
 }
 
@@ -99,7 +105,6 @@ class Conversation {
             }
             conversations[isOnline[index] ? 0 : 1].append(conversation)
         }
-        
         return conversations
     }
 }

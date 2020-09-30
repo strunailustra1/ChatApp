@@ -31,5 +31,6 @@ class MessageSectionHeader: UITableViewHeaderFooterView, ConfigurableView {
         sectionView.layer.cornerRadius = 8
         sectionView.backgroundColor = UIColor(red: 0.867, green: 0.867, blue: 0.914, alpha: 0.7)
         sectionNameLabel.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.263, alpha: 1)
+        sectionNameLabel.font = UIFont.systemFont(ofSize: 12, weight: UIFont.Weight.semibold)
     }
 }
