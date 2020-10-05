@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1E16408D252B340700B37DD6 /* ThemesPickerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E16408C252B340700B37DD6 /* ThemesPickerDelegate.swift */; };
+		1E16408F252BA55D00B37DD6 /* ThemesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E16408E252BA55D00B37DD6 /* ThemesManager.swift */; };
 		1E30F11D250B944100DDF8DC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E30F11C250B944100DDF8DC /* AppDelegate.swift */; };
 		1E30F121250B944100DDF8DC /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E30F120250B944100DDF8DC /* ProfileViewController.swift */; };
 		1E30F124250B944100DDF8DC /* ProfileViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E30F122250B944100DDF8DC /* ProfileViewController.storyboard */; };
@@ -31,6 +33,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1E16408C252B340700B37DD6 /* ThemesPickerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesPickerDelegate.swift; sourceTree = "<group>"; };
+		1E16408E252BA55D00B37DD6 /* ThemesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesManager.swift; sourceTree = "<group>"; };
 		1E30F119250B944100DDF8DC /* ChatApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E30F11C250B944100DDF8DC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1E30F120250B944100DDF8DC /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
@@ -101,6 +105,8 @@
 				1EBEF39A25212FA000F6E541 /* MessageCell.xib */,
 				1EBEF39525212E2700F6E541 /* ConversationViewController.swift */,
 				1E5FFB1A2527374000F8187A /* ThemesViewController.swift */,
+				1E16408E252BA55D00B37DD6 /* ThemesManager.swift */,
+				1E16408C252B340700B37DD6 /* ThemesPickerDelegate.swift */,
 				1E5FFB202527566800F8187A /* ThemesViewController.storyboard */,
 				1EBEF39325212DF100F6E541 /* ConversationViewController.storyboard */,
 				1E30F120250B944100DDF8DC /* ProfileViewController.swift */,
@@ -198,7 +204,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E16408D252B340700B37DD6 /* ThemesPickerDelegate.swift in Sources */,
 				1E676A51251DF38E00E98C42 /* ConversationCell.swift in Sources */,
+				1E16408F252BA55D00B37DD6 /* ThemesManager.swift in Sources */,
 				1E5FFB192524A67900F8187A /* Profile.swift in Sources */,
 				1EBEF39B25212FA000F6E541 /* MessageCell.swift in Sources */,
 				1E676A56251DF48200E98C42 /* ConversationsListViewController.swift in Sources */,

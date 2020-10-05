@@ -33,7 +33,7 @@ class ConversationsListViewController: UIViewController {
         setupNavigationContoller()
         view.addSubview(tableView)
     }
- 
+    
     @objc func editProfile() {
         if let profileVC = ProfileViewController.storyboardInstance() {
             profileVC.closeHandler = { [unowned self] in
@@ -49,6 +49,8 @@ class ConversationsListViewController: UIViewController {
         if let themesVC = ThemesViewController.storyboardInstance() {
             navigationController?.pushViewController(themesVC, animated: true)
             navigationItem.backBarButtonItem = UIBarButtonItem(title: "Tinkoff Chat", style: .plain, target: nil, action: nil)
+            themesVC.delegate = ThemesManager.shared
+            themesVC.themeChangeHandler = ThemesManager.shared.themeChangeHandler
         }
     }
 }
@@ -104,7 +106,7 @@ extension ConversationsListViewController {
         ]
         navigationItem.title = "Tinkoff Chat"
         
-     //   navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
+        //   navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
         
         if let image = ProfileStorage.shared.profileImage {
             let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))

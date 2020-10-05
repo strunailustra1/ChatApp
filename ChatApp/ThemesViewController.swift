@@ -14,18 +14,23 @@ class ThemesViewController: UIViewController {
     @IBOutlet var colorLabels: [UILabel]!
     @IBOutlet var themesNamesButtons: [UIButton]!
     
-    @IBOutlet weak var classicTheme: UIButton!
-    @IBOutlet weak var dayTheme: UIButton!
-    @IBOutlet weak var nightTheme: UIButton!
+    @IBOutlet weak var classicThemeButton: UIButton!
+    @IBOutlet weak var dayThemeButton: UIButton!
+    @IBOutlet weak var nightThemeButton: UIButton!
+    
     @IBOutlet weak var classicIncomingLabel: UILabel!
     @IBOutlet weak var classicOutcomingLabel: UILabel!
     @IBOutlet weak var dayIncomingLabel: UILabel!
     @IBOutlet weak var dayOutcomingLabel: UILabel!
     @IBOutlet weak var nightIncomingLabel: UILabel!
     @IBOutlet weak var nightOutcomingLabel: UILabel!
-    @IBOutlet weak var classicThemeButton: UIButton!
-    @IBOutlet weak var dayThemeButton: UIButton!
-    @IBOutlet weak var nightThemeButton: UIButton!
+    
+    @IBOutlet weak var classicThemeName: UIButton!
+    @IBOutlet weak var dayThemeName: UIButton!
+    @IBOutlet weak var nightThemeName: UIButton!
+    
+    weak var delegate: ThemesPickerDelegate?
+    var themeChangeHandler: ((_ theme: Theme) -> ())?
     
     static func storyboardInstance() -> ThemesViewController? {
         let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
@@ -38,33 +43,55 @@ class ThemesViewController: UIViewController {
         customizeButtons()
         customizeColorLabels()
         customizeThemesNames()
-        view.backgroundColor = UIColor(red: 0.098, green: 0.21, blue: 0.379, alpha: 1)
+        
+        switch ThemesManager.shared.getTheme() {
+        case .classic:
+            classicThemeButton.isSelected = true
+        case .day:
+            dayThemeButton.isSelected = true
+        case .night:
+            nightThemeButton.isSelected = true
+        }
+
+        view.backgroundColor = ThemesManager.shared.getThemesVCBackgroundColor()
     }
     
-    @IBAction func classicThemeButton(_ sender: UIButton) {
-        selectedState(sender, tag: 0)
+    @IBAction func chooseClassicTheme(_ sender: UIButton) {
+        chooseTheme(classicThemeButton, theme: .classic)
     }
     
-    @IBAction func dayThemeButton(_ sender: UIButton) {
-        selectedState(sender, tag: 1)
+    @IBAction func chooseDayTheme(_ sender: UIButton) {
+        chooseTheme(dayThemeButton, theme: .day)
     }
     
-    @IBAction func nightThemeButton(_ sender: UIButton) {
-        selectedState(sender, tag: 2)
+    @IBAction func chooseNightTheme(_ sender: UIButton) {
+        chooseTheme(nightThemeButton, theme: .night)
+    }
+    
+    private func chooseTheme(_ sender: UIButton, theme: Theme) {
+        sender.isSelected = true
+        for anotherButton in themesButtons {
+            if sender !== anotherButton {
+                anotherButton.isSelected = false
+            }
+        }
+        delegate?.setTheme(theme)
+        if let handler = themeChangeHandler {
+            handler(theme)
+        }
+        view.backgroundColor = ThemesManager.shared.getThemesVCBackgroundColor()
     }
     
     private func customizeButtons() {
-        classicTheme.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
-        dayTheme.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
-        nightTheme.backgroundColor = UIColor(red: 0.024, green: 0.024, blue: 0.024, alpha: 1)
-        classicTheme.layer.borderColor = UIColor(red: 0.592, green: 0.592, blue: 0.592, alpha: 1).cgColor
-        dayTheme.layer.borderColor = UIColor(red: 0.592, green: 0.592, blue: 0.592, alpha: 1).cgColor
-        nightTheme.layer.borderColor = UIColor(red: 0.592, green: 0.592, blue: 0.592, alpha: 1).cgColor
+        classicThemeButton.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
+        dayThemeButton.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
+        nightThemeButton.backgroundColor = UIColor(red: 0.024, green: 0.024, blue: 0.024, alpha: 1)
         
-        for index in 0..<themesButtons.count {
-            themesButtons[index].clipsToBounds = true
-            themesButtons[index].layer.cornerRadius = 14
-            themesButtons[index].layer.borderWidth = 1
+        for button in themesButtons {
+            button.clipsToBounds = true
+            button.layer.cornerRadius = 14
+            button.layer.borderWidth = 1
+            button.layer.borderColor = UIColor(red: 0.592, green: 0.592, blue: 0.592, alpha: 1).cgColor
         }
     }
     
@@ -76,33 +103,20 @@ class ThemesViewController: UIViewController {
         nightIncomingLabel.backgroundColor = UIColor(red: 0.18, green: 0.18, blue: 0.18, alpha: 1)
         nightOutcomingLabel.backgroundColor = UIColor(red: 0.361, green: 0.361, blue: 0.361, alpha: 1)
         
-        for index in 0..<colorLabels.count {
-            colorLabels[index].layer.masksToBounds = true
-            colorLabels[index].layer.cornerRadius = 8
+        for label in colorLabels {
+            label.layer.masksToBounds = true
+            label.layer.cornerRadius = 8
         }
     }
     
     private func customizeThemesNames() {
-        for index in 0..<themesNamesButtons.count {
-            themesNamesButtons[index].titleLabel?.font = UIFont.systemFont(ofSize: 19, weight: .semibold)
-            themesNamesButtons[index].setTitleColor(.white, for: .normal)
-        }
-    }
-    
-    private func selectedState(_ sender: UIButton, tag: Int) {
-        if sender.isSelected {
-            sender.isSelected = false
-            sender.layer.borderColor = .none
-            sender.layer.borderWidth = 0
-            print(sender.isSelected)
-        } else if sender.isSelected == false && tag == 0 {
-            sender.isSelected = true
-            sender.layer.borderColor = UIColor(red: 0, green: 0.478, blue: 1, alpha: 1).cgColor
-            sender.layer.borderWidth = 3
-            print(sender.isSelected)
+        for button in themesNamesButtons {
+            button.titleLabel?.font = UIFont.systemFont(ofSize: 19, weight: .semibold)
+            button.setTitleColor(.white, for: .normal)
         }
     }
 }
+
 extension ThemesViewController {
     private func setupNavigationController() {
         
@@ -111,7 +125,19 @@ extension ThemesViewController {
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: nil)
         navigationItem.title = "Settings"
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .semibold)]
         
         navigationItem.largeTitleDisplayMode = .never
+    }
+}
+
+class SelectedButton: UIButton {
+    override var isSelected: Bool {
+        didSet {
+            layer.borderColor = isSelected
+                ? UIColor(red: 0, green: 0.478, blue: 1, alpha: 1).cgColor
+                : UIColor(red: 0.592, green: 0.592, blue: 0.592, alpha: 1).cgColor
+            layer.borderWidth = isSelected ? 3 : 1
+        }
     }
 }
