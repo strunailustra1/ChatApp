@@ -13,6 +13,8 @@
 		1E30F126250B944700DDF8DC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1E30F125250B944700DDF8DC /* Assets.xcassets */; };
 		1E30F129250B944700DDF8DC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E30F127250B944700DDF8DC /* LaunchScreen.storyboard */; };
 		1E5FFB192524A67900F8187A /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5FFB182524A67900F8187A /* Profile.swift */; };
+		1E5FFB1B2527374000F8187A /* ThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5FFB1A2527374000F8187A /* ThemesViewController.swift */; };
+		1E5FFB212527566800F8187A /* ThemesViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E5FFB202527566800F8187A /* ThemesViewController.storyboard */; };
 		1E676A4E251DF28500E98C42 /* ConversationsListViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E676A4D251DF28500E98C42 /* ConversationsListViewController.storyboard */; };
 		1E676A51251DF38E00E98C42 /* ConversationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E676A4F251DF38E00E98C42 /* ConversationCell.swift */; };
 		1E676A52251DF38E00E98C42 /* ConversationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E676A50251DF38E00E98C42 /* ConversationCell.xib */; };
@@ -37,6 +39,8 @@
 		1E30F128250B944700DDF8DC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1E30F12A250B944700DDF8DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1E5FFB182524A67900F8187A /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
+		1E5FFB1A2527374000F8187A /* ThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesViewController.swift; sourceTree = "<group>"; };
+		1E5FFB202527566800F8187A /* ThemesViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ThemesViewController.storyboard; sourceTree = "<group>"; };
 		1E676A4D251DF28500E98C42 /* ConversationsListViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ConversationsListViewController.storyboard; sourceTree = "<group>"; };
 		1E676A4F251DF38E00E98C42 /* ConversationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationCell.swift; sourceTree = "<group>"; };
 		1E676A50251DF38E00E98C42 /* ConversationCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConversationCell.xib; sourceTree = "<group>"; };
@@ -96,6 +100,8 @@
 				1EBEF39F2522724300F6E541 /* MessageSectionHeader.xib */,
 				1EBEF39A25212FA000F6E541 /* MessageCell.xib */,
 				1EBEF39525212E2700F6E541 /* ConversationViewController.swift */,
+				1E5FFB1A2527374000F8187A /* ThemesViewController.swift */,
+				1E5FFB202527566800F8187A /* ThemesViewController.storyboard */,
 				1EBEF39325212DF100F6E541 /* ConversationViewController.storyboard */,
 				1E30F120250B944100DDF8DC /* ProfileViewController.swift */,
 				1E30F122250B944100DDF8DC /* ProfileViewController.storyboard */,
@@ -178,6 +184,7 @@
 				1E676A4E251DF28500E98C42 /* ConversationsListViewController.storyboard in Resources */,
 				1EA44026251534BD00BFC316 /* Roboto-Regular.ttf in Resources */,
 				1EBEF39C25212FA000F6E541 /* MessageCell.xib in Resources */,
+				1E5FFB212527566800F8187A /* ThemesViewController.storyboard in Resources */,
 				1EBEF3A02522724300F6E541 /* MessageSectionHeader.xib in Resources */,
 				1EBEF39425212DF100F6E541 /* ConversationViewController.storyboard in Resources */,
 				1E30F124250B944100DDF8DC /* ProfileViewController.storyboard in Resources */,
@@ -199,6 +206,7 @@
 				1EBEF39625212E2700F6E541 /* ConversationViewController.swift in Sources */,
 				1E30F121250B944100DDF8DC /* ProfileViewController.swift in Sources */,
 				1EBEF38E251E255900F6E541 /* ConfigurableView.swift in Sources */,
+				1E5FFB1B2527374000F8187A /* ThemesViewController.swift in Sources */,
 				1E6B8FC2250E319800A5632E /* Logger.swift in Sources */,
 				1E30F11D250B944100DDF8DC /* AppDelegate.swift in Sources */,
 			);

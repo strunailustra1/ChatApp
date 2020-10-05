@@ -44,6 +44,13 @@ class ConversationsListViewController: UIViewController {
             present(navVC, animated: true, completion: nil)
         }
     }
+    
+    @objc func themeEdit() {
+        if let themesVC = ThemesViewController.storyboardInstance() {
+            navigationController?.pushViewController(themesVC, animated: true)
+            navigationItem.backBarButtonItem = UIBarButtonItem(title: "Tinkoff Chat", style: .plain, target: nil, action: nil)
+        }
+    }
 }
 
 extension ConversationsListViewController: UITableViewDataSource {
@@ -81,6 +88,7 @@ extension ConversationsListViewController: UITableViewDelegate {
             }
             conversationVC.conversation = conversation
             navigationController?.pushViewController(conversationVC, animated: true)
+            navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         }
     }
 }
@@ -95,7 +103,8 @@ extension ConversationsListViewController {
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.bold)
         ]
         navigationItem.title = "Tinkoff Chat"
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
+        
+     //   navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
         
         if let image = ProfileStorage.shared.profileImage {
             let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
@@ -122,5 +131,10 @@ extension ConversationsListViewController {
             button.titleLabel?.font = UIFont(name: "Roboto-Regular", size: 22)
             navigationItem.rightBarButtonItem = UIBarButtonItem(customView: button)
         }
+        
+        let settingImage = UIImageView(image: UIImage(named: "Icon Canvas.png"))
+        let themesTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.themeEdit))
+        settingImage.addGestureRecognizer(themesTapGestureRecognizer)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: settingImage)
     }
 }

@@ -131,5 +131,7 @@ extension ConversationViewController {
         
         navigationItem.titleView = navView
         navigationItem.largeTitleDisplayMode = .never
+        
+                navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
 }
