@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-enum Theme {
+enum Theme: Int {
     case classic, day, night
 }
 
@@ -19,19 +19,20 @@ class ThemesManager: ThemesPickerDelegate {
     
     private var currentTheme: Theme = .night
     
-    lazy var themeChangeHandler: ((_ theme: Theme) -> ()) = {[weak self] theme in
+    private let selectedThemeKey = "SelectedTheme"
+    
+    lazy var themeChangeHandler: ((_ theme: Theme) -> ()) = { [weak self] theme in
         print(#function, theme)
-        self?.currentTheme = theme
+        self?.updateTheme(theme)
     }
     
     init() {
-        //TODO:- fill currentTheme from UserDefaults
+        let rawValue = UserDefaults.standard.integer(forKey: selectedThemeKey)
+        currentTheme = Theme(rawValue: rawValue) ?? .classic
     }
     
     func setTheme(_ theme: Theme) {
-//        print(#function, theme)
-//        currentTheme = theme
-        //TODO:- store currentTheme from UserDefaults
+       // updateTheme(theme)
     }
     
     func getTheme() -> Theme {
@@ -47,5 +48,12 @@ class ThemesManager: ThemesPickerDelegate {
         case .night:
             return UIColor(red: 25/256, green: 26/256, blue: 51/256, alpha: 1)
         }
+    }
+    
+    private func updateTheme(_ theme: Theme) {
+        currentTheme = theme
+        
+        UserDefaults.standard.set(theme.rawValue, forKey: selectedThemeKey)
+        UserDefaults.standard.synchronize()
     }
 }

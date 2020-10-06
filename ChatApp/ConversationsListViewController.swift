@@ -106,8 +106,6 @@ extension ConversationsListViewController {
         ]
         navigationItem.title = "Tinkoff Chat"
         
-        //   navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
-        
         if let image = ProfileStorage.shared.profileImage {
             let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
             imageView.image = image

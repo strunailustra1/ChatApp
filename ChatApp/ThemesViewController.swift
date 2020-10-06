@@ -68,6 +68,10 @@ class ThemesViewController: UIViewController {
         chooseTheme(nightThemeButton, theme: .night)
     }
     
+    @objc func closeTheme() {
+        navigationController?.popViewController(animated: true)
+    }
+    
     private func chooseTheme(_ sender: UIButton, theme: Theme) {
         sender.isSelected = true
         for anotherButton in themesButtons {
@@ -119,15 +123,12 @@ class ThemesViewController: UIViewController {
 
 extension ThemesViewController {
     private func setupNavigationController() {
-        
+        navigationItem.largeTitleDisplayMode = .never
+        navigationItem.title = "Settings"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(closeTheme))
         navigationItem.backBarButtonItem?.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .regular)], for: .normal)
         navigationItem.rightBarButtonItem?.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .regular)], for: .normal)
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: nil)
-        navigationItem.title = "Settings"
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .semibold)]
-        
-        navigationItem.largeTitleDisplayMode = .never
     }
 }
 
