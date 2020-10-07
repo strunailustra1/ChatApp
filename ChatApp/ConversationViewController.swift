@@ -80,8 +80,12 @@ extension ConversationViewController: UITableViewDataSource {
         cell.configure(with: .init(text: message.text))
         
         cell.bubleView.backgroundColor = message.isUpcomingMessage
-            ? UIColor(red: 0.863, green: 0.969, blue: 0.773, alpha: 1)
-            : UIColor(red: 0.875, green: 0.875, blue: 0.875, alpha: 1)
+            ? ThemesManager.shared.getTheme().messageUpcomingBubbleViewColor
+            : ThemesManager.shared.getTheme().messageIncomingBubbleViewColor
+        
+        cell.messageLabel.textColor = message.isUpcomingMessage
+            ? ThemesManager.shared.getTheme().messageUpcomingTextColor
+            : ThemesManager.shared.getTheme().messageIncomingTextColor
         
         if message.isUpcomingMessage {
             cell.leadingConstraint?.isActive = false
@@ -112,6 +116,7 @@ extension ConversationViewController {
         let label = UILabel()
         label.text = conversation?.name
         label.font =  UIFont.systemFont(ofSize: 16, weight: .semibold)
+        label.textColor = ThemesManager.shared.getTheme().navigationTitleColor
         label.sizeToFit()
         label.center = navView.center
         label.textAlignment = .center
@@ -132,6 +137,6 @@ extension ConversationViewController {
         navigationItem.titleView = navView
         navigationItem.largeTitleDisplayMode = .never
         
-                navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
 }

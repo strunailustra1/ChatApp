@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1E16408D252B340700B37DD6 /* ThemesPickerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E16408C252B340700B37DD6 /* ThemesPickerDelegate.swift */; };
 		1E16408F252BA55D00B37DD6 /* ThemesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E16408E252BA55D00B37DD6 /* ThemesManager.swift */; };
+		1E164095252E7A1A00B37DD6 /* RootNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E164094252E7A1A00B37DD6 /* RootNavigationController.swift */; };
 		1E30F11D250B944100DDF8DC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E30F11C250B944100DDF8DC /* AppDelegate.swift */; };
 		1E30F121250B944100DDF8DC /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E30F120250B944100DDF8DC /* ProfileViewController.swift */; };
 		1E30F124250B944100DDF8DC /* ProfileViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E30F122250B944100DDF8DC /* ProfileViewController.storyboard */; };
@@ -35,6 +36,7 @@
 /* Begin PBXFileReference section */
 		1E16408C252B340700B37DD6 /* ThemesPickerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesPickerDelegate.swift; sourceTree = "<group>"; };
 		1E16408E252BA55D00B37DD6 /* ThemesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesManager.swift; sourceTree = "<group>"; };
+		1E164094252E7A1A00B37DD6 /* RootNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootNavigationController.swift; sourceTree = "<group>"; };
 		1E30F119250B944100DDF8DC /* ChatApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E30F11C250B944100DDF8DC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1E30F120250B944100DDF8DC /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
@@ -98,6 +100,7 @@
 				1E676A4D251DF28500E98C42 /* ConversationsListViewController.storyboard */,
 				1E676A55251DF48200E98C42 /* ConversationsListViewController.swift */,
 				1E5FFB182524A67900F8187A /* Profile.swift */,
+				1E164094252E7A1A00B37DD6 /* RootNavigationController.swift */,
 				1EBEF38D251E255900F6E541 /* ConfigurableView.swift */,
 				1EBEF39925212FA000F6E541 /* MessageCell.swift */,
 				1EBEF39D252270A200F6E541 /* MessageSectionHeader.swift */,
@@ -209,6 +212,7 @@
 				1E16408F252BA55D00B37DD6 /* ThemesManager.swift in Sources */,
 				1E5FFB192524A67900F8187A /* Profile.swift in Sources */,
 				1EBEF39B25212FA000F6E541 /* MessageCell.swift in Sources */,
+				1E164095252E7A1A00B37DD6 /* RootNavigationController.swift in Sources */,
 				1E676A56251DF48200E98C42 /* ConversationsListViewController.swift in Sources */,
 				1EBEF39E252270A200F6E541 /* MessageSectionHeader.swift in Sources */,
 				1EBEF39625212E2700F6E541 /* ConversationViewController.swift in Sources */,

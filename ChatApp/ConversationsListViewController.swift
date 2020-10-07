@@ -17,10 +17,13 @@ class ConversationsListViewController: UIViewController {
         tableView.register(UINib(nibName: String(describing: ConversationCell.self), bundle: nil), forCellReuseIdentifier: cellIdentifier)
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.separatorColor = ThemesManager.shared.getTheme().tableViewSeparatorColor
         return tableView
     }()
     
     private var conversationList = [[ConversationCell.ConversationCellModel]]()
+    
+    private var lastTheme = ThemesManager.shared.getTheme()
     
     static func storyboardInstance() -> ConversationsListViewController? {
         let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
@@ -30,14 +33,24 @@ class ConversationsListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         conversationList = ConversationProvider.getMessages()
-        setupNavigationContoller()
         view.addSubview(tableView)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupNavigationContoller()
+        
+        //Перегружаем таблицу для отрисовки ячеек в новой теме из-за backgroundColor, который задается в самой ячейке из-за того, что он зависит от Online/History
+        if lastTheme != ThemesManager.shared.getTheme() {
+            tableView.reloadData()
+            lastTheme = ThemesManager.shared.getTheme()
+        }
     }
     
     @objc func editProfile() {
         if let profileVC = ProfileViewController.storyboardInstance() {
-            profileVC.closeHandler = { [unowned self] in
-                self.setupNavigationContoller()
+            profileVC.closeHandler = { [weak self] in
+                self?.updateNavigationRightButtonImage()
             }
             let navVC = UINavigationController(rootViewController: profileVC)
             navVC.modalPresentationStyle = .popover
@@ -65,10 +78,8 @@ extension ConversationsListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? ConversationCell else { return UITableViewCell()}
         cell.configure(with: conversationList[indexPath.section][indexPath.row])
-        
         return cell
     }
     
@@ -105,7 +116,15 @@ extension ConversationsListViewController {
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.bold)
         ]
         navigationItem.title = "Tinkoff Chat"
+        updateNavigationRightButtonImage()
         
+        let settingImage = ThemesManager.shared.getTheme().settingImageColor
+        let themesTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.themeEdit))
+        settingImage.addGestureRecognizer(themesTapGestureRecognizer)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: settingImage)
+    }
+    
+    private func updateNavigationRightButtonImage() {
         if let image = ProfileStorage.shared.profileImage {
             let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
             imageView.image = image
@@ -131,10 +150,5 @@ extension ConversationsListViewController {
             button.titleLabel?.font = UIFont(name: "Roboto-Regular", size: 22)
             navigationItem.rightBarButtonItem = UIBarButtonItem(customView: button)
         }
-        
-        let settingImage = UIImageView(image: UIImage(named: "Icon Canvas.png"))
-        let themesTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.themeEdit))
-        settingImage.addGestureRecognizer(themesTapGestureRecognizer)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: settingImage)
     }
 }

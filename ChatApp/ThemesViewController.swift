@@ -53,7 +53,7 @@ class ThemesViewController: UIViewController {
             nightThemeButton.isSelected = true
         }
 
-        view.backgroundColor = ThemesManager.shared.getThemesVCBackgroundColor()
+        view.backgroundColor = ThemesManager.shared.getTheme().themesVCBackgroundColor
     }
     
     @IBAction func chooseClassicTheme(_ sender: UIButton) {
@@ -68,10 +68,6 @@ class ThemesViewController: UIViewController {
         chooseTheme(nightThemeButton, theme: .night)
     }
     
-    @objc func closeTheme() {
-        navigationController?.popViewController(animated: true)
-    }
-    
     private func chooseTheme(_ sender: UIButton, theme: Theme) {
         sender.isSelected = true
         for anotherButton in themesButtons {
@@ -83,7 +79,7 @@ class ThemesViewController: UIViewController {
         if let handler = themeChangeHandler {
             handler(theme)
         }
-        view.backgroundColor = ThemesManager.shared.getThemesVCBackgroundColor()
+        view.backgroundColor = ThemesManager.shared.getTheme().themesVCBackgroundColor
     }
     
     private func customizeButtons() {
@@ -125,7 +121,6 @@ extension ThemesViewController {
     private func setupNavigationController() {
         navigationItem.largeTitleDisplayMode = .never
         navigationItem.title = "Settings"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(closeTheme))
         navigationItem.backBarButtonItem?.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .regular)], for: .normal)
         navigationItem.rightBarButtonItem?.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .regular)], for: .normal)
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .semibold)]
