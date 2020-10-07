@@ -19,6 +19,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        let theme = ThemesManager.shared.getTheme()
+        ThemesManager.shared.applyTheme(theme)
         Logger.shared.appDelegateLog(stateFrom: "Inactive", stateTo: "Inactive")
         return true
     }

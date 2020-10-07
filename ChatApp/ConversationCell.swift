@@ -53,12 +53,14 @@ class ConversationCell: UITableViewCell, ConfigurableView {
         }
         
         messageLabel.text = model.message != "" ? model.message : "No messages yet"
-        backgroundColor = model.isOnline == true ? UIColor(red: 1, green: 0.988, blue: 0.474, alpha: 0.3) : .white
+        backgroundColor = model.isOnline == true
+            ? ThemesManager.shared.getTheme().conversationCellOnlineBackgroundColor
+            : ThemesManager.shared.getTheme().conversationCellHistoryBackgroundColor
         messageLabel.font = UIFont.systemFont(ofSize: 13, weight: model.hasUnreadMessages == true ? .bold : .regular)
-        messageLabel.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.263, alpha: 0.6)
+        messageLabel.textColor = ThemesManager.shared.getTheme().conversationCellMessageTextColor
         nameLabel.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
         dateLabel.font = UIFont.systemFont(ofSize: 15, weight: .regular)
-        dateLabel.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.263, alpha: 0.6)
+        dateLabel.textColor = ThemesManager.shared.getTheme().conversationCellMessageTextColor
     }
 }
 

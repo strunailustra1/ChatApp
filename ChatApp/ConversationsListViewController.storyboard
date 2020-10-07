@@ -24,10 +24,10 @@
             </objects>
             <point key="canvasLocation" x="1044.375" y="-19.014084507042252"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Root Navigation Controller-->
         <scene sceneID="etk-60-p88">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="sej-qP-s4m" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="sej-qP-s4m" customClass="RootNavigationController" customModule="ChatApp" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="2Ee-WE-xBj">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>

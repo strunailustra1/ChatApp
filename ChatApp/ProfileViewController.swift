@@ -42,6 +42,8 @@ class ProfileViewController: UIViewController {
         setupLabels()
         setupNavigationContoller()
         
+        view.backgroundColor = ThemesManager.shared.getTheme().profileVCBackgroundColor
+        
         Logger.shared.vcLog(description: "has loaded its view hierarchy into memory")
         Logger.shared.vcLog(frame: "\(saveButton.frame)")
     }
@@ -49,8 +51,6 @@ class ProfileViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         Logger.shared.vcLog(stateFrom: "Disappeared", stateTo: "Appearing")
-        
-        //  setupNavigationContoller1()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -126,12 +126,12 @@ class ProfileViewController: UIViewController {
     }
     
     private func presentEditAlert() {
-        let alert = UIAlertController(title: nil, message: "Edit photo", preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
-        let galleryAction = UIAlertAction(title: "Choose in gallery", style: .default, handler: { [unowned self] _ in
+        let galleryAction = UIAlertAction(title: "Photo Gallery", style: .default, handler: { [unowned self] _ in
             self.presentPickerController(from: .photoLibrary)
         })
-        let photoAction = UIAlertAction(title: "Take photo", style: .default, handler: { [unowned self] _ in
+        let photoAction = UIAlertAction(title: "Camera", style: .default, handler: { [unowned self] _ in
             self.presentPickerController(from: .camera)
         })
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
@@ -139,6 +139,9 @@ class ProfileViewController: UIViewController {
         alert.addAction(galleryAction)
         alert.addAction(photoAction)
         alert.addAction(cancelAction)
+
+        alert.setValue(NSAttributedString(string: "Edit photo", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 20, weight: .semibold)]), forKey: "attributedTitle")
+        alert.setValue(NSAttributedString(string: "Please, choose one of the ways", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16, weight: .regular)]), forKey: "attributedMessage")
         
         alert.pruneNegativeWidthConstraints()
         
@@ -146,7 +149,7 @@ class ProfileViewController: UIViewController {
     }
     
     private func setupSaveButton() {
-        saveButton.layer.backgroundColor = UIColor(red: 0.965, green: 0.965, blue: 0.965, alpha: 1).cgColor
+        saveButton.layer.backgroundColor = ThemesManager.shared.getTheme().profileVCButtonBackgroundColor
         saveButton.setTitleColor(UIColor(red: 0, green: 0.478, blue: 1, alpha: 1), for: .normal)
         saveButton.clipsToBounds = true
         saveButton.setTitle("Save", for: .normal)
@@ -182,10 +185,6 @@ class ProfileViewController: UIViewController {
     }
     
     private func setupNavigationContoller() {
-        navigationController?.navigationBar.backgroundColor = UIColor(red: 0.969,
-                                                                      green: 0.969,
-                                                                      blue: 0.969,
-                                                                      alpha: 1)
         navigationItem.title = "My Profile"
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(closeProfile))
     }
@@ -209,6 +208,9 @@ extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerCo
     }
 }
 
+/*
+ https://stackoverflow.com/questions/55653187/swift-default-alertviewcontroller-breaking-constraints/58666480#58666480
+ */
 extension UIAlertController {
     func pruneNegativeWidthConstraints() {
         for subView in self.view.subviews {

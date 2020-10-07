@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="UVw-ga-1Wm">
+    <device id="retina4_0" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Themes View Controller-->
+        <scene sceneID="jPo-Bz-W6s">
+            <objects>
+                <viewController id="UVw-ga-1Wm" customClass="ThemesViewController" customModule="ChatApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="rTF-wa-pAl">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WJG-dW-doE" customClass="SelectedButton" customModule="ChatApp" customModuleProvider="target">
+                                <rect key="frame" x="32" y="167.5" width="256" height="57"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <connections>
+                                    <action selector="chooseClassicTheme:" destination="UVw-ga-1Wm" eventType="touchUpInside" id="Luk-C1-VoN"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KdB-UF-Bkd">
+                                <rect key="frame" x="42" y="181.5" width="114.5" height="25"/>
+                                <color key="backgroundColor" red="0.75002996479999995" green="0.9602311254" blue="0.64472388520000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="25" id="tT5-dg-fAK"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T3a-hK-U8i">
+                                <rect key="frame" x="162.5" y="189.5" width="115.5" height="25"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="25" id="AJ1-oW-2PL"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PCW-Af-Rvg">
+                                <rect key="frame" x="144" y="365.5" width="32" height="34"/>
+                                <state key="normal" title="Day">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="chooseDayTheme:" destination="UVw-ga-1Wm" eventType="touchUpInside" id="zcP-Yd-Cyc"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bGS-P8-bSt">
+                                <rect key="frame" x="131" y="234.5" width="58" height="34"/>
+                                <state key="normal" title="Classic">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="chooseClassicTheme:" destination="UVw-ga-1Wm" eventType="touchUpInside" id="Doy-kj-w2y"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h7o-GU-Sck" customClass="SelectedButton" customModule="ChatApp" customModuleProvider="target">
+                                <rect key="frame" x="32" y="298.5" width="256" height="57"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <connections>
+                                    <action selector="chooseDayTheme:" destination="UVw-ga-1Wm" eventType="touchUpInside" id="Uwh-qK-WBX"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="awU-l3-6IG">
+                                <rect key="frame" x="42" y="312.5" width="115" height="25"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="25" id="BlL-i1-nJC"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tp5-qx-Hdp">
+                                <rect key="frame" x="163" y="320.5" width="115" height="25"/>
+                                <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fet-bl-sgE" customClass="SelectedButton" customModule="ChatApp" customModuleProvider="target">
+                                <rect key="frame" x="32" y="429.5" width="256" height="57"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <connections>
+                                    <action selector="chooseNightTheme:" destination="UVw-ga-1Wm" eventType="touchUpInside" id="maJ-Eb-gj1"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YH5-2F-q3b">
+                                <rect key="frame" x="42" y="443.5" width="115" height="25"/>
+                                <color key="backgroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="25" id="1Mg-iN-cZf"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qqU-oq-wCw">
+                                <rect key="frame" x="163" y="451.5" width="115" height="25"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="25" id="a9r-bw-g34"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7pO-jG-RSU">
+                                <rect key="frame" x="138" y="496.5" width="44" height="34"/>
+                                <state key="normal" title="Night">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="chooseDayTheme:" destination="UVw-ga-1Wm" eventType="touchUpInside" id="lgO-O9-wsi"/>
+                                    <action selector="chooseNightTheme:" destination="UVw-ga-1Wm" eventType="touchUpInside" id="YpO-MY-XQ7"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.098039215686274508" green="0.10196078431372549" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="tp5-qx-Hdp" firstAttribute="leading" secondItem="awU-l3-6IG" secondAttribute="trailing" constant="6" id="1wp-Ls-wzx"/>
+                            <constraint firstItem="h7o-GU-Sck" firstAttribute="bottom" secondItem="awU-l3-6IG" secondAttribute="bottom" constant="18" id="3ey-5c-Y4g"/>
+                            <constraint firstItem="KdB-UF-Bkd" firstAttribute="leading" secondItem="WJG-dW-doE" secondAttribute="leading" constant="10" id="5ko-FQ-yjd"/>
+                            <constraint firstItem="WJG-dW-doE" firstAttribute="top" secondItem="qew-ES-ok7" secondAttribute="centerY" multiplier="0.59" id="6pE-Ke-Du2"/>
+                            <constraint firstItem="awU-l3-6IG" firstAttribute="top" secondItem="h7o-GU-Sck" secondAttribute="top" constant="14" id="81u-gu-1iH"/>
+                            <constraint firstItem="WJG-dW-doE" firstAttribute="centerX" secondItem="rTF-wa-pAl" secondAttribute="centerX" id="CFc-cb-qPu"/>
+                            <constraint firstItem="fet-bl-sgE" firstAttribute="trailing" secondItem="qqU-oq-wCw" secondAttribute="trailing" constant="10" id="F05-ao-2jJ"/>
+                            <constraint firstItem="fet-bl-sgE" firstAttribute="centerX" secondItem="rTF-wa-pAl" secondAttribute="centerX" id="FOW-4C-GPJ"/>
+                            <constraint firstItem="h7o-GU-Sck" firstAttribute="bottom" secondItem="tp5-qx-Hdp" secondAttribute="bottom" constant="10" id="HRX-0X-SqF"/>
+                            <constraint firstItem="fet-bl-sgE" firstAttribute="width" secondItem="qew-ES-ok7" secondAttribute="width" multiplier="300:375" id="Hbn-n7-qMB"/>
+                            <constraint firstItem="h7o-GU-Sck" firstAttribute="top" secondItem="bGS-P8-bSt" secondAttribute="bottom" constant="30" id="KO2-PE-HBb"/>
+                            <constraint firstItem="h7o-GU-Sck" firstAttribute="width" secondItem="qew-ES-ok7" secondAttribute="width" multiplier="300:375" id="Lrn-M8-RGv"/>
+                            <constraint firstItem="WJG-dW-doE" firstAttribute="width" secondItem="qew-ES-ok7" secondAttribute="width" multiplier="300:375" id="MGi-jZ-dnO"/>
+                            <constraint firstItem="qqU-oq-wCw" firstAttribute="width" secondItem="YH5-2F-q3b" secondAttribute="width" id="OeH-FD-47J"/>
+                            <constraint firstItem="tp5-qx-Hdp" firstAttribute="top" secondItem="h7o-GU-Sck" secondAttribute="top" constant="22" id="Pn7-cM-Z2A"/>
+                            <constraint firstItem="fet-bl-sgE" firstAttribute="bottom" secondItem="qqU-oq-wCw" secondAttribute="bottom" constant="10" id="Pp9-lB-JL9"/>
+                            <constraint firstItem="T3a-hK-U8i" firstAttribute="width" secondItem="KdB-UF-Bkd" secondAttribute="width" multiplier="1.00855" id="TOX-v5-ihY"/>
+                            <constraint firstItem="PCW-Af-Rvg" firstAttribute="centerX" secondItem="rTF-wa-pAl" secondAttribute="centerX" id="TuB-53-PZi"/>
+                            <constraint firstItem="KdB-UF-Bkd" firstAttribute="top" secondItem="WJG-dW-doE" secondAttribute="top" constant="14" id="UJT-Un-p5t"/>
+                            <constraint firstItem="YH5-2F-q3b" firstAttribute="top" secondItem="fet-bl-sgE" secondAttribute="top" constant="14" id="Vy6-IW-3PX"/>
+                            <constraint firstItem="T3a-hK-U8i" firstAttribute="leading" secondItem="KdB-UF-Bkd" secondAttribute="trailing" constant="6" id="aeY-4z-5rC"/>
+                            <constraint firstItem="bGS-P8-bSt" firstAttribute="top" secondItem="WJG-dW-doE" secondAttribute="bottom" constant="10" id="bgV-SQ-xYw"/>
+                            <constraint firstItem="KdB-UF-Bkd" firstAttribute="bottom" secondItem="WJG-dW-doE" secondAttribute="bottom" constant="-18" id="f4K-42-jAd"/>
+                            <constraint firstItem="PCW-Af-Rvg" firstAttribute="top" secondItem="h7o-GU-Sck" secondAttribute="bottom" constant="10" id="fEQ-27-L6T"/>
+                            <constraint firstItem="h7o-GU-Sck" firstAttribute="centerX" secondItem="rTF-wa-pAl" secondAttribute="centerX" id="hyB-dL-XzJ"/>
+                            <constraint firstItem="qqU-oq-wCw" firstAttribute="leading" secondItem="YH5-2F-q3b" secondAttribute="trailing" constant="6" id="i9N-Fn-OdY"/>
+                            <constraint firstItem="fet-bl-sgE" firstAttribute="bottom" secondItem="YH5-2F-q3b" secondAttribute="bottom" constant="18" id="iC0-NA-6ri"/>
+                            <constraint firstItem="YH5-2F-q3b" firstAttribute="leading" secondItem="fet-bl-sgE" secondAttribute="leading" constant="10" id="ift-O4-Gdz"/>
+                            <constraint firstItem="tp5-qx-Hdp" firstAttribute="width" secondItem="awU-l3-6IG" secondAttribute="width" id="jDl-Sq-fK5"/>
+                            <constraint firstItem="h7o-GU-Sck" firstAttribute="trailing" secondItem="tp5-qx-Hdp" secondAttribute="trailing" constant="10" id="k5f-pU-BzF"/>
+                            <constraint firstItem="7pO-jG-RSU" firstAttribute="centerX" secondItem="rTF-wa-pAl" secondAttribute="centerX" id="lEt-dy-BbP"/>
+                            <constraint firstItem="T3a-hK-U8i" firstAttribute="top" secondItem="WJG-dW-doE" secondAttribute="top" constant="22" id="laI-yZ-rK7"/>
+                            <constraint firstItem="awU-l3-6IG" firstAttribute="leading" secondItem="h7o-GU-Sck" secondAttribute="leading" constant="10" id="nCo-nZ-bBX"/>
+                            <constraint firstItem="bGS-P8-bSt" firstAttribute="centerX" secondItem="rTF-wa-pAl" secondAttribute="centerX" id="o5Y-UP-jO5"/>
+                            <constraint firstItem="qqU-oq-wCw" firstAttribute="top" secondItem="fet-bl-sgE" secondAttribute="top" constant="22" id="oi5-y3-ju0"/>
+                            <constraint firstItem="fet-bl-sgE" firstAttribute="top" secondItem="PCW-Af-Rvg" secondAttribute="bottom" constant="30" id="r2n-Rr-hpz"/>
+                            <constraint firstItem="T3a-hK-U8i" firstAttribute="bottom" secondItem="WJG-dW-doE" secondAttribute="bottom" constant="-10" id="wab-rB-tCb"/>
+                            <constraint firstItem="WJG-dW-doE" firstAttribute="trailing" secondItem="T3a-hK-U8i" secondAttribute="trailing" constant="10" id="xtY-d0-5Qp"/>
+                            <constraint firstItem="7pO-jG-RSU" firstAttribute="top" secondItem="fet-bl-sgE" secondAttribute="bottom" constant="10" id="zeQ-Y6-QWj"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="qew-ES-ok7"/>
+                    </view>
+                    <connections>
+                        <outlet property="classicIncomingLabel" destination="KdB-UF-Bkd" id="3x1-yl-igS"/>
+                        <outlet property="classicOutcomingLabel" destination="T3a-hK-U8i" id="sp7-XJ-xwL"/>
+                        <outlet property="classicThemeButton" destination="WJG-dW-doE" id="lu6-Bb-4CZ"/>
+                        <outlet property="classicThemeName" destination="bGS-P8-bSt" id="Hol-OF-g7D"/>
+                        <outlet property="dayIncomingLabel" destination="awU-l3-6IG" id="Ytv-7s-BUG"/>
+                        <outlet property="dayOutcomingLabel" destination="tp5-qx-Hdp" id="abk-P8-b6S"/>
+                        <outlet property="dayThemeButton" destination="h7o-GU-Sck" id="oMm-qe-VEd"/>
+                        <outlet property="dayThemeName" destination="PCW-Af-Rvg" id="AL8-9m-iXf"/>
+                        <outlet property="nightIncomingLabel" destination="YH5-2F-q3b" id="74n-oE-Av7"/>
+                        <outlet property="nightOutcomingLabel" destination="qqU-oq-wCw" id="ubO-b3-mcG"/>
+                        <outlet property="nightThemeButton" destination="fet-bl-sgE" id="f8t-Mp-Vmd"/>
+                        <outlet property="nightThemeName" destination="7pO-jG-RSU" id="ten-cd-Kjc"/>
+                        <outletCollection property="themesButtons" destination="WJG-dW-doE" collectionClass="NSMutableArray" id="AGl-LW-TBN"/>
+                        <outletCollection property="themesButtons" destination="h7o-GU-Sck" collectionClass="NSMutableArray" id="7II-Ot-TTG"/>
+                        <outletCollection property="themesButtons" destination="fet-bl-sgE" collectionClass="NSMutableArray" id="yNB-yk-UfN"/>
+                        <outletCollection property="colorLabels" destination="KdB-UF-Bkd" collectionClass="NSMutableArray" id="Te8-3G-tJp"/>
+                        <outletCollection property="colorLabels" destination="T3a-hK-U8i" collectionClass="NSMutableArray" id="nh2-jJ-WsH"/>
+                        <outletCollection property="colorLabels" destination="tp5-qx-Hdp" collectionClass="NSMutableArray" id="XFH-Jl-Kbp"/>
+                        <outletCollection property="colorLabels" destination="awU-l3-6IG" collectionClass="NSMutableArray" id="cuK-am-hMy"/>
+                        <outletCollection property="colorLabels" destination="qqU-oq-wCw" collectionClass="NSMutableArray" id="clY-RO-4hm"/>
+                        <outletCollection property="colorLabels" destination="YH5-2F-q3b" collectionClass="NSMutableArray" id="aYt-xa-jwm"/>
+                        <outletCollection property="themesNamesButtons" destination="bGS-P8-bSt" collectionClass="NSMutableArray" id="DiX-lt-hEB"/>
+                        <outletCollection property="themesNamesButtons" destination="PCW-Af-Rvg" collectionClass="NSMutableArray" id="N8X-bo-6LZ"/>
+                        <outletCollection property="themesNamesButtons" destination="7pO-jG-RSU" collectionClass="NSMutableArray" id="ECZ-Ps-Ga7"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="uyF-mO-pFR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="151.875" y="143.66197183098592"/>
+        </scene>
+    </scenes>
+</document>

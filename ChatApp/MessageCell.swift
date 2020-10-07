@@ -25,7 +25,6 @@ class MessageCell: UITableViewCell, ConfigurableView {
         messageLabel.text = model.text
         bubleView.layer.cornerRadius = 8
         messageLabel.font = UIFont.systemFont(ofSize: 16, weight: .regular)
-        messageLabel.textColor = .black
     }
 }
 
