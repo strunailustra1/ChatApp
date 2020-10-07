@@ -29,7 +29,17 @@ class ThemesViewController: UIViewController {
     @IBOutlet weak var dayThemeName: UIButton!
     @IBOutlet weak var nightThemeName: UIButton!
     
+    /*
+     С делегатом не происходит retain cycle, т.к. объект ThemesManager(ThemesPickerDelegate)
+     не ссылается на ThemesViewController.
+     */
     weak var delegate: ThemesPickerDelegate?
+    
+    /*
+     Между объектом ThemesManager и замыканием (объектом) ThemesManager.themeChangeHandler
+     возникнет retain cycle, т.к. themeChangeHandler ссылается на self (ThemesManager),
+     если в замыкании в списке захвата не указать weak self.
+     */
     var themeChangeHandler: ((_ theme: Theme) -> ())?
     
     static func storyboardInstance() -> ThemesViewController? {
