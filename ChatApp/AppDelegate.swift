@@ -21,6 +21,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         let theme = ThemesManager.shared.getTheme()
         ThemesManager.shared.applyTheme(theme)
+        GCDDataManager.shared.fetch(defaultProfile: ProfileStorage.shared, succesfullCompletion: { (profile) in
+            ProfileStorage.shared = profile
+            print(profile)
+        })
         Logger.shared.appDelegateLog(stateFrom: "Inactive", stateTo: "Inactive")
         return true
     }

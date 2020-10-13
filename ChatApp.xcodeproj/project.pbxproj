@@ -15,6 +15,8 @@
 		1E30F124250B944100DDF8DC /* ProfileViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E30F122250B944100DDF8DC /* ProfileViewController.storyboard */; };
 		1E30F126250B944700DDF8DC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1E30F125250B944700DDF8DC /* Assets.xcassets */; };
 		1E30F129250B944700DDF8DC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E30F127250B944700DDF8DC /* LaunchScreen.storyboard */; };
+		1E48E60F2534CA9000455C27 /* GCDDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E48E60E2534CA9000455C27 /* GCDDataManager.swift */; };
+		1E48E6112534CAA400455C27 /* OperationDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E48E6102534CAA400455C27 /* OperationDataManager.swift */; };
 		1E5FFB192524A67900F8187A /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5FFB182524A67900F8187A /* Profile.swift */; };
 		1E5FFB1B2527374000F8187A /* ThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5FFB1A2527374000F8187A /* ThemesViewController.swift */; };
 		1E5FFB212527566800F8187A /* ThemesViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E5FFB202527566800F8187A /* ThemesViewController.storyboard */; };
@@ -44,6 +46,8 @@
 		1E30F125250B944700DDF8DC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1E30F128250B944700DDF8DC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1E30F12A250B944700DDF8DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1E48E60E2534CA9000455C27 /* GCDDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GCDDataManager.swift; sourceTree = "<group>"; };
+		1E48E6102534CAA400455C27 /* OperationDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationDataManager.swift; sourceTree = "<group>"; };
 		1E5FFB182524A67900F8187A /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		1E5FFB1A2527374000F8187A /* ThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesViewController.swift; sourceTree = "<group>"; };
 		1E5FFB202527566800F8187A /* ThemesViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ThemesViewController.storyboard; sourceTree = "<group>"; };
@@ -109,6 +113,8 @@
 				1EBEF39525212E2700F6E541 /* ConversationViewController.swift */,
 				1E5FFB1A2527374000F8187A /* ThemesViewController.swift */,
 				1E16408E252BA55D00B37DD6 /* ThemesManager.swift */,
+				1E48E60E2534CA9000455C27 /* GCDDataManager.swift */,
+				1E48E6102534CAA400455C27 /* OperationDataManager.swift */,
 				1E16408C252B340700B37DD6 /* ThemesPickerDelegate.swift */,
 				1E5FFB202527566800F8187A /* ThemesViewController.storyboard */,
 				1EBEF39325212DF100F6E541 /* ConversationViewController.storyboard */,
@@ -219,6 +225,8 @@
 				1E30F121250B944100DDF8DC /* ProfileViewController.swift in Sources */,
 				1EBEF38E251E255900F6E541 /* ConfigurableView.swift in Sources */,
 				1E5FFB1B2527374000F8187A /* ThemesViewController.swift in Sources */,
+				1E48E60F2534CA9000455C27 /* GCDDataManager.swift in Sources */,
+				1E48E6112534CAA400455C27 /* OperationDataManager.swift in Sources */,
 				1E6B8FC2250E319800A5632E /* Logger.swift in Sources */,
 				1E30F11D250B944100DDF8DC /* AppDelegate.swift in Sources */,
 			);
