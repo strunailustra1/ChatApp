@@ -25,7 +25,7 @@ struct Profile {
     }
     
     var initials: String {
-        "\(name.first ?? Character(""))\(surname.first ?? Character(""))"
+        "\(name.first ?? Character(" "))\(surname.first ?? Character(" "))"
     }
 }
 
@@ -56,4 +56,19 @@ class ProfileStorage {
     static var shared = Profile(fullname: "Marina Dudarenko",
                                 description: "UX/UI designer, web-designer\nMoscow, Russia",
                                 profileImage: nil)
+}
+
+enum ProfilePath: String {
+    case image = "profileImage.png"
+    case fullname = "profileFullname.txt"
+    case description = "profileDescription.txt"
+    
+    func getURL() -> URL {
+        getDocumentsDirectory().appendingPathComponent(rawValue)
+    }
+    
+    private func getDocumentsDirectory() -> URL {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        return paths[0]
+    }
 }

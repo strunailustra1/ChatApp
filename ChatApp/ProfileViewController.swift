@@ -156,6 +156,33 @@ class ProfileViewController: UIViewController {
             photoChanged: photoHasBeenChanged,
             succesfullCompletion: { [weak self] in
                 self?.activityIndicator.stopAnimating()
+                self?.setupText()
+                self?.successSaveAlert()
+                if let newProfile = self?.newProfile {
+                    self?.oldProfile = newProfile
+                    self?.photoHasBeenChanged = false
+                    ProfileStorage.shared = newProfile
+                }
+                
+            },
+            errorCompletion: { [weak self] in
+                self?.activityIndicator.stopAnimating()
+                self?.errorSaveAlert(fromGCD: true)
+                self?.updateSaveButtonAvailability()
+            }
+        )
+    }
+    
+    @IBAction func operationAction() {
+        // todo одинаковый код комплишенов
+        OperationDataManager.shared.save(
+            profile: newProfile,
+            fullnameChanged: oldProfile.fullname != newProfile.fullname,
+            descriptionChanged: oldProfile.description != newProfile.description,
+            photoChanged: photoHasBeenChanged,
+            succesfullCompletion: { [weak self] in
+                self?.activityIndicator.stopAnimating()
+                self?.setupText()
                 self?.successSaveAlert()
                 if let newProfile = self?.newProfile {
                     self?.oldProfile = newProfile
@@ -165,16 +192,10 @@ class ProfileViewController: UIViewController {
             },
             errorCompletion: { [weak self] in
                 self?.activityIndicator.stopAnimating()
-                self?.errorSaveAlert()
+                self?.errorSaveAlert(fromGCD: false)
                 self?.updateSaveButtonAvailability()
             }
         )
-    }
-    
-    @IBAction func operationAction(_ sender: UIButton) {
-        activityIndicator.startAnimating()
-        errorSaveAlert()
-        activityIndicator.stopAnimating()
     }
     
     private func presentPickerController(from sourceType: UIImagePickerController.SourceType) {
@@ -231,11 +252,11 @@ class ProfileViewController: UIViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    private func errorSaveAlert() {
+    private func errorSaveAlert(fromGCD: Bool) {
         let alert = UIAlertController(title: "Error", message: "Failed to save data", preferredStyle: .alert)
         let OkAction = UIAlertAction(title: "OK", style: .default)
         let repeatAction = UIAlertAction(title: "Repeat", style: .default, handler: { [unowned self] _ in
-            self.gcdAction()
+            fromGCD ? self.gcdAction() : self.operationAction()
         })
         alert.addAction(OkAction)
         alert.addAction(repeatAction)
@@ -244,20 +265,19 @@ class ProfileViewController: UIViewController {
     
     private func setupSaveButton() {
         gcdButton.layer.backgroundColor = ThemesManager.shared.getTheme().profileVCButtonBackgroundColor
-        gcdButton.setTitleColor(UIColor(red: 0, green: 0.478, blue: 1, alpha: 1), for: .normal)
         gcdButton.clipsToBounds = true
         gcdButton.setTitle("GCD", for: .normal)
         
         operationButton.layer.backgroundColor = ThemesManager.shared.getTheme().profileVCButtonBackgroundColor
-        operationButton.setTitleColor(UIColor(red: 0, green: 0.478, blue: 1, alpha: 1), for: .normal)
         operationButton.clipsToBounds = true
         operationButton.setTitle("Operation", for: .normal)
     }
     
     private func setupEditButton() {
         editButton.layer.backgroundColor = .none
-        editButton.setTitleColor(UIColor(red: 0, green: 0.478, blue: 1, alpha: 1), for: .normal)
+        editButton.setTitleColor(UIColor.gray, for: .normal)
         editButton.setTitle("Edit", for: .normal)
+        editButton.isEnabled = false
     }
     
     private func setupLabels() {
@@ -273,16 +293,19 @@ class ProfileViewController: UIViewController {
         fullNameText.textAlignment = .center
         fullNameText.backgroundColor = ThemesManager.shared.getTheme().profileVCBackgroundColor
         fullNameText.textColor = ThemesManager.shared.getTheme().labelTextColor
+        fullNameText.layer.borderWidth = 0
+        fullNameText.resignFirstResponder()
         
         let descriptionParagraphStyle = NSMutableParagraphStyle()
         descriptionParagraphStyle.lineHeightMultiple = 1.15
         descriptionTextView.attributedText = NSMutableAttributedString(string: newProfile.description, attributes: [NSAttributedString.Key.kern: -0.33, NSAttributedString.Key.paragraphStyle: descriptionParagraphStyle, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: .regular)])
         descriptionTextView.backgroundColor = ThemesManager.shared.getTheme().profileVCBackgroundColor
         descriptionTextView.textColor = ThemesManager.shared.getTheme().labelTextColor
+        descriptionTextView.layer.borderWidth = 0
+        descriptionTextView.resignFirstResponder()
         
         fullNameText.isUserInteractionEnabled = false
-        fullNameText.clearButtonMode = .whileEditing
-        descriptionTextView.isUserInteractionEnabled = false        
+        descriptionTextView.isUserInteractionEnabled = false
     }
     
     private func setupPhotoView() {
@@ -317,14 +340,22 @@ class ProfileViewController: UIViewController {
     
     @objc func editText() {
         fullNameText.isUserInteractionEnabled = true
+        fullNameText.layer.borderWidth = 1
+        fullNameText.layer.borderColor = ThemesManager.shared.getTheme().labelBorderColor
+        
         descriptionTextView.isUserInteractionEnabled = true
+        descriptionTextView.layer.borderColor = ThemesManager.shared.getTheme().labelBorderColor
+        descriptionTextView.layer.borderWidth = 1
+        
+        editButton.isEnabled = true
+        
         fullNameText.becomeFirstResponder()
     }
     
     @objc func keyboardWillShow(sender: NSNotification) {
         if let keyboardSize = (sender.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             if self.view.frame.origin.y == 0 {
-                self.view.frame.origin.y = -keyboardSize.height + 10
+                self.view.frame.origin.y = keyboardSize.height > 226 ? -250 : -keyboardSize.height
             }
         }
     }
@@ -339,9 +370,6 @@ class ProfileViewController: UIViewController {
 extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
-        //        DispatchQueue.main.async {
-        //             picker.dismiss(animated: true, completion: nil)
-        //        }
         picker.dismiss(animated: true, completion: nil)
         
         guard let image = info[.editedImage] as? UIImage else { return }
@@ -388,26 +416,41 @@ extension ProfileViewController: UITextFieldDelegate, UITextViewDelegate {
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        view.endEditing(true)
-        return false
+        textField.resignFirstResponder()
+        return true
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        let newProfile = Profile(fullname: textField.text ?? "",
-                                 description: self.newProfile.description,
-                                 profileImage: self.newProfile.profileImage)
-        self.newProfile = newProfile
+        updateNewProfile(fullname: textField.text, description: nil)
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if let textFieldString = textField.fullTextWith(range: range, replacementString: string) {
+            updateNewProfile(fullname: textFieldString, description: nil)
+        }
+        return true
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
-        let newProfile = Profile(fullname: self.newProfile.fullname,
-                                 description: textView.text,
-                                 profileImage: self.newProfile.profileImage)
-        self.newProfile = newProfile
+        updateNewProfile(fullname: nil, description: textView.text)
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if let textFieldString = textView.fullTextWith(range: range, replacementString: text) {
+            updateNewProfile(fullname: nil, description: textFieldString)
+        }
+        return true
+    }
+    
+    private func updateNewProfile(fullname: String?, description: String?) {
+        let profile = Profile(fullname: fullname ?? self.newProfile.fullname,
+                              description: description ?? self.newProfile.description,
+                              profileImage: self.newProfile.profileImage)
+        self.newProfile = profile
     }
 }
 
-class ProfileSavedButton: UIButton {
+class UIButtonDisableColored: UIButton {
     override var isEnabled: Bool {
         didSet {
             setTitleColor(isEnabled ? UIColor.systemBlue : UIColor.gray, for: .normal)

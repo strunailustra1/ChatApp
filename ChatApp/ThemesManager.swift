@@ -93,6 +93,15 @@ enum Theme: Int {
         }
     }
     
+    var labelBorderColor: CGColor {
+        switch self {
+        case .classic, .day:
+            return UIColor.lightGray.cgColor
+        case .night:
+            return UIColor.darkGray.cgColor
+        }
+    }
+    
     var tableViewCellBackgroundColor: UIColor {
         switch self {
         case .classic, .day:

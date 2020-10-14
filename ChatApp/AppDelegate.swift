@@ -21,10 +21,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         let theme = ThemesManager.shared.getTheme()
         ThemesManager.shared.applyTheme(theme)
-        GCDDataManager.shared.fetch(defaultProfile: ProfileStorage.shared, succesfullCompletion: { (profile) in
+        
+        let fetchDataCompletion: (Profile) -> () = { [weak self] (profile) in
             ProfileStorage.shared = profile
-            print(profile)
-        })
+            if let navVC = self?.window?.rootViewController as? UINavigationController,
+                let conversationListVC = navVC.viewControllers.first as? ConversationsListViewController {
+                conversationListVC.updateNavigationRightButtonImage()
+            }
+        }
+        
+        if Bool.random() {
+            print("GCDDataManager fetch data")
+            GCDDataManager.shared.fetch(defaultProfile: ProfileStorage.shared, succesfullCompletion: fetchDataCompletion)
+        } else {
+            print("OperationDataManager fetch data")
+            OperationDataManager.shared.fetch(defaultProfile: ProfileStorage.shared, succesfullCompletion: fetchDataCompletion)
+        }
+ 
         Logger.shared.appDelegateLog(stateFrom: "Inactive", stateTo: "Inactive")
         return true
     }

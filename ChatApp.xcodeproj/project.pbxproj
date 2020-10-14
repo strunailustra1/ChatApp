@@ -17,6 +17,7 @@
 		1E30F129250B944700DDF8DC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E30F127250B944700DDF8DC /* LaunchScreen.storyboard */; };
 		1E48E60F2534CA9000455C27 /* GCDDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E48E60E2534CA9000455C27 /* GCDDataManager.swift */; };
 		1E48E6112534CAA400455C27 /* OperationDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E48E6102534CAA400455C27 /* OperationDataManager.swift */; };
+		1E49C018253781A30025BB36 /* UITextField+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E49C017253781A30025BB36 /* UITextField+Extensions.swift */; };
 		1E5FFB192524A67900F8187A /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5FFB182524A67900F8187A /* Profile.swift */; };
 		1E5FFB1B2527374000F8187A /* ThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5FFB1A2527374000F8187A /* ThemesViewController.swift */; };
 		1E5FFB212527566800F8187A /* ThemesViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E5FFB202527566800F8187A /* ThemesViewController.storyboard */; };
@@ -48,6 +49,7 @@
 		1E30F12A250B944700DDF8DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1E48E60E2534CA9000455C27 /* GCDDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GCDDataManager.swift; sourceTree = "<group>"; };
 		1E48E6102534CAA400455C27 /* OperationDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationDataManager.swift; sourceTree = "<group>"; };
+		1E49C017253781A30025BB36 /* UITextField+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Extensions.swift"; sourceTree = "<group>"; };
 		1E5FFB182524A67900F8187A /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		1E5FFB1A2527374000F8187A /* ThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesViewController.swift; sourceTree = "<group>"; };
 		1E5FFB202527566800F8187A /* ThemesViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ThemesViewController.storyboard; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 				1E16408E252BA55D00B37DD6 /* ThemesManager.swift */,
 				1E48E60E2534CA9000455C27 /* GCDDataManager.swift */,
 				1E48E6102534CAA400455C27 /* OperationDataManager.swift */,
+				1E49C017253781A30025BB36 /* UITextField+Extensions.swift */,
 				1E16408C252B340700B37DD6 /* ThemesPickerDelegate.swift */,
 				1E5FFB202527566800F8187A /* ThemesViewController.storyboard */,
 				1EBEF39325212DF100F6E541 /* ConversationViewController.storyboard */,
@@ -216,6 +219,7 @@
 				1E16408D252B340700B37DD6 /* ThemesPickerDelegate.swift in Sources */,
 				1E676A51251DF38E00E98C42 /* ConversationCell.swift in Sources */,
 				1E16408F252BA55D00B37DD6 /* ThemesManager.swift in Sources */,
+				1E49C018253781A30025BB36 /* UITextField+Extensions.swift in Sources */,
 				1E5FFB192524A67900F8187A /* Profile.swift in Sources */,
 				1EBEF39B25212FA000F6E541 /* MessageCell.swift in Sources */,
 				1E164095252E7A1A00B37DD6 /* RootNavigationController.swift in Sources */,
