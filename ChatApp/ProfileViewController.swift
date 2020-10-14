@@ -68,8 +68,8 @@ class ProfileViewController: UIViewController {
         
         setupSaveButton()
         setupEditButton()
-        setupLabels()
-        setupText()
+        setupLogoLabel()
+        setupTextInputs()
         setupNavigationContoller()
         fullNameText.delegate = self
         descriptionTextView.delegate = self
@@ -168,7 +168,7 @@ class ProfileViewController: UIViewController {
             ),
             succesfullCompletion: { [weak self] in
                 self?.activityIndicator.stopAnimating()
-                self?.setupText()
+                self?.setupTextInputs()
                 self?.editButton.isEnabled = false
                 self?.successSaveAlert()
                 if let newProfile = self?.newProfile {
@@ -264,18 +264,17 @@ class ProfileViewController: UIViewController {
     
     private func setupEditButton() {
         editButton.layer.backgroundColor = .none
-        editButton.setTitleColor(UIColor.gray, for: .normal)
         editButton.setTitle("Edit", for: .normal)
         editButton.isEnabled = false
     }
     
-    private func setupLabels() {
+    private func setupLogoLabel() {
         logoLabel.text = newProfile.initials
         logoLabel.font = UIFont(name: "Roboto-Regular", size: 120)
         logoLabel.textColor = UIColor(red: 0.212, green: 0.216, blue: 0.22, alpha: 1)
     }
     
-    private func setupText() {
+    private func setupTextInputs() {
         fullNameText.text = newProfile.fullname
         fullNameText.placeholder = "Username"
         fullNameText.font = UIFont.systemFont(ofSize: 24, weight: .bold)
@@ -329,8 +328,8 @@ class ProfileViewController: UIViewController {
     
     @objc func editProfile() {
         fullNameText.isUserInteractionEnabled = true
-        fullNameText.layer.borderWidth = 1
         fullNameText.layer.borderColor = ThemesManager.shared.getTheme().labelBorderColor
+        fullNameText.layer.borderWidth = 1
         
         descriptionTextView.isUserInteractionEnabled = true
         descriptionTextView.layer.borderColor = ThemesManager.shared.getTheme().labelBorderColor
@@ -362,16 +361,17 @@ extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerCo
         picker.dismiss(animated: true, completion: nil)
         
         guard let image = info[.editedImage] as? UIImage else { return }
-        let newProfile = Profile(fullname: self.newProfile.fullname,
-                                 description: self.newProfile.description,
-                                 profileImage: image)
-        self.newProfile = newProfile
         
-        ProfileComparator.isEqualImage(
+        let profile = Profile(fullname: self.newProfile.fullname,
+                              description: self.newProfile.description,
+                              profileImage: image)
+        self.newProfile = profile
+        
+        ProfileComparator.isEqualImages(
             oldProfile: oldProfile,
             newProfile: newProfile,
-            completion: { [weak self] photoHasBeenChanged in
-                self?.photoHasBeenChanged = photoHasBeenChanged
+            completion: { [weak self] isEqualImages in
+                self?.photoHasBeenChanged = !isEqualImages
             }
         )
         

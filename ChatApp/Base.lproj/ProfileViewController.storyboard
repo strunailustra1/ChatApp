@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina4_0" orientation="portrait" appearance="light"/>
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
@@ -13,11 +13,11 @@
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ProfileViewController" customModule="ChatApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pWe-C6-oVl" customClass="UIButtonDisableColored" customModule="ChatApp" customModuleProvider="target">
-                                <rect key="frame" x="32" y="498" width="111" height="40"/>
+                                <rect key="frame" x="32" y="597" width="130" height="40"/>
                                 <color key="backgroundColor" red="0.78519607049999995" green="0.76280641950000005" blue="0.78058276289999995" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="9NR-5C-T5e"/>
@@ -29,14 +29,14 @@
                                 </connections>
                             </button>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1ny-me-rWh">
-                                <rect key="frame" x="57.5" y="21" width="205" height="205"/>
+                                <rect key="frame" x="67.5" y="21" width="240" height="240"/>
                                 <color key="backgroundColor" red="0.89411764709999997" green="0.90980392160000001" blue="0.16862745100000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="1ny-me-rWh" secondAttribute="height" multiplier="1:1" id="j0Z-ao-0Bs"/>
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BAS-C4-V3h" customClass="UIButtonDisableColored" customModule="ChatApp" customModuleProvider="target">
-                                <rect key="frame" x="222.5" y="198" width="40" height="40"/>
+                                <rect key="frame" x="267.5" y="233" width="40" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="BAS-C4-V3h" secondAttribute="height" multiplier="1:1" id="Igk-OH-FVZ"/>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="40" id="qLs-my-g3I"/>
@@ -47,18 +47,18 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="MD" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rpJ-ij-acG">
-                                <rect key="frame" x="57.5" y="21" width="205" height="205"/>
+                                <rect key="frame" x="67.5" y="21" width="240" height="240"/>
                                 <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="118"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="K2J-uU-g9i">
-                                <rect key="frame" x="32" y="258" width="256" height="18.5"/>
+                                <rect key="frame" x="37.5" y="293" width="300" height="18.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no"/>
                             </textField>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="RNf-oZ-icm">
-                                <rect key="frame" x="40" y="296.5" width="240" height="191.5"/>
+                                <rect key="frame" x="67.5" y="331.5" width="240" height="255.5"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="240" id="F5a-Hx-afq"/>
@@ -68,7 +68,7 @@
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="no"/>
                             </textView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="POj-tp-FZA" customClass="UIButtonDisableColored" customModule="ChatApp" customModuleProvider="target">
-                                <rect key="frame" x="177" y="498" width="111" height="40"/>
+                                <rect key="frame" x="213" y="597" width="130" height="40"/>
                                 <color key="backgroundColor" red="0.78519607049999995" green="0.76280641950000005" blue="0.78058276289999995" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="G5k-1i-SD0"/>

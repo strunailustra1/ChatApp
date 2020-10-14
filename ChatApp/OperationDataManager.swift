@@ -11,9 +11,9 @@ import UIKit
 
 class OperationDataManager: ProfileDataManagerProtocol {
     
-    static var shared = OperationDataManager()
+    static let shared = OperationDataManager()
     
-    private var queue: OperationQueue
+    private let queue: OperationQueue
     
     init() {
         queue = OperationQueue()
@@ -25,8 +25,8 @@ class OperationDataManager: ProfileDataManagerProtocol {
         var operations = [Operation]()
         
         let resultOperation = SaveResultOperation()
-        resultOperation.completionOk = succesfullCompletion
-        resultOperation.completionError = errorCompletion
+        resultOperation.succesfullCompletion = succesfullCompletion
+        resultOperation.errorCompletion = errorCompletion
         operations.append(resultOperation)
         
         if changedFields.profileImageChanged {
@@ -86,7 +86,7 @@ class SaveImageOperation: Operation, OperationWithBooleanResult {
             do {
                 try newImageData.write(to: ProfilePath.image.getURL())
                 result = true
-            } catch { print (error) }
+            } catch {}
         }
     }
 }
@@ -99,7 +99,7 @@ class SaveFullnameOperation: Operation, OperationWithBooleanResult {
         do {
             try profile?.fullname.write(to: ProfilePath.fullname.getURL(), atomically: true, encoding: String.Encoding.utf8)
             result = true
-        } catch { print (error) }
+        } catch {}
     }
 }
 
@@ -111,7 +111,7 @@ class SaveDescriptionOperation: Operation, OperationWithBooleanResult {
         do {
             try profile?.description.write(to: ProfilePath.description.getURL(), atomically: true, encoding: String.Encoding.utf8)
             result = true
-        } catch { print (error) }
+        } catch {}
     }
 }
 
@@ -127,12 +127,12 @@ class SaveResultOperation: Operation {
         return result
     }
     
-    var completionOk: (() -> ())?
-    var completionError: (() -> ())?
+    var succesfullCompletion: (() -> ())?
+    var errorCompletion: (() -> ())?
     
     override func main() {
         OperationQueue.main.addOperation {
-            self.chainResult ? self.completionOk?() : self.completionError?()
+            self.chainResult ? self.succesfullCompletion?() : self.errorCompletion?()
         }
     }
 }
@@ -143,7 +143,6 @@ class FetchImageOperation: Operation {
     
     override func main() {
         result = try? UIImage(data: Data(contentsOf: ProfilePath.image.getURL()))
-        
     }
 }
 
@@ -152,7 +151,6 @@ class FetchFullnameOperation: Operation {
     
     override func main() {
         result = try? String(contentsOf: ProfilePath.fullname.getURL(), encoding: .utf8)
-        
     }
 }
 
@@ -176,14 +174,17 @@ class FetchResultOperation: Operation {
         for dependency in dependencies {
             if let operation = dependency as? FetchImageOperation, let fetchedData = operation.result {
                 image = fetchedData
+                continue
             }
             
             if let operation = dependency as? FetchFullnameOperation, let fetchedData = operation.result {
                 fullname = fetchedData
+                continue
             }
             
             if let operation = dependency as? FetchDescriptionOperation, let fetchedData = operation.result {
                 description = fetchedData
+                continue
             }
         }
         
