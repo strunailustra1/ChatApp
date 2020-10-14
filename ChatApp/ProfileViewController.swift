@@ -155,6 +155,10 @@ class ProfileViewController: UIViewController {
     }
     
     private func saveProfile(dataManager: ProfileDataManagerProtocol) {
+        gcdButton.isEnabled = false
+        operationButton.isEnabled = false
+        activityIndicator.startAnimating()
+        
         dataManager.save(
             profile: newProfile,
             changedFields: ProfileChangedFields(
