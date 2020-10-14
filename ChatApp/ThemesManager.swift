@@ -93,6 +93,15 @@ enum Theme: Int {
         }
     }
     
+    var labelBorderColor: CGColor {
+        switch self {
+        case .classic, .day:
+            return UIColor.lightGray.cgColor
+        case .night:
+            return UIColor.darkGray.cgColor
+        }
+    }
+    
     var tableViewCellBackgroundColor: UIColor {
         switch self {
         case .classic, .day:
@@ -290,8 +299,11 @@ class ThemesManager: ThemesPickerDelegate {
     private func updateTheme(_ theme: Theme) {
         currentTheme = theme
         
-        UserDefaults.standard.set(theme.rawValue, forKey: selectedThemeKey)
-        UserDefaults.standard.synchronize()
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let selectedThemeKey = self?.selectedThemeKey else { return }
+            UserDefaults.standard.set(theme.rawValue, forKey: selectedThemeKey)
+            UserDefaults.standard.synchronize()
+        }
         
         applyTheme(theme)
     }
