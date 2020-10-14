@@ -19,25 +19,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        let theme = ThemesManager.shared.getTheme()
-        ThemesManager.shared.applyTheme(theme)
+        applyTheme()
+        fetchProfile()
         
-        let fetchDataCompletion: (Profile) -> () = { [weak self] (profile) in
-            ProfileStorage.shared = profile
-            if let navVC = self?.window?.rootViewController as? UINavigationController,
-                let conversationListVC = navVC.viewControllers.first as? ConversationsListViewController {
-                conversationListVC.updateNavigationRightButtonImage()
-            }
-        }
-        
-        if Bool.random() {
-            print("GCDDataManager fetch data")
-            GCDDataManager.shared.fetch(defaultProfile: ProfileStorage.shared, succesfullCompletion: fetchDataCompletion)
-        } else {
-            print("OperationDataManager fetch data")
-            OperationDataManager.shared.fetch(defaultProfile: ProfileStorage.shared, succesfullCompletion: fetchDataCompletion)
-        }
- 
         Logger.shared.appDelegateLog(stateFrom: "Inactive", stateTo: "Inactive")
         return true
     }
@@ -60,5 +44,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationWillTerminate(_ application: UIApplication) {
         Logger.shared.appDelegateLog(stateFrom: "Background", stateTo: "across Suspended to Not Running")
+    }
+    
+    private func fetchProfile() {
+        let fetchDataCompletion: (Profile) -> () = { [weak self] (profile) in
+            ProfileStorage.shared = profile
+            if let navVC = self?.window?.rootViewController as? UINavigationController,
+                let conversationListVC = navVC.viewControllers.first as? ConversationsListViewController {
+                conversationListVC.updateNavigationRightButtonImage()
+            }
+        }
+        
+        let profileDataManager: ProfileDataManagerProtocol = Bool.random()
+            ? GCDDataManager.shared
+            : OperationDataManager.shared
+        
+        profileDataManager.fetch(defaultProfile: ProfileStorage.shared, succesfullCompletion: fetchDataCompletion)
+    }
+    
+    private func applyTheme() {
+        let theme = ThemesManager.shared.getTheme()
+        ThemesManager.shared.applyTheme(theme)
     }
 }

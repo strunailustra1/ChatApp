@@ -86,6 +86,7 @@ class ProfileViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         notificationCenter.addObserver(self, selector: #selector(keyboardWillShow(sender:)), name:UIResponder.keyboardWillShowNotification, object: nil)
         notificationCenter.addObserver(self, selector: #selector(keyboardWillHide(sender:)), name:UIResponder.keyboardWillHideNotification, object: nil)
         
@@ -146,43 +147,25 @@ class ProfileViewController: UIViewController {
     }
 
     @IBAction func gcdAction() {
-        gcdButton.isEnabled = false
-        operationButton.isEnabled = false
-        activityIndicator.startAnimating()
-        GCDDataManager.shared.save(
-            profile: newProfile,
-            fullnameChanged: oldProfile.fullname != newProfile.fullname,
-            descriptionChanged: oldProfile.description != newProfile.description,
-            photoChanged: photoHasBeenChanged,
-            succesfullCompletion: { [weak self] in
-                self?.activityIndicator.stopAnimating()
-                self?.setupText()
-                self?.successSaveAlert()
-                if let newProfile = self?.newProfile {
-                    self?.oldProfile = newProfile
-                    self?.photoHasBeenChanged = false
-                    ProfileStorage.shared = newProfile
-                }
-                
-            },
-            errorCompletion: { [weak self] in
-                self?.activityIndicator.stopAnimating()
-                self?.errorSaveAlert(fromGCD: true)
-                self?.updateSaveButtonAvailability()
-            }
-        )
+        saveProfile(dataManager: GCDDataManager.shared)
     }
     
     @IBAction func operationAction() {
-        // todo одинаковый код комплишенов
-        OperationDataManager.shared.save(
+        saveProfile(dataManager: OperationDataManager.shared)
+    }
+    
+    private func saveProfile(dataManager: ProfileDataManagerProtocol) {
+        dataManager.save(
             profile: newProfile,
-            fullnameChanged: oldProfile.fullname != newProfile.fullname,
-            descriptionChanged: oldProfile.description != newProfile.description,
-            photoChanged: photoHasBeenChanged,
+            changedFields: ProfileChangedFields(
+                fullnameChanged: oldProfile.fullname != newProfile.fullname,
+                descriptionChanged: oldProfile.description != newProfile.description,
+                profileImageChanged: photoHasBeenChanged
+            ),
             succesfullCompletion: { [weak self] in
                 self?.activityIndicator.stopAnimating()
                 self?.setupText()
+                self?.editButton.isEnabled = false
                 self?.successSaveAlert()
                 if let newProfile = self?.newProfile {
                     self?.oldProfile = newProfile
@@ -192,7 +175,9 @@ class ProfileViewController: UIViewController {
             },
             errorCompletion: { [weak self] in
                 self?.activityIndicator.stopAnimating()
-                self?.errorSaveAlert(fromGCD: false)
+                self?.fullNameText.resignFirstResponder()
+                self?.descriptionTextView.resignFirstResponder()
+                self?.errorSaveAlert(dataManager: dataManager)
                 self?.updateSaveButtonAvailability()
             }
         )
@@ -252,11 +237,11 @@ class ProfileViewController: UIViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    private func errorSaveAlert(fromGCD: Bool) {
+    private func errorSaveAlert(dataManager: ProfileDataManagerProtocol) {
         let alert = UIAlertController(title: "Error", message: "Failed to save data", preferredStyle: .alert)
         let OkAction = UIAlertAction(title: "OK", style: .default)
         let repeatAction = UIAlertAction(title: "Repeat", style: .default, handler: { [unowned self] _ in
-            fromGCD ? self.gcdAction() : self.operationAction()
+            self.saveProfile(dataManager: dataManager)
         })
         alert.addAction(OkAction)
         alert.addAction(repeatAction)
@@ -322,7 +307,7 @@ class ProfileViewController: UIViewController {
     private func setupNavigationContoller() {
         navigationItem.title = "My Profile"
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(closeProfile))
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editText))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editProfile))
         navigationItem.leftBarButtonItem?.setTitleTextAttributes([NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17)], for: .normal)
         navigationItem.rightBarButtonItem?.setTitleTextAttributes([NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17, weight: .semibold)], for: .normal)
     }
@@ -338,7 +323,7 @@ class ProfileViewController: UIViewController {
         dismiss(animated: true, completion: closeHandler)
     }
     
-    @objc func editText() {
+    @objc func editProfile() {
         fullNameText.isUserInteractionEnabled = true
         fullNameText.layer.borderWidth = 1
         fullNameText.layer.borderColor = ThemesManager.shared.getTheme().labelBorderColor
@@ -391,19 +376,6 @@ extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerCo
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
-    }
-}
-
-/*
- https://stackoverflow.com/questions/55653187/swift-default-alertviewcontroller-breaking-constraints/58666480#58666480
- */
-extension UIAlertController {
-    func pruneNegativeWidthConstraints() {
-        for subView in self.view.subviews {
-            for constraint in subView.constraints where constraint.debugDescription.contains("width == - 16") {
-                subView.removeConstraint(constraint)
-            }
-        }
     }
 }
 

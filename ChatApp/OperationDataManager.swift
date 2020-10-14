@@ -9,10 +9,17 @@
 import Foundation
 import UIKit
 
-class OperationDataManager {
+class OperationDataManager: ProfileDataManagerProtocol {
+    
     static var shared = OperationDataManager()
     
-    func save(profile: Profile, fullnameChanged: Bool, descriptionChanged: Bool, photoChanged: Bool,
+    private var queue: OperationQueue
+    
+    init() {
+        queue = OperationQueue()
+    }
+    
+    func save(profile: Profile, changedFields: ProfileChangedFields,
               succesfullCompletion: @escaping() -> (), errorCompletion: @escaping() -> ()) {
         
         var operations = [Operation]()
@@ -22,28 +29,27 @@ class OperationDataManager {
         resultOperation.completionError = errorCompletion
         operations.append(resultOperation)
         
-        if photoChanged {
+        if changedFields.profileImageChanged {
             let saveImageOperation = SaveImageOperation()
             saveImageOperation.profile = profile
             operations.append(saveImageOperation)
             resultOperation.addDependency(saveImageOperation)
         }
         
-        if fullnameChanged {
+        if changedFields.fullnameChanged {
             let saveFullnameOperation = SaveFullnameOperation()
             saveFullnameOperation.profile = profile
             operations.append(saveFullnameOperation)
             resultOperation.addDependency(saveFullnameOperation)
         }
         
-        if descriptionChanged {
+        if changedFields.descriptionChanged {
             let saveDescriptionOperation = SaveDescriptionOperation()
             saveDescriptionOperation.profile = profile
             operations.append(saveDescriptionOperation)
             resultOperation.addDependency(saveDescriptionOperation)
         }
-        
-        let queue = OperationQueue()
+
         queue.addOperations(operations, waitUntilFinished: false)
     }
     
@@ -66,8 +72,7 @@ class OperationDataManager {
         fetchResultOperation.addDependency(fetchFullnameOperation)
         fetchResultOperation.addDependency(fetchDescriptionOperation)
         operations.append(fetchResultOperation)
-                
-        let queue = OperationQueue()
+        
         queue.addOperations(operations, waitUntilFinished: false)
     }
 }

@@ -299,8 +299,11 @@ class ThemesManager: ThemesPickerDelegate {
     private func updateTheme(_ theme: Theme) {
         currentTheme = theme
         
-        UserDefaults.standard.set(theme.rawValue, forKey: selectedThemeKey)
-        UserDefaults.standard.synchronize()
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let selectedThemeKey = self?.selectedThemeKey else { return }
+            UserDefaults.standard.set(theme.rawValue, forKey: selectedThemeKey)
+            UserDefaults.standard.synchronize()
+        }
         
         applyTheme(theme)
     }

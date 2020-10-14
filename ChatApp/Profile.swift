@@ -29,16 +29,20 @@ struct Profile {
     }
 }
 
+struct ProfileChangedFields {
+    let fullnameChanged: Bool
+    let descriptionChanged: Bool
+    let profileImageChanged: Bool
+}
+
 class ProfileComparator {
     static func isEqualImage(oldProfile: Profile, newProfile: Profile,  completion: @escaping(_ photoHasBeenChanged: Bool) -> ()) {
         DispatchQueue.global(qos: .userInitiated).async {
             var isEqualImages = false
-            if
-                let newImage = newProfile.profileImage,
+            if let newImage = newProfile.profileImage,
                 let newImageData = newImage.jpegData(compressionQuality: 1) ?? newImage.pngData() {
 
-                if
-                    let oldImage = oldProfile.profileImage,
+                if let oldImage = oldProfile.profileImage,
                     let oldImageData = oldImage.jpegData(compressionQuality: 1) ?? oldImage.pngData() {
                     isEqualImages = oldImageData == newImageData
                 }
