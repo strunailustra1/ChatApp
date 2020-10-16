@@ -20,7 +20,6 @@ class ConversationCell: UITableViewCell, ConfigurableView {
         let name: String
         let message: String
         let date: Date
-        let isOnline: Bool
         let hasUnreadMessages: Bool
     }
 
@@ -53,9 +52,6 @@ class ConversationCell: UITableViewCell, ConfigurableView {
         }
         
         messageLabel.text = model.message != "" ? model.message : "No messages yet"
-        backgroundColor = model.isOnline == true
-            ? ThemesManager.shared.getTheme().conversationCellOnlineBackgroundColor
-            : ThemesManager.shared.getTheme().conversationCellHistoryBackgroundColor
         messageLabel.font = UIFont.systemFont(ofSize: 13, weight: model.hasUnreadMessages == true ? .bold : .regular)
         messageLabel.textColor = ThemesManager.shared.getTheme().conversationCellMessageTextColor
         nameLabel.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
@@ -97,10 +93,9 @@ class ConversationProvider {
                        Date(timeIntervalSinceNow: -126400), Date(timeIntervalSinceNow: -86500),
                        Date(timeIntervalSinceNow: -87400), Date(timeIntervalSinceNow: -3386400)]
     
-    static func getMessages() -> [[ConversationCell.ConversationCellModel]] {
-        var conversations = [[ConversationCell.ConversationCellModel]]()
-
-        conversations.append(contentsOf: [[], []])
+    static func getMessages() -> [ConversationCell.ConversationCellModel] {
+        var conversations = [ConversationCell.ConversationCellModel]()
+          conversations.append(contentsOf: [])
         
         for _ in 0..<30 {
             let randomMessage = message.randomElement() ?? ""
@@ -108,21 +103,14 @@ class ConversationProvider {
                 name: "\(name.randomElement() ?? "") \(surname.randomElement() ?? "")",
                 message: randomMessage,
                 date: date.randomElement() ?? Date.init(),
-                isOnline: [true, false].randomElement() ?? false,
                 hasUnreadMessages: randomMessage != "" ? [true, false].randomElement() ?? false : false
             )
             
-            if conversation.isOnline == false && conversation.message == "" {
-                continue
-            }
-            
-            conversations[conversation.isOnline ? 0 : 1].append(conversation)
+              conversations.append(conversation)
         }
-        
-        conversations[0].sort { $0.date > $1.date }
-        conversations[0].sort { $0.message != "" && $1.message == "" }
-        conversations[1].sort { $0.date > $1.date }
-        
+
+          conversations.sort { $0.date > $1.date }
+          conversations.sort { $0.message != "" && $1.message == "" }
         return conversations
     }
 }

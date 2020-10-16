@@ -87,6 +87,16 @@ extension ConversationViewController: UITableViewDataSource {
             ? ThemesManager.shared.getTheme().messageUpcomingTextColor
             : ThemesManager.shared.getTheme().messageIncomingTextColor
         
+        cell.senderNameLabel.textColor = ThemesManager.shared.getTheme().messageSenderNameLabelColor
+        
+        if message.isUpcomingMessage {
+            cell.senderNameLabel.isHidden = true
+            cell.constraintToSenderNameLabel?.isActive = false
+        } else {
+            cell.senderNameLabel.isHidden = false
+            cell.constraintToSenderNameLabel?.isActive = true
+        }
+            
         if message.isUpcomingMessage {
             cell.leadingConstraint?.isActive = false
         } else {
@@ -127,7 +137,7 @@ extension ConversationViewController {
             width: 14,
             height: 14)
         )
-        circle.backgroundColor = (conversation?.isOnline ?? false) ? .systemGreen : .systemGray
+//        circle.backgroundColor = (conversation?.isOnline ?? false) ? .systemGreen : .systemGray
         circle.layer.cornerRadius = circle.frame.width / 2
         
         navView.addSubview(label)

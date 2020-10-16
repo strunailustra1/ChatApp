@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class ConversationsListViewController: UIViewController {
     
@@ -21,7 +22,7 @@ class ConversationsListViewController: UIViewController {
         return tableView
     }()
     
-    private var conversationList = [[ConversationCell.ConversationCellModel]]()
+    private var conversationList = [ConversationCell.ConversationCellModel]()
     
     private var lastTheme = ThemesManager.shared.getTheme()
     
@@ -29,7 +30,7 @@ class ConversationsListViewController: UIViewController {
         let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
         return storyboard.instantiateInitialViewController() as? ConversationsListViewController
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         conversationList = ConversationProvider.getMessages()
@@ -61,7 +62,7 @@ class ConversationsListViewController: UIViewController {
     @objc func themeEdit() {
         if let themesVC = ThemesViewController.storyboardInstance() {
             navigationController?.pushViewController(themesVC, animated: true)
-            navigationItem.backBarButtonItem = UIBarButtonItem(title: "Tinkoff Chat", style: .plain, target: nil, action: nil)
+            navigationItem.backBarButtonItem = UIBarButtonItem(title: "Channels", style: .plain, target: nil, action: nil)
             themesVC.delegate = ThemesManager.shared
             themesVC.themeChangeHandler = ThemesManager.shared.themeChangeHandler
         }
@@ -69,22 +70,14 @@ class ConversationsListViewController: UIViewController {
 }
 
 extension ConversationsListViewController: UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        2
-    }
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        conversationList[section].count
+          conversationList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? ConversationCell else { return UITableViewCell()}
-        cell.configure(with: conversationList[indexPath.section][indexPath.row])
+        cell.configure(with: conversationList[indexPath.row])
         return cell
-    }
-    
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        section == 0 ? "Online" : "History"
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -95,7 +88,7 @@ extension ConversationsListViewController: UITableViewDataSource {
 extension ConversationsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {        
         if let conversationVC = ConversationViewController.storyboardInstance() {
-            let conversation = conversationList[indexPath.section][indexPath.row]
+            let conversation = conversationList[indexPath.row]
             if conversation.message != "" {
                 conversationVC.messageList = MessageProvider.getMessages()
             }
@@ -115,7 +108,7 @@ extension ConversationsListViewController {
         navigationController?.navigationBar.titleTextAttributes = [
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.bold)
         ]
-        navigationItem.title = "Tinkoff Chat"
+        navigationItem.title = "Channels"
         updateNavigationRightButtonImage()
         
         let settingImage = ThemesManager.shared.getTheme().settingImageColor

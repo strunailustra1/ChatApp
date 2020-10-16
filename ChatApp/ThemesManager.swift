@@ -104,19 +104,12 @@ enum Theme: Int {
     
     var tableViewCellBackgroundColor: UIColor {
         switch self {
-        case .classic, .day:
+        case .classic:
+            return UIColor(red: 173/256, green: 207/256, blue: 182/256, alpha: 1)
+        case .day:
             return UIColor(red: 1, green: 1, blue: 1, alpha: 1)
         case .night:
             return UIColor(red: 0, green: 0, blue: 0, alpha: 1)
-        }
-    }
-    
-    var tableViewHeaderViewBackgroundColor: UIColor {
-        switch self {
-        case .classic, .day:
-            return UIColor(red: 225/255, green: 245/255, blue: 196/255, alpha: 1)
-        case .night:
-            return UIColor(red: 62/255, green: 65/255, blue: 71/255, alpha: 1)
         }
     }
     
@@ -224,6 +217,17 @@ enum Theme: Int {
             return UIColor(red: 1, green: 1, blue: 1, alpha: 1)
         }
     }
+    
+    var messageSenderNameLabelColor: UIColor {
+        switch self {
+        case .classic:
+            return UIColor(red: 43/256, green: 144/256, blue: 126/256, alpha: 1)
+        case . day:
+            return UIColor(red: 0.263, green: 0.537, blue: 0.976, alpha: 1)
+        case . night:
+            return UIColor(red: 64/255, green: 190/255, blue: 178/255, alpha: 1)
+        }
+    }
 }
 
 class ThemesManager: ThemesPickerDelegate {
@@ -284,10 +288,10 @@ class ThemesManager: ThemesPickerDelegate {
         tableViewCellAppearance.tintColor = theme.labelTextColor
         tableViewCellAppearance.selectionStyle = .none
         
-        let tableViewHeaderAppearance = UITableViewHeaderFooterView.appearance()
-        tableViewHeaderAppearance.tintColor = ThemesManager.shared.getTheme().tableViewHeaderViewBackgroundColor
-        let tableViewHeaderLabelAppearance = UILabel.appearance(whenContainedInInstancesOf: [UITableViewHeaderFooterView.self])
-        tableViewHeaderLabelAppearance.textColor = ThemesManager.shared.getTheme().conversationCellMessageTextColor
+//        let tableViewHeaderAppearance = UITableViewHeaderFooterView.appearance()
+//        tableViewHeaderAppearance.tintColor = ThemesManager.shared.getTheme().tableViewHeaderViewBackgroundColor
+//        let tableViewHeaderLabelAppearance = UILabel.appearance(whenContainedInInstancesOf: [UITableViewHeaderFooterView.self])
+//        tableViewHeaderLabelAppearance.textColor = ThemesManager.shared.getTheme().conversationCellMessageTextColor
         
         UIApplication.shared.delegate?.window??.subviews.forEach({ (view: UIView) in
             view.removeFromSuperview()

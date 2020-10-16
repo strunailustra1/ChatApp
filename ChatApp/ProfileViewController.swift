@@ -51,7 +51,7 @@ class ProfileViewController: UIViewController {
         activityIndicator.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
         activityIndicator.center = view.center
         return activityIndicator
-    }()
+        }()
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -145,7 +145,7 @@ class ProfileViewController: UIViewController {
     @IBAction func editAction(_ sender: UIButton) {
         presentEditAlert()
     }
-
+    
     @IBAction func gcdAction() {
         saveProfile(dataManager: GCDDataManager.shared)
     }
@@ -225,9 +225,13 @@ class ProfileViewController: UIViewController {
         alert.addAction(galleryAction)
         alert.addAction(photoAction)
         alert.addAction(cancelAction)
-
-        alert.setValue(NSAttributedString(string: "Edit photo", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 20, weight: .semibold)]), forKey: "attributedTitle")
-        alert.setValue(NSAttributedString(string: "Please, choose one of the ways", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16, weight: .regular)]), forKey: "attributedMessage")
+        
+        alert.setValue(NSAttributedString(string: "Edit photo",
+                                          attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 20, weight: .semibold)]),
+                       forKey: "attributedTitle")
+        alert.setValue(NSAttributedString(string: "Please, choose one of the ways",
+                                          attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16, weight: .regular)]),
+                       forKey: "attributedMessage")
         
         alert.pruneNegativeWidthConstraints()
         

@@ -14,6 +14,8 @@ class MessageCell: UITableViewCell, ConfigurableView {
     @IBOutlet weak var bubleView: UIView!
     @IBOutlet weak var leadingConstraint: NSLayoutConstraint!
     @IBOutlet weak var trailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var senderNameLabel: UILabel!
+    @IBOutlet weak var constraintToSenderNameLabel: NSLayoutConstraint!
     
     typealias ConfigurationModel = MessageCellModel
     
@@ -25,6 +27,8 @@ class MessageCell: UITableViewCell, ConfigurableView {
         messageLabel.text = model.text
         bubleView.layer.cornerRadius = 8
         messageLabel.font = UIFont.systemFont(ofSize: 16, weight: .regular)
+        senderNameLabel.text = "Username"
+        senderNameLabel.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
     }
 }
 
