@@ -20,7 +20,7 @@ class OperationDataManager: ProfileDataManagerProtocol {
     }
     
     func save(profile: Profile, changedFields: ProfileChangedFields,
-              succesfullCompletion: @escaping() -> (), errorCompletion: @escaping() -> ()) {
+              succesfullCompletion: @escaping() -> Void, errorCompletion: @escaping() -> Void) {
         
         var operations = [Operation]()
         
@@ -49,13 +49,13 @@ class OperationDataManager: ProfileDataManagerProtocol {
             operations.append(saveDescriptionOperation)
             resultOperation.addDependency(saveDescriptionOperation)
         }
-
+        
         queue.addOperations(operations, waitUntilFinished: false)
     }
     
-    func fetch(defaultProfile: Profile, succesfullCompletion: @escaping(Profile) -> ()) {
+    func fetch(defaultProfile: Profile, succesfullCompletion: @escaping(Profile) -> Void) {
         var operations = [Operation]()
-
+        
         let fetchImageOperation = FetchImageOperation()
         operations.append(fetchImageOperation)
         
@@ -82,7 +82,8 @@ class SaveImageOperation: Operation, OperationWithBooleanResult {
     var profile: Profile?
     
     override func main() {
-        if let newImage = profile?.profileImage, let newImageData = newImage.jpegData(compressionQuality: 1) ?? newImage.pngData() {
+        if let newImage = profile?.profileImage,
+            let newImageData = newImage.jpegData(compressionQuality: 1) ?? newImage.pngData() {
             do {
                 try newImageData.write(to: ProfilePath.image.getURL())
                 result = true
@@ -97,7 +98,9 @@ class SaveFullnameOperation: Operation, OperationWithBooleanResult {
     
     override func main() {
         do {
-            try profile?.fullname.write(to: ProfilePath.fullname.getURL(), atomically: true, encoding: String.Encoding.utf8)
+            try profile?.fullname.write(to: ProfilePath.fullname.getURL(),
+                                        atomically: true,
+                                        encoding: String.Encoding.utf8)
             result = true
         } catch {}
     }
@@ -109,7 +112,9 @@ class SaveDescriptionOperation: Operation, OperationWithBooleanResult {
     
     override func main() {
         do {
-            try profile?.description.write(to: ProfilePath.description.getURL(), atomically: true, encoding: String.Encoding.utf8)
+            try profile?.description.write(to: ProfilePath.description.getURL(),
+                                           atomically: true,
+                                           encoding: String.Encoding.utf8)
             result = true
         } catch {}
     }
@@ -127,8 +132,8 @@ class SaveResultOperation: Operation {
         return result
     }
     
-    var succesfullCompletion: (() -> ())?
-    var errorCompletion: (() -> ())?
+    var succesfullCompletion: (() -> Void)?
+    var errorCompletion: (() -> Void)?
     
     override func main() {
         OperationQueue.main.addOperation {
@@ -136,7 +141,6 @@ class SaveResultOperation: Operation {
         }
     }
 }
-
 
 class FetchImageOperation: Operation {
     var result: UIImage?
@@ -164,7 +168,7 @@ class FetchDescriptionOperation: Operation {
 
 class FetchResultOperation: Operation {
     var defaultProfile: Profile?
-    var succesfullCompletion: ((Profile)->())?
+    var succesfullCompletion: ((Profile) -> Void)?
     
     override func main() {
         var image = defaultProfile?.profileImage
@@ -191,7 +195,7 @@ class FetchResultOperation: Operation {
         let profile = Profile(fullname: fullname ?? "",
                               description: description ?? "",
                               profileImage: image ?? nil)
-
+        
         OperationQueue.main.addOperation {
             self.succesfullCompletion?(profile)
         }

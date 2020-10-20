@@ -15,7 +15,7 @@ class ProfileViewController: UIViewController {
         return storyboard.instantiateInitialViewController() as? ProfileViewController
     }
     
-    var closeHandler: (() -> ())?
+    var closeHandler: (() -> Void)?
     
     @IBOutlet weak var gcdButton: UIButton!
     @IBOutlet weak var photoView: UIImageView!
@@ -87,8 +87,12 @@ class ProfileViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        notificationCenter.addObserver(self, selector: #selector(keyboardWillShow(sender:)), name:UIResponder.keyboardWillShowNotification, object: nil)
-        notificationCenter.addObserver(self, selector: #selector(keyboardWillHide(sender:)), name:UIResponder.keyboardWillHideNotification, object: nil)
+        notificationCenter.addObserver(self,
+                                       selector: #selector(keyboardWillShow(sender:)),
+                                       name: UIResponder.keyboardWillShowNotification, object: nil)
+        notificationCenter.addObserver(self,
+                                       selector: #selector(keyboardWillHide(sender:)),
+                                       name: UIResponder.keyboardWillHideNotification, object: nil)
         
         Logger.shared.vcLog(stateFrom: "Disappeared", stateTo: "Appearing")
     }
@@ -191,7 +195,9 @@ class ProfileViewController: UIViewController {
         let pickerController = UIImagePickerController()
         
         if !UIImagePickerController.isSourceTypeAvailable(sourceType) {
-            let message = sourceType == .camera ? "Camera is not available on this device" : "Gallery is not available now"
+            let message = sourceType == .camera
+                ? "Camera is not available on this device"
+                : "Gallery is not available now"
             let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
             let okAction = UIAlertAction(title: "Ok", style: .default)
             alertController.addAction(okAction)
@@ -227,10 +233,12 @@ class ProfileViewController: UIViewController {
         alert.addAction(cancelAction)
         
         alert.setValue(NSAttributedString(string: "Edit photo",
-                                          attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 20, weight: .semibold)]),
+                                          attributes: [NSAttributedString.Key.font:
+                                                UIFont.systemFont(ofSize: 20, weight: .semibold)]),
                        forKey: "attributedTitle")
         alert.setValue(NSAttributedString(string: "Please, choose one of the ways",
-                                          attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16, weight: .regular)]),
+                                          attributes: [NSAttributedString.Key.font:
+                                            UIFont.systemFont(ofSize: 16, weight: .regular)]),
                        forKey: "attributedMessage")
         
         alert.pruneNegativeWidthConstraints()
@@ -290,7 +298,19 @@ class ProfileViewController: UIViewController {
         
         let descriptionParagraphStyle = NSMutableParagraphStyle()
         descriptionParagraphStyle.lineHeightMultiple = 1.15
-        descriptionTextView.attributedText = NSMutableAttributedString(string: newProfile.description, attributes: [NSAttributedString.Key.kern: -0.33, NSAttributedString.Key.paragraphStyle: descriptionParagraphStyle, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: .regular)])
+        descriptionTextView.attributedText = NSMutableAttributedString(
+            string: newProfile.description,
+            attributes: [
+                NSAttributedString.Key.kern: -0.33,
+                NSAttributedString.Key.paragraphStyle: descriptionParagraphStyle
+            ]
+        )
+        descriptionTextView.attributedText = NSMutableAttributedString(
+            string: newProfile.description,
+            attributes: [
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: .regular)
+            ]
+        )
         descriptionTextView.backgroundColor = ThemesManager.shared.getTheme().profileVCBackgroundColor
         descriptionTextView.textColor = ThemesManager.shared.getTheme().labelTextColor
         descriptionTextView.layer.borderWidth = 0
@@ -313,14 +333,24 @@ class ProfileViewController: UIViewController {
     
     private func setupNavigationContoller() {
         navigationItem.title = "My Profile"
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(closeProfile))
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editProfile))
-        navigationItem.leftBarButtonItem?.setTitleTextAttributes([NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17)], for: .normal)
-        navigationItem.rightBarButtonItem?.setTitleTextAttributes([NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17, weight: .semibold)], for: .normal)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
+                                                           target: self,
+                                                           action: #selector(closeProfile))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit,
+                                                            target: self,
+                                                            action: #selector(editProfile))
+        navigationItem.leftBarButtonItem?.setTitleTextAttributes(
+            [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)],
+            for: .normal)
+        navigationItem.rightBarButtonItem?.setTitleTextAttributes(
+            [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .semibold)],
+            for: .normal)
     }
     
     private func updateSaveButtonAvailability() {
-        let isEnabled = photoHasBeenChanged || oldProfile.fullname != newProfile.fullname || oldProfile.description != newProfile.description
+        let isEnabled = photoHasBeenChanged || oldProfile.fullname
+            != newProfile.fullname || oldProfile.description
+            != newProfile.description
         
         gcdButton.isEnabled = isEnabled
         operationButton.isEnabled = isEnabled
@@ -360,7 +390,8 @@ class ProfileViewController: UIViewController {
 }
 
 extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+    func imagePickerController(_ picker: UIImagePickerController,
+                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         
         picker.dismiss(animated: true, completion: nil)
         
@@ -389,7 +420,7 @@ extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerCo
 
 extension ProfileViewController: UITextFieldDelegate, UITextViewDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let _ = touches.first {
+        if touches.first != nil {
             view.endEditing(true)
         }
         super.touchesBegan(touches, with: event)
@@ -404,7 +435,9 @@ extension ProfileViewController: UITextFieldDelegate, UITextViewDelegate {
         updateNewProfile(fullname: textField.text, description: nil)
     }
     
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+    func textField(_ textField: UITextField,
+                   shouldChangeCharactersIn range: NSRange,
+                   replacementString string: String) -> Bool {
         if let textFieldString = textField.fullTextWith(range: range, replacementString: string) {
             updateNewProfile(fullname: textFieldString, description: nil)
         }

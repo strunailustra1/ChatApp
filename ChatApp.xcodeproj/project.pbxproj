@@ -37,6 +37,10 @@
 		1EBEF39C25212FA000F6E541 /* MessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1EBEF39A25212FA000F6E541 /* MessageCell.xib */; };
 		1EBEF39E252270A200F6E541 /* MessageSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EBEF39D252270A200F6E541 /* MessageSectionHeader.swift */; };
 		1EBEF3A02522724300F6E541 /* MessageSectionHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1EBEF39F2522724300F6E541 /* MessageSectionHeader.xib */; };
+		1ECC481B253DA28000789DDA /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ECC481A253DA28000789DDA /* FirebaseManager.swift */; };
+		1ECC481D253DB60900789DDA /* InputBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1ECC481C253DB60900789DDA /* InputBarView.xib */; };
+		1ECC481F253DEAD200789DDA /* InputBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ECC481E253DEAD200789DDA /* InputBarView.swift */; };
+		1ECC4821253EF51900789DDA /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ECC4820253EF51900789DDA /* Channel.swift */; };
 		752F8ED2E20B2747BFC181A7 /* Pods_ChatApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DCB4E99DBAA6BC84E6E2D2E /* Pods_ChatApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -73,6 +77,10 @@
 		1EBEF39A25212FA000F6E541 /* MessageCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MessageCell.xib; sourceTree = "<group>"; };
 		1EBEF39D252270A200F6E541 /* MessageSectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSectionHeader.swift; sourceTree = "<group>"; };
 		1EBEF39F2522724300F6E541 /* MessageSectionHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MessageSectionHeader.xib; sourceTree = "<group>"; };
+		1ECC481A253DA28000789DDA /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
+		1ECC481C253DB60900789DDA /* InputBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InputBarView.xib; sourceTree = "<group>"; };
+		1ECC481E253DEAD200789DDA /* InputBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputBarView.swift; sourceTree = "<group>"; };
+		1ECC4820253EF51900789DDA /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		65B2EF8EDC1FD9B0C9FDAD85 /* Pods-ChatApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatApp.debug.xcconfig"; path = "Target Support Files/Pods-ChatApp/Pods-ChatApp.debug.xcconfig"; sourceTree = "<group>"; };
 		8DCB4E99DBAA6BC84E6E2D2E /* Pods_ChatApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChatApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		947D0CA18A80459E53EABE33 /* Pods-ChatApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatApp.release.xcconfig"; path = "Target Support Files/Pods-ChatApp/Pods-ChatApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -122,9 +130,13 @@
 				1E676A4D251DF28500E98C42 /* ConversationsListViewController.storyboard */,
 				1E676A55251DF48200E98C42 /* ConversationsListViewController.swift */,
 				1E164094252E7A1A00B37DD6 /* RootNavigationController.swift */,
+				1ECC481A253DA28000789DDA /* FirebaseManager.swift */,
+				1ECC4820253EF51900789DDA /* Channel.swift */,
 				1EBEF38D251E255900F6E541 /* ConfigurableView.swift */,
+				1ECC481C253DB60900789DDA /* InputBarView.xib */,
 				1EBEF39925212FA000F6E541 /* MessageCell.swift */,
 				1EBEF39D252270A200F6E541 /* MessageSectionHeader.swift */,
+				1ECC481E253DEAD200789DDA /* InputBarView.swift */,
 				1EBEF39F2522724300F6E541 /* MessageSectionHeader.xib */,
 				1EBEF39A25212FA000F6E541 /* MessageCell.xib */,
 				1EBCEBE42538B7F1006FAA70 /* GoogleService-Info.plist */,
@@ -261,6 +273,7 @@
 				1E30F126250B944700DDF8DC /* Assets.xcassets in Resources */,
 				1E676A4E251DF28500E98C42 /* ConversationsListViewController.storyboard in Resources */,
 				1EA44026251534BD00BFC316 /* Roboto-Regular.ttf in Resources */,
+				1ECC481D253DB60900789DDA /* InputBarView.xib in Resources */,
 				1EBEF39C25212FA000F6E541 /* MessageCell.xib in Resources */,
 				1E5FFB212527566800F8187A /* ThemesViewController.storyboard in Resources */,
 				1EBEF3A02522724300F6E541 /* MessageSectionHeader.xib in Resources */,
@@ -288,7 +301,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#${PODS_ROOT}/SwiftLint/swiftlint\n\n# Type a script or drag a script file from your workspace to insert its path.\n#if which swiftlint >/dev/null; then\n#  swiftlint\n#else\n#  echo \"error: SwiftLint does not exist, download it from https://github.com/realm/SwiftLint\"\n#  exit 1\n#fi\n";
+			shellScript = "${PODS_ROOT}/SwiftLint/swiftlint\n\n# Type a script or drag a script file from your workspace to insert its path.\n#if which swiftlint >/dev/null; then\n#  swiftlint\n#else\n#  echo \"error: SwiftLint does not exist, download it from https://github.com/realm/SwiftLint\"\n#  exit 1\n#fi\n";
 		};
 		5E72DDA387BE405D490F2339 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -339,15 +352,18 @@
 				1E16408D252B340700B37DD6 /* ThemesPickerDelegate.swift in Sources */,
 				1E676A51251DF38E00E98C42 /* ConversationCell.swift in Sources */,
 				1E772F8E25379D38001A5F8A /* UIAlertController+Extensions.swift in Sources */,
+				1ECC4821253EF51900789DDA /* Channel.swift in Sources */,
 				1E16408F252BA55D00B37DD6 /* ThemesManager.swift in Sources */,
 				1E49C018253781A30025BB36 /* UITextField+Extensions.swift in Sources */,
 				1E5FFB192524A67900F8187A /* Profile.swift in Sources */,
 				1EBEF39B25212FA000F6E541 /* MessageCell.swift in Sources */,
 				1E164095252E7A1A00B37DD6 /* RootNavigationController.swift in Sources */,
 				1E772F8C2537973C001A5F8A /* ProfileDataManagerProtocol.swift in Sources */,
+				1ECC481F253DEAD200789DDA /* InputBarView.swift in Sources */,
 				1E676A56251DF48200E98C42 /* ConversationsListViewController.swift in Sources */,
 				1EBEF39E252270A200F6E541 /* MessageSectionHeader.swift in Sources */,
 				1EBEF39625212E2700F6E541 /* ConversationViewController.swift in Sources */,
+				1ECC481B253DA28000789DDA /* FirebaseManager.swift in Sources */,
 				1E30F121250B944100DDF8DC /* ProfileViewController.swift in Sources */,
 				1EBEF38E251E255900F6E541 /* ConfigurableView.swift in Sources */,
 				1E5FFB1B2527374000F8187A /* ThemesViewController.swift in Sources */,

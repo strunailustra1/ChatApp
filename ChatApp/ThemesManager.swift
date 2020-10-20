@@ -40,11 +40,11 @@ enum Theme: Int {
     var themesVCBackgroundColor: UIColor {
         switch self {
         case .classic:
-            return UIColor(red: 135/256, green: 182/256, blue: 151/256, alpha: 1)
+            return UIColor(red: 135 / 256, green: 182 / 256, blue: 151 / 256, alpha: 1)
         case .day:
-            return UIColor(red: 96/256, green: 153/256, blue: 237/256, alpha: 1)
+            return UIColor(red: 96 / 256, green: 153 / 256, blue: 237 / 256, alpha: 1)
         case .night:
-            return UIColor(red: 25/256, green: 26/256, blue: 51/256, alpha: 1)
+            return UIColor(red: 25 / 256, green: 26 / 256, blue: 51 / 256, alpha: 1)
         }
     }
     
@@ -105,7 +105,7 @@ enum Theme: Int {
     var tableViewCellBackgroundColor: UIColor {
         switch self {
         case .classic:
-            return UIColor(red: 173/256, green: 207/256, blue: 182/256, alpha: 1)
+            return UIColor(red: 173 / 256, green: 207 / 256, blue: 182 / 256, alpha: 1)
         case .day:
             return UIColor(red: 1, green: 1, blue: 1, alpha: 1)
         case .night:
@@ -127,7 +127,7 @@ enum Theme: Int {
         case .classic, .day:
             return UIColor(red: 1, green: 0.988, blue: 0.474, alpha: 0.3)
         case .night:
-            return UIColor(red: 0, green: 21/255, blue: 33/255, alpha: 1)
+            return UIColor(red: 0, green: 21 / 255, blue: 33 / 255, alpha: 1)
         }
     }
     
@@ -221,11 +221,38 @@ enum Theme: Int {
     var messageSenderNameLabelColor: UIColor {
         switch self {
         case .classic:
-            return UIColor(red: 43/256, green: 144/256, blue: 126/256, alpha: 1)
+            return UIColor(red: 43 / 256, green: 144 / 256, blue: 126 / 256, alpha: 1)
         case . day:
             return UIColor(red: 0.263, green: 0.537, blue: 0.976, alpha: 1)
         case . night:
-            return UIColor(red: 64/255, green: 190/255, blue: 178/255, alpha: 1)
+            return UIColor(red: 64 / 255, green: 190 / 255, blue: 178 / 255, alpha: 1)
+        }
+    }
+    
+    var messageInputBackgroundColor: UIColor {
+        switch self {
+        case .classic, .day:
+            return UIColor(red: 0.965, green: 0.965, blue: 0.965, alpha: 1)
+        case .night:
+            return UIColor(red: 0, green: 0, blue: 0, alpha: 1)
+        }
+    }
+    
+    var messageTextInputBorderColor: CGColor {
+        switch self {
+        case .classic, .day:
+            return UIColor(red: 0.557, green: 0.557, blue: 0.576, alpha: 1).cgColor
+        case .night:
+            return UIColor(red: 0.231, green: 0.231, blue: 0.231, alpha: 1).cgColor
+        }
+    }
+    
+    var messageTextInputBackgroundColor: UIColor {
+        switch self {
+        case .classic, .day:
+            return UIColor(red: 1, green: 1, blue: 1, alpha: 1)
+        case .night:
+            return UIColor(red: 0.231, green: 0.231, blue: 0.231, alpha: 1)
         }
     }
 }
@@ -238,7 +265,7 @@ class ThemesManager: ThemesPickerDelegate {
     
     private let selectedThemeKey = "SelectedTheme"
     
-    lazy var themeChangeHandler: ((_ theme: Theme) -> ()) = { [weak self] theme in
+    lazy var themeChangeHandler: ((_ theme: Theme) -> Void) = { [weak self] theme in
         self?.updateTheme(theme)
     }
     
@@ -287,11 +314,6 @@ class ThemesManager: ThemesPickerDelegate {
         tableViewCellAppearance.backgroundColor = theme.tableViewCellBackgroundColor
         tableViewCellAppearance.tintColor = theme.labelTextColor
         tableViewCellAppearance.selectionStyle = .none
-        
-//        let tableViewHeaderAppearance = UITableViewHeaderFooterView.appearance()
-//        tableViewHeaderAppearance.tintColor = ThemesManager.shared.getTheme().tableViewHeaderViewBackgroundColor
-//        let tableViewHeaderLabelAppearance = UILabel.appearance(whenContainedInInstancesOf: [UITableViewHeaderFooterView.self])
-//        tableViewHeaderLabelAppearance.textColor = ThemesManager.shared.getTheme().conversationCellMessageTextColor
         
         UIApplication.shared.delegate?.window??.subviews.forEach({ (view: UIView) in
             view.removeFromSuperview()

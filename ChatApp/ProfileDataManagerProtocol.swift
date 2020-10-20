@@ -9,7 +9,10 @@
 import Foundation
 
 protocol ProfileDataManagerProtocol: class {
-    func save(profile: Profile, changedFields: ProfileChangedFields, succesfullCompletion: @escaping() -> (), errorCompletion: @escaping() -> ())
+    func save(profile: Profile,
+              changedFields: ProfileChangedFields,
+              succesfullCompletion: @escaping() -> Void,
+              errorCompletion: @escaping() -> Void)
     
-    func fetch(defaultProfile: Profile, succesfullCompletion: @escaping(Profile) -> ())
+    func fetch(defaultProfile: Profile, succesfullCompletion: @escaping(Profile) -> Void)
 }
