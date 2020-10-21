@@ -41,6 +41,6 @@ class MessageCell: UITableViewCell, ConfigurableView {
         senderNameLabel.text = model.sender
         senderNameLabel.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
         dateLabel.text = MessageCell.hourDateFormatter.string(from: model.date)
-        dateLabel.font = UIFont.systemFont(ofSize: 11, weight: .regular)
+        dateLabel.font = UIFont.systemFont(ofSize: 10, weight: .regular)
     }
 }

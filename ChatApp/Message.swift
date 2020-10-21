@@ -10,20 +10,20 @@ import Foundation
 import UIKit
 import Firebase
 
-struct MessageFire {
+struct Message {
     let content: String
     let created: Date
     let senderId: String
     let senderName: String
     
     var stringDay: String {
-        MessageFire.dayDateFormatter.string(from: created)
+        Message.dayDateFormatter.string(from: created)
     }
     
     var isUpcomingMessage: Bool {
         senderId == UIDevice.current.identifierForVendor?.uuidString
     }
-
+    
     static var dayDateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
@@ -37,7 +37,7 @@ struct MessageFire {
         senderId = UIDevice.current.identifierForVendor?.uuidString ?? ""
         senderName = ProfileStorage.shared.fullname
     }
-
+    
     init?(document: QueryDocumentSnapshot) {
         let data = document.data()
         
@@ -54,7 +54,7 @@ struct MessageFire {
     }
 }
 
-extension MessageFire: DatabaseRepresentation {
+extension Message: DatabaseRepresentation {
     var representation: [String: Any] {
         return [
             "content": content,
@@ -64,8 +64,9 @@ extension MessageFire: DatabaseRepresentation {
         ]
     }
 }
-extension MessageFire: Comparable {
-    static func < (lhs: MessageFire, rhs: MessageFire) -> Bool {
+
+extension Message: Comparable {
+    static func < (lhs: Message, rhs: Message) -> Bool {
         return lhs.created < rhs.created
     }
 }

@@ -25,104 +25,31 @@ class ConversationsListViewController: UIViewController {
         return tableView
     }()
     
-    private var channels = [Channel]()
+    private lazy var notificationCenter = NotificationCenter.default
     
-    private var lastTheme = ThemesManager.shared.getTheme()
+    private var channels = [Channel]()
     
     static func storyboardInstance() -> ConversationsListViewController? {
         let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
         return storyboard.instantiateInitialViewController() as? ConversationsListViewController
     }
     
-    lazy private var db = Firestore.firestore()
-    lazy private var channelsReference = db.collection("channels")
-    private var channelsListener: ListenerRegistration?
-    
     deinit {
-        channelsListener?.remove()
+        FirestoreDataProvider.shared.removeChannelsListener()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(tableView)
         
-        channelsListener = channelsReference.addSnapshotListener { querySnapshot, error in
-            guard let snapshot = querySnapshot else {
-                print("Error listening for channel updates: \(error?.localizedDescription ?? "No error")")
-                return
-            }
-            
-            snapshot.documentChanges.forEach { change in
-                self.handleDocumentChange(change)
-            }
-        }
-    }
-    
-    private func addChannelToTable(_ channel: Channel) {
-        guard !channels.contains(channel) else { return }
-        
-        channels.append(channel)
-        channels.sort(by: >)
-        
-        guard let index = channels.firstIndex(of: channel) else { return }
-        tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-    }
-    
-    private func updateChannelInTable(_ channel: Channel) {
-        guard let index = channels.firstIndex(of: channel) else { return }
-        
-        //todo пушить канал с обновленной датой публикации наверх
-        channels[index] = channel
-        tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-    }
-    
-    private func removeChannelFromTable(_ channel: Channel) {
-        guard let index = channels.firstIndex(of: channel) else { return }
-        
-        channels.remove(at: index)
-        tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-    }
-    
-    private func handleDocumentChange(_ change: DocumentChange) {
-        guard let channel = Channel(document: change.document) else { return }
-        
-        switch change.type {
-        case .added:
-            addChannelToTable(channel)
-            
-        case .modified:
-            updateChannelInTable(channel)
-            
-        case .removed:
-            removeChannelFromTable(channel)
-        }
+        FirestoreDataProvider.shared.getChannels(completion: { [weak self] change in
+            self?.handleDocumentChange(change)
+        })
     }
 
-    private func createChannel(channelName: String) {
-        let channel = Channel(name: channelName)
-        self.addChannelToTable(channel)
-        // создаем документ со своим id, т.к. сразу помещаем его наверх таблицы
-        channelsReference
-            .document(channel.identifier)
-            .setData(channel.representation, completion: { [weak self] error in
-                if let e = error {
-                    print("Error saving channel: \(e.localizedDescription)")
-                    self?.removeChannelFromTable(channel)
-                }
-            })
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupNavigationContoller()
-        
-        //todo drop it?
-        //Перегружаем таблицу для отрисовки ячеек в новой теме из-за backgroundColor,
-        //который задается в самой ячейке из-за того, что он зависит от Online/History
-        if lastTheme != ThemesManager.shared.getTheme() {
-            tableView.reloadData()
-            lastTheme = ThemesManager.shared.getTheme()
-        }
     }
     
     @objc func editProfile() {
@@ -136,7 +63,7 @@ class ConversationsListViewController: UIViewController {
         }
     }
     
-    @objc func themeEdit() {
+    @objc func editTheme() {
         if let themesVC = ThemesViewController.storyboardInstance() {
             navigationController?.pushViewController(themesVC, animated: true)
             navigationItem.backBarButtonItem = UIBarButtonItem(title: "Channels",
@@ -168,8 +95,7 @@ extension ConversationsListViewController: UITableViewDataSource {
         let channel = channels[indexPath.row]
         cell.configure(with: .init(name: channel.name,
                                    message: channel.lastMessage ?? "",
-                                   date: channel.lastActivity ?? Date(timeIntervalSince1970: 0)))
-        //todo:- формат lastActivity для пустого канала
+                                   date: channel.lastActivity))
         return cell
     }
 }
@@ -198,7 +124,7 @@ extension ConversationsListViewController {
         updateNavigationRightButtonImage()
         
         let settingImage = ThemesManager.shared.getTheme().settingImageColor
-        let themesTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.themeEdit))
+        let themesTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.editTheme))
         settingImage.addGestureRecognizer(themesTapGestureRecognizer)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: settingImage)
     }
@@ -247,18 +173,71 @@ extension ConversationsListViewController {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         
         let createAction = UIAlertAction(title: "Create", style: .default) { _ in
-            guard let channelName = alert.textFields?.first?.text, !channelName.isEmpty else {
-                print("The text field is empty")
-                //todo block save button on empty channel name
+            guard let channelName = alert.textFields?.first?.text,
+                channelName.trimmingCharacters(in: .whitespacesAndNewlines).count != 0 else {
                 return
             }
             createActionHandler(channelName)
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .destructive)
+        
         alert.addTextField()
         alert.addAction(createAction)
         alert.addAction(cancelAction)
+        
         present(alert, animated: true)
+    }
+}
+
+extension ConversationsListViewController {
+    private func addChannelToTable(_ channel: Channel) {
+        guard !channels.contains(channel) else { return }
+        
+        channels.append(channel)
+        channels.sort(by: >)
+        
+        guard let index = channels.firstIndex(of: channel) else { return }
+        tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+    }
+    
+    private func updateChannelInTable(_ channel: Channel) {
+        guard let index = channels.firstIndex(of: channel) else { return }
+        
+        channels[index] = channel
+        tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+    }
+    
+    private func removeChannelFromTable(_ channel: Channel) {
+        guard let index = channels.firstIndex(of: channel) else { return }
+        
+        channels.remove(at: index)
+        tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+    }
+    
+    private func handleDocumentChange(_ change: DocumentChange) {
+        guard let channel = Channel(document: change.document) else { return }
+        
+        switch change.type {
+        case .added:
+            addChannelToTable(channel)
+            
+        case .modified:
+            updateChannelInTable(channel)
+            
+        case .removed:
+            removeChannelFromTable(channel)
+        }
+    }
+
+    private func createChannel(channelName: String) {
+        let channel = Channel(name: channelName)
+        self.addChannelToTable(channel)
+        // создаем документ со своим id, т.к. предварительно сами помещаем его наверх таблицы
+        // неплохо было бы в api иметь поле с максимальной из двух дат (дата создания канала или последнего сообщения),
+        // чтобы сортировать по данной дате список каналов, но такого пока нет, поэтому костылим
+        FirestoreDataProvider.shared.createChannel(channel: channel) { [weak self] _ in
+            self?.removeChannelFromTable(channel)
+        }
     }
 }

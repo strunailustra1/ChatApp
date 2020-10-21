@@ -38,7 +38,7 @@ struct Channel {
 
 extension Channel: Comparable {
     static func == (lhs: Channel, rhs: Channel) -> Bool {
-      return lhs.identifier == rhs.identifier
+        return lhs.identifier == rhs.identifier
     }
     
     static func < (lhs: Channel, rhs: Channel) -> Bool {

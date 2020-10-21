@@ -45,8 +45,7 @@ class InputBarView: UIView {
         textInputView.layer.cornerRadius = 16
         textInputView.layer.borderColor = ThemesManager.shared.getTheme().messageTextInputBorderColor
         textInputView.layer.borderWidth = 0.5
-        //textInputView.textContainer.maximumNumberOfLines = 3
-        //textInputView.textContainer.lineBreakMode = .byWordWrapping
+        textInputView.textColor = ThemesManager.shared.getTheme().labelTextColor
         textInputView.delegate = self
         
         sendMessageButton.isHidden = true

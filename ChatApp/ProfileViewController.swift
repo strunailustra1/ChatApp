@@ -53,16 +53,6 @@ class ProfileViewController: UIViewController {
         return activityIndicator
         }()
     
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        /*
-         На момент инициализации контроллера еще не проинициализированы аутлеты,
-         расположенные на экране, все значения равны nil.
-         Аутлеты будут проинициализированы в loadView().
-         */
-        // Logger.vcLog(frame: "\(saveButton.frame)")
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -79,9 +69,6 @@ class ProfileViewController: UIViewController {
         view.backgroundColor = ThemesManager.shared.getTheme().profileVCBackgroundColor
         
         updateSaveButtonAvailability()
-        
-        Logger.shared.vcLog(description: "has loaded its view hierarchy into memory")
-        Logger.shared.vcLog(frame: "\(gcdButton.frame)")
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -93,25 +80,6 @@ class ProfileViewController: UIViewController {
         notificationCenter.addObserver(self,
                                        selector: #selector(keyboardWillHide(sender:)),
                                        name: UIResponder.keyboardWillHideNotification, object: nil)
-        
-        Logger.shared.vcLog(stateFrom: "Disappeared", stateTo: "Appearing")
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        /*
-         В viewDidLoad() приведен расчет значений для девайса, выбранного в storyboard.
-         В viewDidAppear() уже известны и отрисованы размеры девайса в симуляторе.
-         */
-        Logger.shared.vcLog(frame: "\(gcdButton.frame)")
-        
-        Logger.shared.vcLog(stateFrom: "Appearing", stateTo: "Appeared")
-    }
-    
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        Logger.shared.vcLog(description: "view is about to layout its subviews")
     }
     
     override func viewDidLayoutSubviews() {
@@ -128,8 +96,6 @@ class ProfileViewController: UIViewController {
         if view.frame.width < 375 { // Iphone SE
             logoLabel.font = UIFont(name: "Roboto-Regular", size: 80)
         }
-        
-        Logger.shared.vcLog(description: "view has just laid out its subviews")
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -137,13 +103,6 @@ class ProfileViewController: UIViewController {
         
         notificationCenter.removeObserver(self, name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
         notificationCenter.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
-        
-        Logger.shared.vcLog(stateFrom: "Appeared", stateTo: "Disappearing")
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        Logger.shared.vcLog(stateFrom: "Disappearing", stateTo: "Disappeared")
     }
     
     @IBAction func editAction(_ sender: UIButton) {
@@ -234,7 +193,7 @@ class ProfileViewController: UIViewController {
         
         alert.setValue(NSAttributedString(string: "Edit photo",
                                           attributes: [NSAttributedString.Key.font:
-                                                UIFont.systemFont(ofSize: 20, weight: .semibold)]),
+                                            UIFont.systemFont(ofSize: 20, weight: .semibold)]),
                        forKey: "attributedTitle")
         alert.setValue(NSAttributedString(string: "Please, choose one of the ways",
                                           attributes: [NSAttributedString.Key.font:

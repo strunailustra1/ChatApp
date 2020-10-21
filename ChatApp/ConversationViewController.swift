@@ -16,12 +16,8 @@ class ConversationViewController: UIViewController {
     private let sectionHeaderIdentifier = String(describing: MessageSectionHeader.self)
     
     private lazy var tableView: UITableView = {
-        let bottomSafeAreaSize = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0
-        
-        let tableView = UITableView(frame: CGRect(x: 0, y: 0,
-                                                  width: view.frame.width,
-                                                  height: view.frame.height - bottomSafeAreaSize - 50),
-                                    style: .plain)
+        let tableView = UITableView(frame: view.frame, style: .plain)
+
         tableView.register(UINib(nibName: String(describing: MessageCell.self), bundle: nil),
                            forCellReuseIdentifier: cellIdentifierUpcoming)
         tableView.register(UINib(nibName: String(describing: MessageCell.self), bundle: nil),
@@ -31,280 +27,79 @@ class ConversationViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.separatorStyle = .none
+        tableView.keyboardDismissMode = .interactive
         
         return tableView
     }()
-
-    private let db = Firestore.firestore()
-    private var messagesReference: CollectionReference?
-    private var messageListener: ListenerRegistration?
     
     private let notificationCenter = NotificationCenter.default
     
-    var messages = [[MessageFire]]()
-    var channel: Channel?
-    
-    deinit {
-        messageListener?.remove()
-    }
-    
-    private var shouldScrollToBottom = true
     private var shouldAdjustForKeyboard = false
     private var customInput: InputBarView?
     
     override var inputAccessoryView: UIView? {
-        get {
-            if customInput == nil {
-                customInput = Bundle.main.loadNibNamed("InputBarView", owner: self,
-                                                       options: nil)?.first as? InputBarView
-                customInput?.confugureInputView()
-                //customInput?.translatesAutoresizingMaskIntoConstraints = false
-                
-                customInput?.sendMessageHandler = { [weak self] messageText in
-                    let message = MessageFire(content: messageText)
-                    self?.save(message)
-                }
+        if customInput == nil {
+            customInput = Bundle.main.loadNibNamed("InputBarView", owner: self,
+                                                   options: nil)?.first as? InputBarView
+            customInput?.confugureInputView()
+            customInput?.sendMessageHandler = { [weak self] messageText in
+                let message = Message(content: messageText)
+                self?.saveMessage(message)
             }
-            return customInput
         }
+        return customInput
     }
     
-        override var canBecomeFirstResponder: Bool {
-            return true
-        }
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
     
-        override var canResignFirstResponder: Bool {
-            return true
-        }
+    override var canResignFirstResponder: Bool {
+        return true
+    }
     
     static func storyboardInstance() -> ConversationViewController? {
         let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
         return storyboard.instantiateInitialViewController() as? ConversationViewController
     }
     
+    var messages = [[Message]]()
+    var channel: Channel?
+    
+    deinit {
+        FirestoreDataProvider.shared.removeMessagesListener()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(tableView)
+        
         setupNavigationController()
         
         if let channel = self.channel {
-            messagesReference = db.collection("channels").document(channel.identifier).collection("messages")
-            
-            messageListener = messagesReference?.order(by: "created").addSnapshotListener { querySnapshot, error in
-                guard let snapshot = querySnapshot else {
-                    print("Error listening for channel updates: \(error?.localizedDescription ?? "No error")")
-                    return
-                }
-                
-                snapshot.documentChanges.forEach { change in
-                    self.handleDocumentChange(change)
-                }
-            }
+            FirestoreDataProvider.shared.getMessages(in: channel, completion: { [weak self] change in
+                self?.handleDocumentChange(change)
+            })
         }
-    }
-    
-    @objc func handleTap(recognizer: UITapGestureRecognizer) {
-        //customInput?.textInputView.resignFirstResponder()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         becomeFirstResponder()
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self,
-                                                                 action: #selector(handleTap(recognizer:)))
-        self.view.addGestureRecognizer(tap)
-        
-        shouldAdjustForKeyboard = true
-        
+        hideKeyboardWhenTappedAround()
         registerKeyboardNotifications()
-        
-//        notificationCenter.addObserver(self,
-//                                       selector: #selector(keyboardWillShow(sender:)),
-//                                       name: UIResponder.keyboardWillShowNotification, object: nil)
-//        notificationCenter.addObserver(self,
-//                                       selector: #selector(keyboardWillHide(sender:)),
-//                                       name: UIResponder.keyboardWillHideNotification, object: nil)
     }
-    
-    func registerKeyboardNotifications() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(keyboardWillShow(_:)),
-                                               name: UIResponder.keyboardWillShowNotification,
-                                               object: nil)
-     
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(keyboardWillHide(_:)),
-                                               name: UIResponder.keyboardWillHideNotification,
-                                               object: nil)
-    }
-    
-    @objc func keyboardWillShow(_ notification: NSNotification) {
-        adjustContentForKeyboard(shown: true, notification: notification)
-    }
-     
-    @objc func keyboardWillHide(_ notification: NSNotification) {
-        adjustContentForKeyboard(shown: false, notification: notification)
-    }
-    
-    func adjustContentForKeyboard(shown: Bool, notification: NSNotification) {
-        guard shouldAdjustForKeyboard, let payload = KeyboardInfo(notification as Notification) else { return }
-     
-        let keyboardHeight = shown ? payload.frameEnd.size.height : customInput?.bounds.size.height ?? 0
-        if tableView.contentInset.bottom == keyboardHeight {
-            return
-        }
-     
-        let distanceFromBottom = bottomOffset().y - tableView.contentOffset.y
-     
-        var insets = tableView.contentInset
-        insets.bottom = keyboardHeight
-     
-        UIView.animate(withDuration: payload.animationDuration, delay: 0, options: .curveEaseIn, animations: {
-     
-            self.tableView.contentInset = insets
-            self.tableView.scrollIndicatorInsets = insets
-     
-            if distanceFromBottom < 10 {
-                self.tableView.contentOffset = self.bottomOffset()
-            }
-        }, completion: nil)
-    }
-    
-        @objc func keyboardWillShow(sender: NSNotification) {
-            if let keyboardSize = (sender.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-                if self.view.frame.origin.y == 0 {
-                    self.view.frame.origin.y = keyboardSize.height > 226 ? -250 : -keyboardSize.height
-                }
-            }
-    //        if let keyboardSize = (sender.userInfo?[UIResponder.keyboardFrameEndUserInfoKey]
-    //            as? NSValue)?.cgRectValue {
-    //            tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardSize.height, right: 0)
-    //        }
-        }
-        
-        @objc func keyboardWillHide(sender: NSNotification) {
-            if self.view.frame.origin.y != 0 {
-                self.view.frame.origin.y = 0
-            }
-    //        if let keyboardSize = (sender.userInfo?[UIResponder.keyboardFrameEndUserInfoKey]
-    //            as? NSValue)?.cgRectValue {
-    //            tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-    //        }
-        }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-
-        if shouldScrollToBottom {
-            shouldScrollToBottom = false
-            scrollToBottom(animated: false)
-        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        notificationCenter.removeObserver(self, name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
-        notificationCenter.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
-        shouldAdjustForKeyboard = false
-    }
-    
-    private func scrollToBottom(animated: Bool) {
-        view.layoutIfNeeded()
-        tableView.setContentOffset(bottomOffset(), animated: animated)
-    }
-    
-    private func bottomOffset() -> CGPoint {
-        return CGPoint(x: 0,
-                       y: max(-tableView.contentInset.top,
-                              tableView.contentSize.height -
-                                (tableView.bounds.size.height - tableView.contentInset.bottom)))
-    }
-    
-    private func save(_ message: MessageFire) {
-        messagesReference?.addDocument(data: message.representation) { error in
-            if let e = error {
-                print("Error sending message: \(e.localizedDescription)")
-                return
-            }
-            
-            //self.messagesCollectionView.scrollToRow()
-        }
-    }
-    
-    private func insertNewMessage(_ message: MessageFire) {
         
-        var hasSection = false
-        for (section, sectionMessages) in messages.enumerated() {
-            if let firstMessage = sectionMessages.first, firstMessage.stringDay == message.stringDay {
-                messages[section].append(message)
-                hasSection = true
-                
-                tableView.insertRows(at: [IndexPath(row: messages[section].count - 1,
-                                                    section: section)],
-                                     with: .automatic)
-                
-                break
-            }
-        }
-        
-        if !hasSection {
-            messages.append([message])
-            let section = IndexSet(integer: messages.count - 1)
-            tableView.insertSections(section, with: .automatic)
-        }
-        
-        if messages.count > 0 {
-            let indexPath = IndexPath(row: messages[messages.count - 1].count - 1,
-                                      section: messages.count - 1)
-            tableView.scrollToRow(at: indexPath, at: UITableView.ScrollPosition.middle, animated: true)
-            //            DispatchQueue.main.async {
-            //                self.tableView.scrollToRow(at: indexPath, at: UITableView.ScrollPosition.middle, animated: false)
-            //            }
-        }
-        
-        //      if shouldScrollToBottom {
-        //        DispatchQueue.main.async {
-        //          self.messagesCollectionView.scrollToBottom(animated: true)
-        //        }
-        //      }
-        
+        unregisterKeyboardNotifications()
     }
-    
-    private func handleDocumentChange(_ change: DocumentChange) {
-        guard let message = MessageFire(document: change.document) else {
-            return
-        }
-        
-        switch change.type {
-        case .added:
-            insertNewMessage(message)
-        default:
-            break
-        }
-    }
-    
-
-    
-    //    func adjustContentForKeyboard(shown: Bool, notification: NSNotification) {
-    //        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey]
-    //as? NSValue)?.cgRectValue {
-    //            let keyboardHeight = shown ? keyboardSize.size.height : customInput?.bounds.size.height ?? 0
-    //            if tableView.contentInset.bottom == keyboardHeight {
-    //                return
-    //            }
-    //
-    //            let distanceFromBottom = bottomOffset().y - tableView.contentOffset.y
-    //            var insets = tableView.contentInset
-    //            insets.bottom = keyboardHeight
-    //
-    //            self.tableView.contentInset = insets
-    //            self.tableView.scrollIndicatorInsets = insets
-    //
-    //             if distanceFromBottom < 10 {
-    //                self.tableView.contentOffset = self.bottomOffset()
-    //             }
-    //        }
-    //    }
 }
 
 extension ConversationViewController: UITableViewDataSource {
@@ -337,8 +132,8 @@ extension ConversationViewController: UITableViewDataSource {
             : ThemesManager.shared.getTheme().messageIncomingTextColor
         
         cell.dateLabel.textColor = message.isUpcomingMessage
-        ? ThemesManager.shared.getTheme().messageDateLabelUpcomingColor
-        : ThemesManager.shared.getTheme().messageDateLabelIncomingColor
+            ? ThemesManager.shared.getTheme().messageDateLabelUpcomingColor
+            : ThemesManager.shared.getTheme().messageDateLabelIncomingColor
         
         cell.senderNameLabel.textColor = ThemesManager.shared.getTheme().messageSenderNameLabelColor
         
@@ -387,33 +182,131 @@ extension ConversationViewController {
     }
 }
 
-struct KeyboardInfo {
-    var animationCurve: UIView.AnimationCurve
-    var animationDuration: Double
-    var isLocal: Bool
-    var frameBegin: CGRect
-    var frameEnd: CGRect
+extension ConversationViewController {
+    private func saveMessage(_ message: Message) {
+        guard let channel = self.channel else { return }
+        FirestoreDataProvider.shared.createMessage(in: channel, message: message)
+    }
+    
+    private func insertNewMessage(_ message: Message) {
+        
+        var hasSection = false
+        for (section, sectionMessages) in messages.enumerated() {
+            if let firstMessage = sectionMessages.first, firstMessage.stringDay == message.stringDay {
+                messages[section].append(message)
+                hasSection = true
+                
+                tableView.insertRows(at: [IndexPath(row: messages[section].count - 1,
+                                                    section: section)],
+                                     with: .none)
+                break
+            }
+        }
+        
+        if !hasSection {
+            messages.append([message])
+            let section = IndexSet(integer: messages.count - 1)
+            tableView.insertSections(section, with: .none)
+        }
+        
+        scrollToBottom(animated: false)
+    }
+    
+    private func handleDocumentChange(_ change: DocumentChange) {
+        guard let message = Message(document: change.document) else {
+            return
+        }
+        
+        switch change.type {
+        case .added:
+            insertNewMessage(message)
+        default:
+            break
+        }
+    }
+    
+    private func scrollToBottom(animated: Bool) {
+        view.layoutIfNeeded()
+        tableView.setContentOffset(bottomOffset(), animated: animated)
+    }
+    
+    private func bottomOffset() -> CGPoint {
+        CGPoint(
+            x: 0,
+            y: max(-tableView.contentInset.bottom - 10,
+                   tableView.contentSize.height - (tableView.bounds.size.height - tableView.contentInset.bottom))
+        )
+    }
 }
 
-extension KeyboardInfo {
-    init?(_ notification: Notification) {
-        //todo !!!
-        guard notification.name == UIResponder.keyboardWillShowNotification || notification.name == UIResponder.keyboardWillChangeFrameNotification else { return nil }
-        guard let u = notification.userInfo else { return nil }
+extension ConversationViewController {
+    private func registerKeyboardNotifications() {
+        shouldAdjustForKeyboard = true
         
-        guard let animationCurve = UIView.AnimationCurve(rawValue: u[UIWindow.keyboardAnimationCurveUserInfoKey] as? Int ?? 0) else { return nil }
-        self.animationCurve = animationCurve
+        notificationCenter.addObserver(self,
+                                       selector: #selector(keyboardWillShow(sender:)),
+                                       name: UIResponder.keyboardWillShowNotification,
+                                       object: nil)
+        
+        notificationCenter.addObserver(self,
+                                       selector: #selector(keyboardWillHide(sender:)),
+                                       name: UIResponder.keyboardWillHideNotification,
+                                       object: nil)
+    }
+    
+    private func unregisterKeyboardNotifications() {
+        shouldAdjustForKeyboard = false
+        
+        notificationCenter.removeObserver(self, name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+        notificationCenter.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    private func adjustContentForKeyboard(shown: Bool, notification: NSNotification) {
+        guard shouldAdjustForKeyboard, let payload = KeyboardInfo(notification as Notification) else { return }
+        
+        let keyboardHeight = shown ? payload.frameEnd.size.height : customInput?.bounds.size.height ?? 0
+        if tableView.contentInset.bottom == keyboardHeight {
+            return
+        }
+        
+        let distanceFromBottom = bottomOffset().y - tableView.contentOffset.y
+        
+        var insets = tableView.contentInset
+        insets.bottom = keyboardHeight
+        
+        UIView.animate(withDuration: payload.animationDuration, delay: 0, options: .curveEaseIn, animations: {
+            
+            self.tableView.contentInset = insets
+            self.tableView.scrollIndicatorInsets = insets
+            
+            if distanceFromBottom < 10 {
+                self.tableView.contentOffset = self.bottomOffset()
+            }
+        }, completion: nil)
+    }
+    
+    @objc func keyboardWillShow(sender: NSNotification) {
+        adjustContentForKeyboard(shown: true, notification: sender)
+    }
+    
+    @objc func keyboardWillHide(sender: NSNotification) {
+        adjustContentForKeyboard(shown: false, notification: sender)
+    }
+}
 
-        guard let animationDuration = u[UIWindow.keyboardAnimationDurationUserInfoKey] as? Double else { return nil }
-        self.animationDuration = animationDuration
-        
-        guard let isLocal = u[UIWindow.keyboardIsLocalUserInfoKey] as? Bool else { return nil }
-        self.isLocal = isLocal
-
-        guard let frameBegin = u[UIWindow.keyboardFrameBeginUserInfoKey] as? CGRect else { return nil }
-        self.frameBegin = frameBegin
-        
-        guard let frameEnd = u[UIWindow.keyboardFrameEndUserInfoKey] as? CGRect else { return nil }
-        self.frameEnd = frameEnd
+extension ConversationViewController {
+    func hideKeyboardWhenTappedAround() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    
+    /*
+     Не удалось побороть, view.endEditing(true) тоже не помог (не работает)
+     First responder warning: '<UITextView: 0x7fe567077e00;'
+     rejected resignFirstResponder when being removed from hierarchy
+     */
+    @objc func dismissKeyboard() {
+        customInput?.textInputView.resignFirstResponder()
     }
 }

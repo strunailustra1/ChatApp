@@ -19,7 +19,7 @@ class ConversationCell: UITableViewCell, ConfigurableView {
     struct ConversationCellModel {
         let name: String
         let message: String
-        let date: Date
+        let date: Date?
     }
 
     static let startOfDay = Calendar.current.startOfDay(for: Date())
@@ -42,22 +42,18 @@ class ConversationCell: UITableViewCell, ConfigurableView {
         nameLabel.text = model.name
         messageLabel.text = model.message
         
-        if model.message != "" {
-            dateLabel.text = model.date < ConversationCell.startOfDay
-                ? ConversationCell.dayDateFormatter.string(from: model.date)
-                : ConversationCell.hourDateFormatter.string(from: model.date)
+        if let date = model.date {
+            dateLabel.text = date < ConversationCell.startOfDay
+                ? ConversationCell.dayDateFormatter.string(from: date)
+                : ConversationCell.hourDateFormatter.string(from: date)
         } else {
-            // todo что делать с датой для пустого канала
-            //dateLabel.text = ""
-            dateLabel.text = model.date < ConversationCell.startOfDay
-                ? ConversationCell.dayDateFormatter.string(from: model.date)
-                : ConversationCell.hourDateFormatter.string(from: model.date)
+            dateLabel.text = ""
         }
         
         messageLabel.text = model.message != "" ? model.message : "No messages yet"
-        messageLabel.textColor = ThemesManager.shared.getTheme().conversationCellMessageTextColor
         nameLabel.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
         dateLabel.font = UIFont.systemFont(ofSize: 15, weight: .regular)
-        dateLabel.textColor = ThemesManager.shared.getTheme().conversationCellMessageTextColor
     }
 }
+
+class ConversationSecondaryLabel: UILabel {}

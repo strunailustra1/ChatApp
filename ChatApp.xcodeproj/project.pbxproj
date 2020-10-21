@@ -16,6 +16,8 @@
 		1E30F126250B944700DDF8DC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1E30F125250B944700DDF8DC /* Assets.xcassets */; };
 		1E30F129250B944700DDF8DC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E30F127250B944700DDF8DC /* LaunchScreen.storyboard */; };
 		1E4686B1254043A700EFF407 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4686B0254043A700EFF407 /* Message.swift */; };
+		1E4686B32540C05A00EFF407 /* KeyboardInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4686B22540C05900EFF407 /* KeyboardInfo.swift */; };
+		1E4686B52540D72900EFF407 /* FirestoreDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4686B42540D72900EFF407 /* FirestoreDataProvider.swift */; };
 		1E48E60F2534CA9000455C27 /* GCDDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E48E60E2534CA9000455C27 /* GCDDataManager.swift */; };
 		1E48E6112534CAA400455C27 /* OperationDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E48E6102534CAA400455C27 /* OperationDataManager.swift */; };
 		1E49C018253781A30025BB36 /* UITextField+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E49C017253781A30025BB36 /* UITextField+Extensions.swift */; };
@@ -38,7 +40,6 @@
 		1EBEF39C25212FA000F6E541 /* MessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1EBEF39A25212FA000F6E541 /* MessageCell.xib */; };
 		1EBEF39E252270A200F6E541 /* MessageSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EBEF39D252270A200F6E541 /* MessageSectionHeader.swift */; };
 		1EBEF3A02522724300F6E541 /* MessageSectionHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1EBEF39F2522724300F6E541 /* MessageSectionHeader.xib */; };
-		1ECC481B253DA28000789DDA /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ECC481A253DA28000789DDA /* FirebaseManager.swift */; };
 		1ECC481D253DB60900789DDA /* InputBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1ECC481C253DB60900789DDA /* InputBarView.xib */; };
 		1ECC481F253DEAD200789DDA /* InputBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ECC481E253DEAD200789DDA /* InputBarView.swift */; };
 		1ECC4821253EF51900789DDA /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ECC4820253EF51900789DDA /* Channel.swift */; };
@@ -57,6 +58,8 @@
 		1E30F128250B944700DDF8DC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1E30F12A250B944700DDF8DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1E4686B0254043A700EFF407 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		1E4686B22540C05900EFF407 /* KeyboardInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardInfo.swift; sourceTree = "<group>"; };
+		1E4686B42540D72900EFF407 /* FirestoreDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreDataProvider.swift; sourceTree = "<group>"; };
 		1E48E60E2534CA9000455C27 /* GCDDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GCDDataManager.swift; sourceTree = "<group>"; };
 		1E48E6102534CAA400455C27 /* OperationDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationDataManager.swift; sourceTree = "<group>"; };
 		1E49C017253781A30025BB36 /* UITextField+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Extensions.swift"; sourceTree = "<group>"; };
@@ -79,7 +82,6 @@
 		1EBEF39A25212FA000F6E541 /* MessageCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MessageCell.xib; sourceTree = "<group>"; };
 		1EBEF39D252270A200F6E541 /* MessageSectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSectionHeader.swift; sourceTree = "<group>"; };
 		1EBEF39F2522724300F6E541 /* MessageSectionHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MessageSectionHeader.xib; sourceTree = "<group>"; };
-		1ECC481A253DA28000789DDA /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
 		1ECC481C253DB60900789DDA /* InputBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InputBarView.xib; sourceTree = "<group>"; };
 		1ECC481E253DEAD200789DDA /* InputBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputBarView.swift; sourceTree = "<group>"; };
 		1ECC4820253EF51900789DDA /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
@@ -131,8 +133,9 @@
 				1E676A50251DF38E00E98C42 /* ConversationCell.xib */,
 				1E676A4D251DF28500E98C42 /* ConversationsListViewController.storyboard */,
 				1E676A55251DF48200E98C42 /* ConversationsListViewController.swift */,
+				1E4686B42540D72900EFF407 /* FirestoreDataProvider.swift */,
+				1E4686B22540C05900EFF407 /* KeyboardInfo.swift */,
 				1E164094252E7A1A00B37DD6 /* RootNavigationController.swift */,
-				1ECC481A253DA28000789DDA /* FirebaseManager.swift */,
 				1E4686B0254043A700EFF407 /* Message.swift */,
 				1ECC4820253EF51900789DDA /* Channel.swift */,
 				1EBEF38D251E255900F6E541 /* ConfigurableView.swift */,
@@ -354,6 +357,7 @@
 			files = (
 				1E16408D252B340700B37DD6 /* ThemesPickerDelegate.swift in Sources */,
 				1E676A51251DF38E00E98C42 /* ConversationCell.swift in Sources */,
+				1E4686B32540C05A00EFF407 /* KeyboardInfo.swift in Sources */,
 				1E772F8E25379D38001A5F8A /* UIAlertController+Extensions.swift in Sources */,
 				1ECC4821253EF51900789DDA /* Channel.swift in Sources */,
 				1E16408F252BA55D00B37DD6 /* ThemesManager.swift in Sources */,
@@ -366,7 +370,6 @@
 				1E676A56251DF48200E98C42 /* ConversationsListViewController.swift in Sources */,
 				1EBEF39E252270A200F6E541 /* MessageSectionHeader.swift in Sources */,
 				1EBEF39625212E2700F6E541 /* ConversationViewController.swift in Sources */,
-				1ECC481B253DA28000789DDA /* FirebaseManager.swift in Sources */,
 				1E30F121250B944100DDF8DC /* ProfileViewController.swift in Sources */,
 				1EBEF38E251E255900F6E541 /* ConfigurableView.swift in Sources */,
 				1E4686B1254043A700EFF407 /* Message.swift in Sources */,
@@ -374,6 +377,7 @@
 				1E48E60F2534CA9000455C27 /* GCDDataManager.swift in Sources */,
 				1E48E6112534CAA400455C27 /* OperationDataManager.swift in Sources */,
 				1E6B8FC2250E319800A5632E /* Logger.swift in Sources */,
+				1E4686B52540D72900EFF407 /* FirestoreDataProvider.swift in Sources */,
 				1E30F11D250B944100DDF8DC /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
