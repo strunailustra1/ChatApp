@@ -16,6 +16,8 @@ class InputBarView: UIView {
     @IBOutlet weak var textViewHeight: NSLayoutConstraint!
     @IBOutlet weak var placeholderText: UILabel!
     
+    let maxTextViewHeight: CGFloat = 100
+    
     var sendMessageHandler: ((String) -> Void)?
     
     @IBAction func sendMessageAction(_ sender: UIButton) {
@@ -27,16 +29,14 @@ class InputBarView: UIView {
         changeTextViewHeight()
     }
     
+    /*
+     не удалось победить warning
+     хотя на so предлагают именно такое решение https://stackoverflow.com/a/45744784
+     API error: <_UIKBCompatInputView: 0x7fa61eca7f50; frame = (0 0; 0 0);
+     layer = <CALayer: 0x600003339da0>> returned 0 width, assuming UIViewNoIntrinsicMetric
+     */
     override var intrinsicContentSize: CGSize {
         return textViewContentSize()
-    }
-    
-    func textViewContentSize() -> CGSize {
-        let size = CGSize(width: textInputView.bounds.width,
-                          height: CGFloat.greatestFiniteMagnitude)
-
-        let textSize = textInputView.sizeThatFits(size)
-        return CGSize(width: bounds.width, height: textSize.height)
     }
     
     func confugureInputView() {
@@ -45,14 +45,27 @@ class InputBarView: UIView {
         textInputView.layer.cornerRadius = 16
         textInputView.layer.borderColor = ThemesManager.shared.getTheme().messageTextInputBorderColor
         textInputView.layer.borderWidth = 0.5
+        //textInputView.textContainer.maximumNumberOfLines = 3
+        //textInputView.textContainer.lineBreakMode = .byWordWrapping
+        textInputView.delegate = self
+        
         sendMessageButton.isHidden = true
+        
         placeholderText.text = "Your message here..."
         placeholderText.textColor = UIColor.lightGray
-        
-        textInputView.delegate = self
     }
     
-    func changeTextViewHeight() {
+    private func textViewContentSize() -> CGSize {
+        let size = CGSize(width: textInputView.bounds.width,
+                          height: CGFloat.greatestFiniteMagnitude)
+        
+        let textSize = textInputView.sizeThatFits(size)
+        
+        return CGSize(width: bounds.width,
+                      height: textSize.height > maxTextViewHeight ? maxTextViewHeight : textSize.height)
+    }
+    
+    private func changeTextViewHeight() {
         let contentHeight = textViewContentSize().height
         if textViewHeight.constant != contentHeight {
             textViewHeight.constant = textViewContentSize().height
@@ -66,14 +79,14 @@ extension InputBarView: UITextViewDelegate {
         placeholderText.isHidden = !textView.text.isEmpty
         changeTextViewHeight()
     }
-
+    
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-    if let textFieldString = textView.fullTextWith(range: range, replacementString: text) {
-        if textFieldString.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
-            sendMessageButton.isHidden = false
-            return true
+        if let textFieldString = textView.fullTextWith(range: range, replacementString: text) {
+            if textFieldString.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
+                sendMessageButton.isHidden = false
+                return true
+            }
         }
-    }
         sendMessageButton.isHidden = true
         return true
     }
