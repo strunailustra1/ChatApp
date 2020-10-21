@@ -10,14 +10,13 @@ import Foundation
 import os.log
 
 enum VerboseLevel: String {
-    case info //= "info"
-    case debug //= "debug"
-    case none //= "none"
+    case info
+    case debug
+    case none
     
     static func createFromEnvironment() -> VerboseLevel {
         let verbose = ProcessInfo.processInfo.environment["logger_verbose_level"] ?? ""
         return VerboseLevel(rawValue: verbose) ?? .info
-       // return VerboseLevel.init(rawValue: verbose) ?? .info
     }
 }
 

@@ -313,7 +313,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "${PODS_ROOT}/SwiftLint/swiftlint\n\n# Type a script or drag a script file from your workspace to insert its path.\n#if which swiftlint >/dev/null; then\n#  swiftlint\n#else\n#  echo \"error: SwiftLint does not exist, download it from https://github.com/realm/SwiftLint\"\n#  exit 1\n#fi\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif which ${PODS_ROOT}/SwiftLint/swiftlint >/dev/null; then\n  ${PODS_ROOT}/SwiftLint/swiftlint\nelse\n  echo \"error: SwiftLint does not exist, download it from https://github.com/realm/SwiftLint\"\n  exit 1\nfi\n";
 		};
 		5E72DDA387BE405D490F2339 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

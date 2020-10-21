@@ -61,7 +61,7 @@ class ConversationsListViewController: UIViewController {
         
         // костыль для подавления ворнинга
         // не очень хорошо отключать обновление данных,
-        // но пока не понятно как тогда обновление интерфейса ConversationListVC, находясь на ConversationVC
+        // но пока не понятно как тогда подавлять обновление интерфейса ConversationListVC, находясь на ConversationVC
         // UITableView was told to layout its visible cells and other contents without being in the view hierarchy
         FirestoreDataProvider.shared.removeChannelsListener()
     }
