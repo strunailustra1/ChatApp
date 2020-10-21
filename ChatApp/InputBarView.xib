@@ -29,6 +29,7 @@
                             <rect key="frame" x="48" y="10" width="224" height="40"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                             <constraints>
+                                <constraint firstAttribute="width" constant="224" id="OU5-9O-n7z"/>
                                 <constraint firstAttribute="height" constant="40" id="hDV-DJ-CAH"/>
                             </constraints>
                             <color key="textColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -46,16 +47,25 @@
                                 <action selector="sendMessageAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="zxV-s4-ddk"/>
                             </connections>
                         </button>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xG8-VT-wF5">
+                            <rect key="frame" x="56" y="15" width="42" height="30"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
                     </subviews>
                     <constraints>
                         <constraint firstItem="Z7J-ho-51D" firstAttribute="top" secondItem="Ynd-Fv-ldm" secondAttribute="top" constant="21" id="2Ga-5O-fnj"/>
                         <constraint firstItem="COG-3l-End" firstAttribute="leading" secondItem="YxW-oc-YBR" secondAttribute="trailing" constant="14" id="8Rk-jN-Q98"/>
                         <constraint firstAttribute="trailing" secondItem="Z7J-ho-51D" secondAttribute="trailing" constant="16" id="9fk-xu-cie"/>
                         <constraint firstItem="YxW-oc-YBR" firstAttribute="leading" secondItem="Ynd-Fv-ldm" secondAttribute="leading" constant="16" id="9ts-z4-mzO"/>
+                        <constraint firstItem="3pE-HL-8Wn" firstAttribute="bottom" secondItem="COG-3l-End" secondAttribute="bottom" constant="10" id="HvZ-o6-IXW"/>
                         <constraint firstItem="Z7J-ho-51D" firstAttribute="leading" secondItem="COG-3l-End" secondAttribute="trailing" constant="14" id="J6D-Fk-1AD"/>
+                        <constraint firstItem="COG-3l-End" firstAttribute="top" secondItem="3pE-HL-8Wn" secondAttribute="top" constant="10" id="MhR-aP-zCC"/>
                         <constraint firstItem="YxW-oc-YBR" firstAttribute="top" secondItem="Ynd-Fv-ldm" secondAttribute="top" constant="21" id="QrT-jy-Riz"/>
-                        <constraint firstItem="COG-3l-End" firstAttribute="top" secondItem="3pE-HL-8Wn" secondAttribute="top" constant="10" id="WoK-aU-ZUi"/>
-                        <constraint firstItem="3pE-HL-8Wn" firstAttribute="bottom" secondItem="COG-3l-End" secondAttribute="bottom" constant="10" id="dli-zk-K3q"/>
+                        <constraint firstItem="xG8-VT-wF5" firstAttribute="top" secondItem="COG-3l-End" secondAttribute="top" constant="5" id="U3l-x3-kF5"/>
+                        <constraint firstItem="COG-3l-End" firstAttribute="bottom" secondItem="xG8-VT-wF5" secondAttribute="bottom" constant="5" id="fJY-ay-TLT"/>
+                        <constraint firstItem="xG8-VT-wF5" firstAttribute="leading" secondItem="COG-3l-End" secondAttribute="leading" constant="8" id="iE6-aA-gBJ"/>
                     </constraints>
                     <viewLayoutGuide key="safeArea" id="3pE-HL-8Wn"/>
                 </view>
@@ -71,6 +81,7 @@
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>
                 <outlet property="customInputView" destination="Ynd-Fv-ldm" id="pI8-jL-t8h"/>
+                <outlet property="placeholderText" destination="xG8-VT-wF5" id="rZ9-U4-X0Y"/>
                 <outlet property="sendMessageButton" destination="Z7J-ho-51D" id="AjI-gK-Ra1"/>
                 <outlet property="textInputView" destination="COG-3l-End" id="g0u-a3-6GH"/>
                 <outlet property="textViewHeight" destination="hDV-DJ-CAH" id="vfb-Tl-13a"/>

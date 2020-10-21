@@ -255,6 +255,26 @@ enum Theme: Int {
             return UIColor(red: 0.231, green: 0.231, blue: 0.231, alpha: 1)
         }
     }
+    
+    var messageDateLabelIncomingColor: UIColor {
+        switch self {
+        case .night:
+            return UIColor(red: 1, green: 1, blue: 1, alpha: 1)
+        case .classic:
+            return UIColor(red: 0, green: 0, blue: 0, alpha: 0.25)
+        case .day:
+            return UIColor(red: 0, green: 0, blue: 0, alpha: 1)
+        }
+    }
+    
+    var messageDateLabelUpcomingColor: UIColor {
+        switch self {
+        case .classic:
+            return UIColor(red: 0, green: 0, blue: 0, alpha: 0.25)
+        case .day, .night:
+            return UIColor(red: 1, green: 1, blue: 1, alpha: 1)
+        }
+    }
 }
 
 class ThemesManager: ThemesPickerDelegate {

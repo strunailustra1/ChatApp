@@ -9,66 +9,6 @@
 import UIKit
 import Firebase
 
-struct MessageFire {
-    let content: String
-    let created: Date
-    let senderId: String
-    let senderName: String
-    
-    var stringDay: String {
-        MessageFire.dayDateFormatter.string(from: created)
-    }
-    
-    var isUpcomingMessage: Bool {
-        senderId == UIDevice.current.identifierForVendor?.uuidString
-    }
-
-    static var dayDateFormatter: DateFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        return dateFormatter
-    }()
-    
-    init(content: String) {
-        self.content = content
-        created = Date()
-        senderId = UIDevice.current.identifierForVendor?.uuidString ?? ""
-        senderName = ProfileStorage.shared.fullname
-    }
-
-    init?(document: QueryDocumentSnapshot) {
-        let data = document.data()
-        
-        guard let content = data["content"] as? String,
-            let created = data["created"] as? Timestamp,
-            let senderId = data["senderId"] as? String,
-            let senderName = data["senderName"] as? String
-            else { return nil }
-        
-        self.content = content.trimmingCharacters(in: .whitespacesAndNewlines)
-        self.created = created.dateValue()
-        self.senderId = senderId
-        self.senderName = senderName.trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-}
-
-extension MessageFire: DatabaseRepresentation {
-    var representation: [String: Any] {
-        return [
-            "content": content,
-            "created": Timestamp(date: created),
-            "senderId": senderId,
-            "senderName": senderName
-        ]
-    }
-}
-extension MessageFire: Comparable {
-    static func < (lhs: MessageFire, rhs: MessageFire) -> Bool {
-        return lhs.created < rhs.created
-    }
-}
-
 class ConversationViewController: UIViewController {
     
     private let cellIdentifierUpcoming = String(describing: MessageCell.self) + "Upcoming"
@@ -95,13 +35,13 @@ class ConversationViewController: UIViewController {
         return tableView
     }()
     
-    //  private var shouldScrollToBottom = true
+    private var shouldScrollToBottom = true
     private var customInput: InputBarView?
     
     private let db = Firestore.firestore()
     private var messagesReference: CollectionReference?
     private var messageListener: ListenerRegistration?
-
+    
     private let notificationCenter = NotificationCenter.default
     
     var messages = [[MessageFire]]()
@@ -127,13 +67,13 @@ class ConversationViewController: UIViewController {
         }
     }
     
-    override var canBecomeFirstResponder: Bool {
-        return true
-    }
+        override var canBecomeFirstResponder: Bool {
+            return true
+        }
     
-    override var canResignFirstResponder: Bool {
-        return true
-    }
+        override var canResignFirstResponder: Bool {
+            return true
+        }
     
     static func storyboardInstance() -> ConversationViewController? {
         let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
@@ -144,6 +84,9 @@ class ConversationViewController: UIViewController {
         super.viewDidLoad()
         view.addSubview(tableView)
         setupNavigationController()
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self,
+                                                                 action: #selector(handleTap(recognizer:)))
+        self.view.addGestureRecognizer(tap)
         
         if let channel = self.channel {
             messagesReference = db.collection("channels").document(channel.identifier).collection("messages")
@@ -163,11 +106,51 @@ class ConversationViewController: UIViewController {
         view.backgroundColor = .red
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if touches.first != nil {
-            view.endEditing(true)
+    @objc func handleTap(recognizer: UITapGestureRecognizer) {
+        customInput?.textInputView.resignFirstResponder()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        becomeFirstResponder()
+        
+        notificationCenter.addObserver(self,
+                                       selector: #selector(keyboardWillShow(sender:)),
+                                       name: UIResponder.keyboardWillShowNotification, object: nil)
+        notificationCenter.addObserver(self,
+                                       selector: #selector(keyboardWillHide(sender:)),
+                                       name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        print(tableView.frame)
+        if shouldScrollToBottom {
+            shouldScrollToBottom = false
+            scrollToBottom(animated: false)
         }
-        super.touchesBegan(touches, with: event)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        notificationCenter.removeObserver(self, name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+        notificationCenter.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    private func scrollToBottom(animated: Bool) {
+        view.layoutIfNeeded()
+        tableView.setContentOffset(bottomOffset(), animated: animated)
+    }
+    
+    private func bottomOffset() -> CGPoint {
+        print(-tableView.contentInset.top,
+              tableView.contentSize.height,
+              tableView.bounds.size.height, tableView.contentInset.bottom)
+        return CGPoint(x: 0,
+                       y: max(-tableView.contentInset.top,
+                              tableView.contentSize.height -
+                                (tableView.bounds.size.height - tableView.contentInset.bottom)))
     }
     
     private func save(_ message: MessageFire) {
@@ -176,7 +159,7 @@ class ConversationViewController: UIViewController {
                 print("Error sending message: \(e.localizedDescription)")
                 return
             }
-
+            
             //self.messagesCollectionView.scrollToRow()
         }
     }
@@ -207,9 +190,9 @@ class ConversationViewController: UIViewController {
             let indexPath = IndexPath(row: messages[messages.count - 1].count - 1,
                                       section: messages.count - 1)
             tableView.scrollToRow(at: indexPath, at: UITableView.ScrollPosition.middle, animated: true)
-//            DispatchQueue.main.async {
-//                self.tableView.scrollToRow(at: indexPath, at: UITableView.ScrollPosition.middle, animated: false)
-//            }
+            //            DispatchQueue.main.async {
+            //                self.tableView.scrollToRow(at: indexPath, at: UITableView.ScrollPosition.middle, animated: false)
+            //            }
         }
         
         //      if shouldScrollToBottom {
@@ -224,57 +207,14 @@ class ConversationViewController: UIViewController {
         guard let message = MessageFire(document: change.document) else {
             return
         }
-
+        
         switch change.type {
         case .added:
             insertNewMessage(message)
         default:
-          break
+            break
         }
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        becomeFirstResponder()
-        
-        notificationCenter.addObserver(self,
-                                       selector: #selector(keyboardWillShow(sender:)),
-                                       name: UIResponder.keyboardWillShowNotification, object: nil)
-        notificationCenter.addObserver(self,
-                                       selector: #selector(keyboardWillHide(sender:)),
-                                       name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        //        print(tableView.frame)
-        //        if shouldScrollToBottom {
-        //            shouldScrollToBottom = false
-        //            scrollToBottom(animated: false)
-        //        }
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        notificationCenter.removeObserver(self, name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
-        notificationCenter.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-    
-    //    private func scrollToBottom(animated: Bool) {
-    //        view.layoutIfNeeded()
-    //        tableView.setContentOffset(bottomOffset(), animated: animated)
-    //    }
-    //
-    //    private func bottomOffset() -> CGPoint {
-    //        print(-tableView.contentInset.top,
-    //               tableView.contentSize.height,
-    //               tableView.bounds.size.height, tableView.contentInset.bottom)
-    //        return CGPoint(x: 0,
-    //                       y: max(-tableView.contentInset.top,
-    //                              tableView.contentSize.height -
-    //                                (tableView.bounds.size.height - tableView.contentInset.bottom)))
-    //    }
     
     @objc func keyboardWillShow(sender: NSNotification) {
         if let keyboardSize = (sender.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
@@ -282,22 +222,25 @@ class ConversationViewController: UIViewController {
                 self.view.frame.origin.y = keyboardSize.height > 226 ? -250 : -keyboardSize.height
             }
         }
-        //        if let keyboardSize = (sender.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-        //            tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardSize.height, right: 0)
-        //           }
+//        if let keyboardSize = (sender.userInfo?[UIResponder.keyboardFrameEndUserInfoKey]
+//            as? NSValue)?.cgRectValue {
+//            tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardSize.height, right: 0)
+//        }
     }
     
     @objc func keyboardWillHide(sender: NSNotification) {
         if self.view.frame.origin.y != 0 {
             self.view.frame.origin.y = 0
         }
-        //        if let keyboardSize = (sender.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-        //            tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        //        }
+//        if let keyboardSize = (sender.userInfo?[UIResponder.keyboardFrameEndUserInfoKey]
+//            as? NSValue)?.cgRectValue {
+//            tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+//        }
     }
     
     //    func adjustContentForKeyboard(shown: Bool, notification: NSNotification) {
-    //        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+    //        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey]
+    //as? NSValue)?.cgRectValue {
     //            let keyboardHeight = shown ? keyboardSize.size.height : customInput?.bounds.size.height ?? 0
     //            if tableView.contentInset.bottom == keyboardHeight {
     //                return
@@ -336,7 +279,7 @@ extension ConversationViewController: UITableViewDataSource {
             as? MessageCell
             else { return UITableViewCell()}
         
-        cell.configure(with: .init(text: message.content, sender: message.senderName))
+        cell.configure(with: .init(text: message.content, sender: message.senderName, date: message.created))
         
         cell.bubleView.backgroundColor = message.isUpcomingMessage
             ? ThemesManager.shared.getTheme().messageUpcomingBubbleViewColor
@@ -345,6 +288,10 @@ extension ConversationViewController: UITableViewDataSource {
         cell.messageLabel.textColor = message.isUpcomingMessage
             ? ThemesManager.shared.getTheme().messageUpcomingTextColor
             : ThemesManager.shared.getTheme().messageIncomingTextColor
+        
+        cell.dateLabel.textColor = message.isUpcomingMessage
+        ? ThemesManager.shared.getTheme().messageDateLabelUpcomingColor
+        : ThemesManager.shared.getTheme().messageDateLabelIncomingColor
         
         cell.senderNameLabel.textColor = ThemesManager.shared.getTheme().messageSenderNameLabelColor
         
