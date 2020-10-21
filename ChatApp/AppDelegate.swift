@@ -7,21 +7,26 @@
 //
 
 import UIKit
+import Firebase
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     
-    func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+    func application(_ application: UIApplication,
+                     willFinishLaunchingWithOptions
+        launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         Logger.shared.appDelegateLog(stateFrom: "Not Running", stateTo: "Inactive")
         return true
     }
     
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions
+        launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         applyTheme()
         fetchProfile()
-        
+        FirebaseApp.configure()
         Logger.shared.appDelegateLog(stateFrom: "Inactive", stateTo: "Inactive")
         return true
     }
@@ -47,7 +52,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     private func fetchProfile() {
-        let fetchDataCompletion: (Profile) -> () = { [weak self] (profile) in
+        let fetchDataCompletion: (Profile) -> Void = { [weak self] (profile) in
             ProfileStorage.shared = profile
             if let navVC = self?.window?.rootViewController as? UINavigationController,
                 let conversationListVC = navVC.viewControllers.first as? ConversationsListViewController {

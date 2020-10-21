@@ -19,7 +19,10 @@ class GCDDataManager: ProfileDataManagerProtocol {
         queue = DispatchQueue(label: "com.app.GCDDataManager", qos: .userInitiated, attributes: .concurrent)
     }
 
-    func save(profile: Profile, changedFields: ProfileChangedFields, succesfullCompletion: @escaping() -> (), errorCompletion: @escaping() -> ()) {
+    func save(profile: Profile,
+              changedFields: ProfileChangedFields,
+              succesfullCompletion: @escaping() -> Void,
+              errorCompletion: @escaping() -> Void) {
         
         let group = DispatchGroup()
         
@@ -28,7 +31,8 @@ class GCDDataManager: ProfileDataManagerProtocol {
         if changedFields.profileImageChanged {
             group.enter()
             queue.async {
-                if let newImage = profile.profileImage, let newImageData = newImage.jpegData(compressionQuality: 1) ?? newImage.pngData() {
+                if let newImage = profile.profileImage,
+                    let newImageData = newImage.jpegData(compressionQuality: 1) ?? newImage.pngData() {
                     do {
                         try newImageData.write(to: ProfilePath.image.getURL())
                         result.append(true)
@@ -44,7 +48,9 @@ class GCDDataManager: ProfileDataManagerProtocol {
             group.enter()
             queue.async {
                 do {
-                    try profile.fullname.write(to: ProfilePath.fullname.getURL(), atomically: true, encoding: String.Encoding.utf8)
+                    try profile.fullname.write(to: ProfilePath.fullname.getURL(),
+                                               atomically: true,
+                                               encoding: String.Encoding.utf8)
                     result.append(true)
                 } catch {
                     result.append(false)
@@ -57,7 +63,9 @@ class GCDDataManager: ProfileDataManagerProtocol {
             group.enter()
             queue.async {
                 do {
-                    try profile.description.write(to: ProfilePath.description.getURL(), atomically: true, encoding: String.Encoding.utf8)
+                    try profile.description.write(to: ProfilePath.description.getURL(),
+                                                  atomically: true,
+                                                  encoding: String.Encoding.utf8)
                     result.append(true)
                 } catch {
                     result.append(false)
@@ -75,7 +83,7 @@ class GCDDataManager: ProfileDataManagerProtocol {
         }
     }
     
-    func fetch(defaultProfile: Profile, succesfullCompletion: @escaping(Profile) -> ()) {
+    func fetch(defaultProfile: Profile, succesfullCompletion: @escaping(Profile) -> Void) {
         var image: UIImage?
         var fullname: String?
         var description: String?

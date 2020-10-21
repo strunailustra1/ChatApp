@@ -40,7 +40,7 @@ class ThemesViewController: UIViewController {
      возникнет retain cycle, т.к. themeChangeHandler ссылается на self (ThemesManager),
      если в замыкании в списке захвата не указать weak self.
      */
-    var themeChangeHandler: ((_ theme: Theme) -> ())?
+    var themeChangeHandler: ((_ theme: Theme) -> Void)?
     
     static func storyboardInstance() -> ThemesViewController? {
         let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
@@ -80,11 +80,10 @@ class ThemesViewController: UIViewController {
     
     private func chooseTheme(_ sender: UIButton, theme: Theme) {
         sender.isSelected = true
-        for anotherButton in themesButtons {
-            if sender !== anotherButton {
+        for anotherButton in themesButtons where sender !== anotherButton {
                 anotherButton.isSelected = false
             }
-        }
+        
         delegate?.setTheme(theme)
         if let handler = themeChangeHandler {
             handler(theme)
@@ -131,9 +130,13 @@ extension ThemesViewController {
     private func setupNavigationController() {
         navigationItem.largeTitleDisplayMode = .never
         navigationItem.title = "Settings"
-        navigationItem.backBarButtonItem?.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .regular)], for: .normal)
-        navigationItem.rightBarButtonItem?.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .regular)], for: .normal)
-        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .semibold)]
+        navigationItem.backBarButtonItem?.setTitleTextAttributes(
+            [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .regular)], for: .normal)
+        navigationItem.rightBarButtonItem?.setTitleTextAttributes(
+            [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .regular)], for: .normal)
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font:
+            UIFont.systemFont(ofSize: 17, weight: .semibold)
+        ]
     }
 }
 
