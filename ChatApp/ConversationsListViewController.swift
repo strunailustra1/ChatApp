@@ -41,15 +41,29 @@ class ConversationsListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(tableView)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupNavigationContoller()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
         FirestoreDataProvider.shared.getChannels(completion: { [weak self] change in
             self?.handleDocumentChange(change)
         })
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        setupNavigationContoller()
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        // костыль для подавления ворнинга
+        // не очень хорошо отключать обновление данных,
+        // но пока не понятно как тогда обновление интерфейса ConversationListVC, находясь на ConversationVC
+        // UITableView was told to layout its visible cells and other contents without being in the view hierarchy
+        FirestoreDataProvider.shared.removeChannelsListener()
     }
     
     @objc func editProfile() {
