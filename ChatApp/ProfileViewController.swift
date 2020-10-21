@@ -106,7 +106,7 @@ class ProfileViewController: UIViewController {
     }
     
     @IBAction func editAction(_ sender: UIButton) {
-        presentEditAlert()
+        presentEditPhotoAlert()
     }
     
     @IBAction func gcdAction() {
@@ -116,113 +116,41 @@ class ProfileViewController: UIViewController {
     @IBAction func operationAction() {
         saveProfile(dataManager: OperationDataManager.shared)
     }
-    
-    private func saveProfile(dataManager: ProfileDataManagerProtocol) {
-        gcdButton.isEnabled = false
-        operationButton.isEnabled = false
-        activityIndicator.startAnimating()
-        
-        dataManager.save(
-            profile: newProfile,
-            changedFields: ProfileChangedFields(
-                fullnameChanged: oldProfile.fullname != newProfile.fullname,
-                descriptionChanged: oldProfile.description != newProfile.description,
-                profileImageChanged: photoHasBeenChanged
-            ),
-            succesfullCompletion: { [weak self] in
-                self?.activityIndicator.stopAnimating()
-                self?.setupTextInputs()
-                self?.editButton.isEnabled = false
-                self?.successSaveAlert()
-                if let newProfile = self?.newProfile {
-                    self?.oldProfile = newProfile
-                    self?.photoHasBeenChanged = false
-                    ProfileStorage.shared = newProfile
-                }
-            },
-            errorCompletion: { [weak self] in
-                self?.activityIndicator.stopAnimating()
-                self?.fullNameText.resignFirstResponder()
-                self?.descriptionTextView.resignFirstResponder()
-                self?.errorSaveAlert(dataManager: dataManager)
-                self?.updateSaveButtonAvailability()
-            }
-        )
+
+    @objc func closeProfile() {
+        dismiss(animated: true, completion: closeHandler)
     }
     
-    private func presentPickerController(from sourceType: UIImagePickerController.SourceType) {
-        let pickerController = UIImagePickerController()
+    @objc func editProfile() {
+        fullNameText.isUserInteractionEnabled = true
+        fullNameText.layer.borderColor = ThemesManager.shared.getTheme().labelBorderColor
+        fullNameText.layer.borderWidth = 1
         
-        if !UIImagePickerController.isSourceTypeAvailable(sourceType) {
-            let message = sourceType == .camera
-                ? "Camera is not available on this device"
-                : "Gallery is not available now"
-            let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-            let okAction = UIAlertAction(title: "Ok", style: .default)
-            alertController.addAction(okAction)
-            self.present(alertController, animated: true, completion: nil)
-        } else {
-            pickerController.delegate = self
-            pickerController.sourceType = sourceType
-            pickerController.allowsEditing = true
-            if pickerController.sourceType == .camera {
-                pickerController.cameraCaptureMode = .photo
-                pickerController.showsCameraControls = true
+        descriptionTextView.isUserInteractionEnabled = true
+        descriptionTextView.layer.borderColor = ThemesManager.shared.getTheme().labelBorderColor
+        descriptionTextView.layer.borderWidth = 1
+        
+        editButton.isEnabled = true
+        
+        fullNameText.becomeFirstResponder()
+    }
+    
+    @objc func keyboardWillShow(sender: NSNotification) {
+        if let keyboardSize = (sender.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            if self.view.frame.origin.y == 0 {
+                self.view.frame.origin.y = keyboardSize.height > 226 ? -250 : -keyboardSize.height
             }
-            if pickerController.sourceType == .photoLibrary {
-                pickerController.modalPresentationStyle = .fullScreen
-            }
-            self.present(pickerController, animated: true, completion: nil)
         }
     }
     
-    private func presentEditAlert() {
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        
-        let galleryAction = UIAlertAction(title: "Photo Gallery", style: .default, handler: { [unowned self] _ in
-            self.presentPickerController(from: .photoLibrary)
-        })
-        let photoAction = UIAlertAction(title: "Camera", style: .default, handler: { [unowned self] _ in
-            self.presentPickerController(from: .camera)
-        })
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-        
-        alert.addAction(galleryAction)
-        alert.addAction(photoAction)
-        alert.addAction(cancelAction)
-        
-        alert.setValue(NSAttributedString(string: "Edit photo",
-                                          attributes: [NSAttributedString.Key.font:
-                                            UIFont.systemFont(ofSize: 20, weight: .semibold)]),
-                       forKey: "attributedTitle")
-        alert.setValue(NSAttributedString(string: "Please, choose one of the ways",
-                                          attributes: [NSAttributedString.Key.font:
-                                            UIFont.systemFont(ofSize: 16, weight: .regular)]),
-                       forKey: "attributedMessage")
-        
-        alert.pruneNegativeWidthConstraints()
-        
-        self.present(alert, animated: true, completion: nil)
+    @objc func keyboardWillHide(sender: NSNotification) {
+        if self.view.frame.origin.y != 0 {
+            self.view.frame.origin.y = 0
+        }
     }
-    
-    private func successSaveAlert() {
-        let alert = UIAlertController(title: "Data saved", message: nil, preferredStyle: .alert)
-        let OkAction = UIAlertAction(title: "OK", style: .default)
-        alert.addAction(OkAction)
-        present(alert, animated: true, completion: nil)
-    }
-    
-    private func errorSaveAlert(dataManager: ProfileDataManagerProtocol) {
-        let alert = UIAlertController(title: "Error", message: "Failed to save data", preferredStyle: .alert)
-        let OkAction = UIAlertAction(title: "OK", style: .default)
-        let repeatAction = UIAlertAction(title: "Repeat", style: .default, handler: { [unowned self] _ in
-            self.saveProfile(dataManager: dataManager)
-        })
-        alert.addAction(OkAction)
-        alert.addAction(repeatAction)
-        present(alert, animated: true, completion: nil)
-    }
-    
+}
+
+extension ProfileViewController {
     private func setupSaveButton() {
         gcdButton.layer.backgroundColor = ThemesManager.shared.getTheme().profileVCButtonBackgroundColor
         gcdButton.clipsToBounds = true
@@ -305,46 +233,86 @@ class ProfileViewController: UIViewController {
             [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .semibold)],
             for: .normal)
     }
+}
+
+extension ProfileViewController {
+    private func saveProfile(dataManager: ProfileDataManagerProtocol) {
+        gcdButton.isEnabled = false
+        operationButton.isEnabled = false
+        activityIndicator.startAnimating()
+        
+        dataManager.save(
+            profile: newProfile,
+            changedFields: ProfileChangedFields(
+                fullnameChanged: oldProfile.fullname != newProfile.fullname,
+                descriptionChanged: oldProfile.description != newProfile.description,
+                profileImageChanged: photoHasBeenChanged
+            ),
+            succesfullCompletion: { [weak self] in
+                self?.activityIndicator.stopAnimating()
+                self?.setupTextInputs()
+                self?.editButton.isEnabled = false
+                self?.successSaveAlert()
+                if let newProfile = self?.newProfile {
+                    self?.oldProfile = newProfile
+                    self?.photoHasBeenChanged = false
+                    ProfileStorage.shared = newProfile
+                }
+            },
+            errorCompletion: { [weak self] in
+                self?.activityIndicator.stopAnimating()
+                self?.fullNameText.resignFirstResponder()
+                self?.descriptionTextView.resignFirstResponder()
+                self?.errorSaveAlert(dataManager: dataManager)
+                self?.updateSaveButtonAvailability()
+            }
+        )
+    }
+    
+    private func successSaveAlert() {
+        let alert = UIAlertController(title: "Data saved", message: nil, preferredStyle: .alert)
+        let OkAction = UIAlertAction(title: "OK", style: .default)
+        alert.addAction(OkAction)
+        present(alert, animated: true, completion: nil)
+    }
+    
+    private func errorSaveAlert(dataManager: ProfileDataManagerProtocol) {
+        let alert = UIAlertController(title: "Error", message: "Failed to save data", preferredStyle: .alert)
+        let OkAction = UIAlertAction(title: "OK", style: .default)
+        let repeatAction = UIAlertAction(title: "Repeat", style: .default, handler: { [unowned self] _ in
+            self.saveProfile(dataManager: dataManager)
+        })
+        alert.addAction(OkAction)
+        alert.addAction(repeatAction)
+        present(alert, animated: true, completion: nil)
+    }
     
     private func updateSaveButtonAvailability() {
-        let isEnabled = photoHasBeenChanged || oldProfile.fullname
-            != newProfile.fullname || oldProfile.description
-            != newProfile.description
+        let isEnabled = photoHasBeenChanged
+            || oldProfile.fullname != newProfile.fullname
+            || oldProfile.description != newProfile.description
         
         gcdButton.isEnabled = isEnabled
         operationButton.isEnabled = isEnabled
     }
-    
-    @objc func closeProfile() {
-        dismiss(animated: true, completion: closeHandler)
-    }
-    
-    @objc func editProfile() {
-        fullNameText.isUserInteractionEnabled = true
-        fullNameText.layer.borderColor = ThemesManager.shared.getTheme().labelBorderColor
-        fullNameText.layer.borderWidth = 1
-        
-        descriptionTextView.isUserInteractionEnabled = true
-        descriptionTextView.layer.borderColor = ThemesManager.shared.getTheme().labelBorderColor
-        descriptionTextView.layer.borderWidth = 1
-        
-        editButton.isEnabled = true
-        
-        fullNameText.becomeFirstResponder()
-    }
-    
-    @objc func keyboardWillShow(sender: NSNotification) {
-        if let keyboardSize = (sender.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-            if self.view.frame.origin.y == 0 {
-                self.view.frame.origin.y = keyboardSize.height > 226 ? -250 : -keyboardSize.height
+}
+
+extension ProfileViewController {
+    private func presentEditPhotoAlert() {
+        let alert = ProfileEditImageAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        alert.configure(
+            galleryHandler: { [unowned self] _ in
+                self.presentImagePickerController(from: .photoLibrary)
+            }, photoHandler: { [unowned self] _ in
+                self.presentImagePickerController(from: .camera)
             }
-        }
+        )
+        present(alert, animated: true, completion: nil)
     }
     
-    @objc func keyboardWillHide(sender: NSNotification) {
-        if self.view.frame.origin.y != 0 {
-            self.view.frame.origin.y = 0
-        }
+    private func presentImagePickerController(from sourceType: UIImagePickerController.SourceType) {
+        let pickerController = ProfileImagePickerController()
+        pickerController.configureAndPresent(delegate: self, sourceType: sourceType)
     }
 }
 

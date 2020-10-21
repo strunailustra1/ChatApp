@@ -18,6 +18,8 @@
 		1E4686B1254043A700EFF407 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4686B0254043A700EFF407 /* Message.swift */; };
 		1E4686B32540C05A00EFF407 /* KeyboardInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4686B22540C05900EFF407 /* KeyboardInfo.swift */; };
 		1E4686B52540D72900EFF407 /* FirestoreDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4686B42540D72900EFF407 /* FirestoreDataProvider.swift */; };
+		1E4686B72540EB4900EFF407 /* ProfileImagePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4686B62540EB4900EFF407 /* ProfileImagePickerController.swift */; };
+		1E4686B92540EE4400EFF407 /* ProfileEditImageAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4686B82540EE4400EFF407 /* ProfileEditImageAlertController.swift */; };
 		1E48E60F2534CA9000455C27 /* GCDDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E48E60E2534CA9000455C27 /* GCDDataManager.swift */; };
 		1E48E6112534CAA400455C27 /* OperationDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E48E6102534CAA400455C27 /* OperationDataManager.swift */; };
 		1E49C018253781A30025BB36 /* UITextField+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E49C017253781A30025BB36 /* UITextField+Extensions.swift */; };
@@ -60,6 +62,8 @@
 		1E4686B0254043A700EFF407 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		1E4686B22540C05900EFF407 /* KeyboardInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardInfo.swift; sourceTree = "<group>"; };
 		1E4686B42540D72900EFF407 /* FirestoreDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreDataProvider.swift; sourceTree = "<group>"; };
+		1E4686B62540EB4900EFF407 /* ProfileImagePickerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImagePickerController.swift; sourceTree = "<group>"; };
+		1E4686B82540EE4400EFF407 /* ProfileEditImageAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditImageAlertController.swift; sourceTree = "<group>"; };
 		1E48E60E2534CA9000455C27 /* GCDDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GCDDataManager.swift; sourceTree = "<group>"; };
 		1E48E6102534CAA400455C27 /* OperationDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationDataManager.swift; sourceTree = "<group>"; };
 		1E49C017253781A30025BB36 /* UITextField+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Extensions.swift"; sourceTree = "<group>"; };
@@ -151,7 +155,9 @@
 				1E5FFB202527566800F8187A /* ThemesViewController.storyboard */,
 				1EBEF39325212DF100F6E541 /* ConversationViewController.storyboard */,
 				1E30F120250B944100DDF8DC /* ProfileViewController.swift */,
+				1E4686B82540EE4400EFF407 /* ProfileEditImageAlertController.swift */,
 				1E30F122250B944100DDF8DC /* ProfileViewController.storyboard */,
+				1E4686B62540EB4900EFF407 /* ProfileImagePickerController.swift */,
 				1E30F125250B944700DDF8DC /* Assets.xcassets */,
 				1E30F127250B944700DDF8DC /* LaunchScreen.storyboard */,
 				1E30F12A250B944700DDF8DC /* Info.plist */,
@@ -357,9 +363,11 @@
 			files = (
 				1E16408D252B340700B37DD6 /* ThemesPickerDelegate.swift in Sources */,
 				1E676A51251DF38E00E98C42 /* ConversationCell.swift in Sources */,
+				1E4686B92540EE4400EFF407 /* ProfileEditImageAlertController.swift in Sources */,
 				1E4686B32540C05A00EFF407 /* KeyboardInfo.swift in Sources */,
 				1E772F8E25379D38001A5F8A /* UIAlertController+Extensions.swift in Sources */,
 				1ECC4821253EF51900789DDA /* Channel.swift in Sources */,
+				1E4686B72540EB4900EFF407 /* ProfileImagePickerController.swift in Sources */,
 				1E16408F252BA55D00B37DD6 /* ThemesManager.swift in Sources */,
 				1E49C018253781A30025BB36 /* UITextField+Extensions.swift in Sources */,
 				1E5FFB192524A67900F8187A /* Profile.swift in Sources */,
