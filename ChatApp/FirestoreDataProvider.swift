@@ -17,7 +17,7 @@ class FirestoreDataProvider {
     private var channelsListener: ListenerRegistration?
     private var messagesListener: ListenerRegistration?
     
-    func getChannels(completion: @escaping (DocumentChange) -> Void, errorCompletion: ((Error) -> Void)? = nil) {
+    func getChannels(completion: @escaping ([DocumentChange]) -> Void, errorCompletion: ((Error) -> Void)? = nil) {
         channelsListener = db.collection("channels").addSnapshotListener { querySnapshot, error in
             guard let snapshot = querySnapshot else {
                 if let e = error {
@@ -26,9 +26,8 @@ class FirestoreDataProvider {
                 return
             }
             
-            snapshot.documentChanges.forEach { change in
-                completion(change)
-            }
+            print(snapshot.documentChanges.count)
+            completion(snapshot.documentChanges)
         }
     }
     

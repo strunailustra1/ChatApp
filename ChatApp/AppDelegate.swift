@@ -28,6 +28,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         fetchProfile()
         FirebaseApp.configure()
         Logger.shared.appDelegateLog(stateFrom: "Inactive", stateTo: "Inactive")
+        
+        CoreDataStack.shared.didUpdateDataBase = { stack in
+            stack.printDataBaseStatistice()
+        }
+        CoreDataStack.shared.enableObservers()
+    
         return true
     }
     

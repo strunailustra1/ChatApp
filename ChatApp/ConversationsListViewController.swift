@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import CoreData
 
 class ConversationsListViewController: UIViewController {
     
@@ -41,6 +42,7 @@ class ConversationsListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(tableView)
+        fetchChannelsFromDB()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -50,12 +52,9 @@ class ConversationsListViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
-        FirestoreDataProvider.shared.getChannels(completion: { [weak self] change in
-            self?.handleDocumentChange(change)
-        })
+        fetchChannelsFromFirebase()
     }
-
+    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
@@ -189,7 +188,7 @@ extension ConversationsListViewController {
         let createAction = UIAlertAction(title: "Create", style: .default) { _ in
             guard let channelName = alert.textFields?.first?.text,
                 channelName.trimmingCharacters(in: .whitespacesAndNewlines).count != 0 else {
-                return
+                    return
             }
             createActionHandler(channelName)
         }
@@ -205,45 +204,70 @@ extension ConversationsListViewController {
 }
 
 extension ConversationsListViewController {
-    private func addChannelToTable(_ channel: Channel) {
+    private func addChannelToTable(_ channel: Channel, updateTableView: Bool = true) {
         guard !channels.contains(channel) else { return }
         
         channels.append(channel)
-        channels.sort(by: >)
-        
-        guard let index = channels.firstIndex(of: channel) else { return }
-        tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+
+        if updateTableView {
+            channels.sort(by: >)
+            guard let index = channels.firstIndex(of: channel) else { return }
+            tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+        }
     }
     
-    private func updateChannelInTable(_ channel: Channel) {
+    private func updateChannelInTable(_ channel: Channel, updateTableView: Bool = true) {
         guard let index = channels.firstIndex(of: channel) else { return }
         
         channels[index] = channel
-        tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+        
+        if updateTableView {
+            tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+        }
     }
     
-    private func removeChannelFromTable(_ channel: Channel) {
+    private func removeChannelFromTable(_ channel: Channel, updateTableView: Bool = true) {
         guard let index = channels.firstIndex(of: channel) else { return }
         
         channels.remove(at: index)
-        tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-    }
-    
-    private func handleDocumentChange(_ change: DocumentChange) {
-        guard let channel = Channel(document: change.document) else { return }
         
-        switch change.type {
-        case .added:
-            addChannelToTable(channel)
-            
-        case .modified:
-            updateChannelInTable(channel)
-            
-        case .removed:
-            removeChannelFromTable(channel)
+        if updateTableView {
+            tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
         }
     }
-
+    
+    private func handleDocumentChanges(_ changes: [DocumentChange]) {
+        var channelsWithChangeType = [(Channel, DocumentChangeType)]()
+        
+        print(changes.count)
+        
+        let reload = changes.count < 10
+        
+        for change in changes {
+            guard let channel = Channel(document: change.document) else { continue }
+            
+            switch change.type {
+            case .added:
+                addChannelToTable(channel, updateTableView: reload)
+                
+            case .modified:
+                updateChannelInTable(channel, updateTableView: reload)
+                
+            case .removed:
+                removeChannelFromTable(channel, updateTableView: reload)
+            }
+            
+            if reload == false {
+                self.channels.sort(by: >)
+                tableView.reloadData()
+            }
+            
+            channelsWithChangeType.append((channel, change.type))
+        }
+        
+        saveChannelsToDB(channelsWithChangeType)
+    }
+    
     private func createChannel(channelName: String) {
         let channel = Channel(name: channelName)
         self.addChannelToTable(channel)
@@ -253,5 +277,38 @@ extension ConversationsListViewController {
         FirestoreDataProvider.shared.createChannel(channel: channel) { [weak self] _ in
             self?.removeChannelFromTable(channel)
         }
+    }
+    
+    private func saveChannelsToDB(_ channelsWithChangeType: [(Channel, DocumentChangeType)]) {
+        CoreDataStack.shared.performSave { (context) in
+            print(channelsWithChangeType.count)
+            for (channel, changeType) in channelsWithChangeType {
+                let channel = ChannelDB(identifier: channel.identifier,
+                                        name: channel.name,
+                                        lastMessage: channel.lastMessage,
+                                        lastActivity: channel.lastActivity,
+                                        in: context)
+                
+                if changeType == .removed {
+                    context.delete(channel)
+                }
+            }
+        }
+    }
+    
+    private func fetchChannelsFromDB() {
+        let channelsDB = try? CoreDataStack.shared.mainContext.fetch(ChannelDB.fetchRequest()) as? [ChannelDB] ?? []
+        channelsDB?.forEach {
+            addChannelToTable(Channel(channelDB: $0), updateTableView: false)
+        }
+        channels.sort(by: >)
+        tableView.reloadData()
+    }
+    
+    private func fetchChannelsFromFirebase() {
+        FirestoreDataProvider.shared.getChannels(completion: { [weak self] change in
+            //self?.handleDocumentChange(change)
+            self?.handleDocumentChanges(change)
+        })
     }
 }
