@@ -51,16 +51,11 @@ class ConversationsListViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        fetchChannelsFromFirebase()
+        fetchChannelsFromFirestore()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        
-        // костыль для подавления ворнинга
-        // не очень хорошо отключать обновление данных,
-        // но пока не понятно как тогда подавлять обновление интерфейса ConversationListVC, находясь на ConversationVC
-        // UITableView was told to layout its visible cells and other contents without being in the view hierarchy
         FirestoreDataProvider.shared.removeChannelsListener()
     }
     
@@ -90,7 +85,7 @@ class ConversationsListViewController: UIViewController {
     @objc func addChannel() {
         showAlert(title: "Add new channel", message: "Enter the name of the channel",
                   createActionHandler: { [weak self] (channelName) in
-                    self?.createChannel(channelName: channelName)
+                    self?.saveChannelToFirestore(channelName: channelName)
         })
     }
 }
@@ -235,11 +230,9 @@ extension ConversationsListViewController {
         }
     }
     
-    private func handleDocumentChanges(_ changes: [DocumentChange]) {
+    private func handleFirestoreDocumentChanges(_ changes: [DocumentChange]) {
         var channelsWithChangeType = [(Channel, DocumentChangeType)]()
-        
-        print(changes.count)
-        
+
         let reload = changes.count < 10
         
         for change in changes {
@@ -266,8 +259,10 @@ extension ConversationsListViewController {
         
         saveChannelsToDB(channelsWithChangeType)
     }
-    
-    private func createChannel(channelName: String) {
+}
+
+extension ConversationsListViewController {
+    private func saveChannelToFirestore(channelName: String) {
         let channel = Channel(name: channelName)
         self.addChannelToTable(channel)
         // создаем документ со своим id, т.к. предварительно сами помещаем его наверх таблицы
@@ -278,15 +273,23 @@ extension ConversationsListViewController {
         }
     }
     
+    private func fetchChannelsFromFirestore() {
+        FirestoreDataProvider.shared.getChannels(completion: { [weak self] change in
+            self?.handleFirestoreDocumentChanges(change)
+        })
+    }
+}
+
+extension ConversationsListViewController {
     private func saveChannelsToDB(_ channelsWithChangeType: [(Channel, DocumentChangeType)]) {
         CoreDataStack.shared.performSave { (context) in
+            
+            //todo drop it before hand over homework
+            print(#function)
             print(channelsWithChangeType.count)
+            
             for (channel, changeType) in channelsWithChangeType {
-                let channel = ChannelDB(identifier: channel.identifier,
-                                        name: channel.name,
-                                        lastMessage: channel.lastMessage,
-                                        lastActivity: channel.lastActivity,
-                                        in: context)
+                let channel = ChannelDB(channel: channel, in: context)
                 
                 if changeType == .removed {
                     context.delete(channel)
@@ -296,17 +299,11 @@ extension ConversationsListViewController {
     }
     
     private func fetchChannelsFromDB() {
-        let channelsDB = try? CoreDataStack.shared.mainContext.fetch(ChannelDB.fetchRequest()) as? [ChannelDB] ?? []
-        channelsDB?.forEach {
+        ChannelDB.fetchChannels().forEach {
             addChannelToTable(Channel(channelDB: $0), updateTableView: false)
         }
+        
         channels.sort(by: >)
         tableView.reloadData()
-    }
-    
-    private func fetchChannelsFromFirebase() {
-        FirestoreDataProvider.shared.getChannels(completion: { [weak self] change in
-            self?.handleDocumentChanges(change)
-        })
     }
 }

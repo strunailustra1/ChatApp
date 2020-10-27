@@ -78,10 +78,10 @@ class CoreDataStack {
     
     func performSave(_ handler: @escaping (NSManagedObjectContext) -> Void) {
         let context = saveContext()
-        context.perform {
+        context.perform { [weak self] in
             handler(context)
             if context.hasChanges {
-                self.performSave(in: context)
+                self?.performSave(in: context)
             }
         }
     }

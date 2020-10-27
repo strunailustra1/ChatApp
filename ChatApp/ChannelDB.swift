@@ -73,4 +73,11 @@ extension ChannelDB {
         
         return channelDB
     }
+    
+    static func fetchChannels() -> [ChannelDB] {
+        guard let channelsDBList = try? CoreDataStack.shared.mainContext.fetch(ChannelDB.fetchRequest())
+            as? [ChannelDB] ?? [] else { return [] }
+        
+        return channelsDBList
+    }
 }
