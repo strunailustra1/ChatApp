@@ -81,22 +81,20 @@ class CoreDataStack {
         context.perform {
             handler(context)
             if context.hasChanges {
-                do {
-                    //todo error in run with ConcurrencyDebug
-                    //try self.performSave(in: context)
-                    try context.save()
-                    try context.parent?.save()
-                    try context.parent?.parent?.save()
-                } catch {
-                    assertionFailure(error.localizedDescription)
-                }
+                self.performSave(in: context)
             }
         }
     }
     
-    private func performSave(in context: NSManagedObjectContext) throws {
-        try context.save()
-        if let parent = context.parent { try performSave(in: parent)}
+    private func performSave(in context: NSManagedObjectContext) {
+        context.perform {
+            do {
+                try context.save()
+            } catch {
+                assertionFailure(error.localizedDescription)
+            }
+        }
+        if let parent = context.parent { performSave(in: parent) }
     }
     
     func enableObservers() {
@@ -108,24 +106,27 @@ class CoreDataStack {
     }
     
     @objc func managedObjectContextObjectsDidChange(notification: NSNotification) {
-        guard let userInfo = notification.userInfo else { return }
-        
-        didUpdateDataBase?(self)
-        
-        if let inserts = userInfo[NSInsertedObjectsKey] as? Set<NSManagedObject>,
-            inserts.count > 0 {
-            print("Добавлено объектов: \(inserts.count)")
-        }
-        
-        if let updates = userInfo[NSUpdatedObjectsKey] as? Set<NSManagedObject>,
-            updates.count > 0 {
-            print("Обновлено объектов: \(updates.count)")
-        }
-        
-        if let deletes = userInfo[NSDeletedObjectsKey] as? Set<NSManagedObject>,
-            deletes.count > 0 {
-            print("Удалено объектов: \(deletes.count)")
-        }
+//        guard let userInfo = notification.userInfo else { return }
+//
+//        didUpdateDataBase?(self)
+//
+//        if let inserts = userInfo[NSInsertedObjectsKey] as? Set<NSManagedObject>,
+//            inserts.count > 0 {
+//            print("Добавлено объектов: \(inserts.count) \(inserts.description)")
+//            //print(inserts)
+//        }
+//        
+//        if let updates = userInfo[NSUpdatedObjectsKey] as? Set<NSManagedObject>,
+//            updates.count > 0 {
+//            print("Обновлено объектов: \(updates.count)")
+//            //print(updates)
+//        }
+//        
+//        if let deletes = userInfo[NSDeletedObjectsKey] as? Set<NSManagedObject>,
+//            deletes.count > 0 {
+//            print("Удалено объектов: \(deletes.count)")
+//            //print(deletes)
+//        }
     }
     
     func printDataBaseStatistice() {

@@ -8,7 +8,6 @@
 
 import UIKit
 import Firebase
-import CoreData
 
 class ConversationsListViewController: UIViewController {
     
@@ -257,12 +256,12 @@ extension ConversationsListViewController {
                 removeChannelFromTable(channel, updateTableView: reload)
             }
             
-            if reload == false {
-                self.channels.sort(by: >)
-                tableView.reloadData()
-            }
-            
             channelsWithChangeType.append((channel, change.type))
+        }
+        
+        if reload == false {
+            self.channels.sort(by: >)
+            tableView.reloadData()
         }
         
         saveChannelsToDB(channelsWithChangeType)
@@ -307,7 +306,6 @@ extension ConversationsListViewController {
     
     private func fetchChannelsFromFirebase() {
         FirestoreDataProvider.shared.getChannels(completion: { [weak self] change in
-            //self?.handleDocumentChange(change)
             self?.handleDocumentChanges(change)
         })
     }

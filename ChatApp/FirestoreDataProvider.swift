@@ -46,7 +46,7 @@ class FirestoreDataProvider {
     }
     
     func getMessages(in channel: Channel,
-                     completion: @escaping (DocumentChange) -> Void,
+                     completion: @escaping ([DocumentChange]) -> Void,
                      errorCompletion: ((Error) -> Void)? = nil) {
         messagesListener = db.collection("channels").document(channel.identifier).collection("messages")
             .order(by: "created")
@@ -58,18 +58,18 @@ class FirestoreDataProvider {
                     return
                 }
                 
-                snapshot.documentChanges.forEach { change in
-                    completion(change)
-                }
+                completion(snapshot.documentChanges)
         }
     }
     
     func createMessage(in channel: Channel, message: Message, errorCompletion: ((Error) -> Void)? = nil) {
-        db.collection("channels").document(channel.identifier).collection("messages")
-            .addDocument(data: message.representation) { error in
-            if let e = error {
-                errorCompletion?(e)
-            }
+        db
+            .collection("channels").document(channel.identifier)
+            .collection("messages").document(message.identifier)
+            .setData(message.representation) { error in
+                if let e = error {
+                    errorCompletion?(e)
+                }
         }
     }
     

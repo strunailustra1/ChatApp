@@ -11,6 +11,7 @@ import UIKit
 import Firebase
 
 struct Message {
+    let identifier: String
     let content: String
     let created: Date
     let senderId: String
@@ -36,6 +37,15 @@ struct Message {
         created = Date()
         senderId = UIDevice.current.identifierForVendor?.uuidString ?? ""
         senderName = ProfileStorage.shared.fullname
+        identifier = UUID().uuidString
+    }
+    
+    init(messageDB: MessageDB) {
+        identifier = messageDB.identifier
+        content = messageDB.content
+        created = messageDB.created
+        senderId = messageDB.senderId
+        senderName = messageDB.senderName
     }
     
     init?(document: QueryDocumentSnapshot) {
@@ -51,6 +61,7 @@ struct Message {
         self.created = created.dateValue()
         self.senderId = senderId
         self.senderName = senderName.trimmingCharacters(in: .whitespacesAndNewlines)
+        self.identifier = document.documentID
     }
 }
 
@@ -66,6 +77,10 @@ extension Message: DatabaseRepresentation {
 }
 
 extension Message: Comparable {
+    static func == (lhs: Message, rhs: Message) -> Bool {
+        return lhs.identifier == rhs.identifier
+    }
+
     static func < (lhs: Message, rhs: Message) -> Bool {
         return lhs.created < rhs.created
     }

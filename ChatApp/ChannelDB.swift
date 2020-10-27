@@ -49,7 +49,28 @@ extension ChannelDB {
         self.lastActivity = lastActivity
     }
     
+    convenience init(channel: Channel, in context: NSManagedObjectContext) {
+        self.init(context: context)
+        self.identifier = channel.identifier
+        self.name = channel.name
+        self.lastMessage = channel.lastMessage
+        self.lastActivity = channel.lastActivity
+    }
+    
     var about: String {
         return self.identifier + "\t" + self.name
+    }
+}
+
+extension ChannelDB {
+    static func fetchChannel(byIdentifier param: String) -> ChannelDB? {
+        let fetchChannelRequest: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
+        fetchChannelRequest.predicate = NSPredicate(format: "identifier = %@", param)
+        
+        let channelDBList = try? CoreDataStack.shared.mainContext.fetch(fetchChannelRequest)
+        
+        guard let channelDB = channelDBList?.first else { return nil }
+        
+        return channelDB
     }
 }

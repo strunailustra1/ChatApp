@@ -44,7 +44,7 @@ class ConversationViewController: UIViewController {
             customInput?.confugureInputView()
             customInput?.sendMessageHandler = { [weak self] messageText in
                 let message = Message(content: messageText)
-                self?.saveMessage(message)
+                self?.saveMessageToFirestore(message)
             }
         }
         return customInput
@@ -76,11 +76,8 @@ class ConversationViewController: UIViewController {
         
         setupNavigationController()
         
-        if let channel = self.channel {
-            FirestoreDataProvider.shared.getMessages(in: channel, completion: { [weak self] change in
-                self?.handleDocumentChange(change)
-            })
-        }
+        fetchMessagesFromDB()
+        fetchMessagesFromFirestore()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -93,6 +90,8 @@ class ConversationViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        
+        scrollToBottom(animated: false)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -183,12 +182,8 @@ extension ConversationViewController {
 }
 
 extension ConversationViewController {
-    private func saveMessage(_ message: Message) {
-        guard let channel = self.channel else { return }
-        FirestoreDataProvider.shared.createMessage(in: channel, message: message)
-    }
-    
-    private func insertNewMessage(_ message: Message) {
+    private func insertMessageToTable(_ message: Message, updateTableView: Bool = true) {
+        if messages.indices(of: message) != nil { return }
         
         var hasSection = false
         for (section, sectionMessages) in messages.enumerated() {
@@ -196,35 +191,75 @@ extension ConversationViewController {
                 messages[section].append(message)
                 hasSection = true
                 
-                tableView.insertRows(at: [IndexPath(row: messages[section].count - 1,
-                                                    section: section)],
-                                     with: .none)
+                if updateTableView {
+                    tableView.insertRows(at: [IndexPath(row: messages[section].count - 1,
+                                                        section: section)],
+                                         with: .none)
+                }
+                
                 break
             }
         }
         
         if !hasSection {
             messages.append([message])
-            let section = IndexSet(integer: messages.count - 1)
-            tableView.insertSections(section, with: .none)
+            if updateTableView {
+                tableView.insertSections(IndexSet(integer: messages.count - 1), with: .none)
+            }
         }
         
-        scrollToBottom(animated: false)
-    }
-    
-    private func handleDocumentChange(_ change: DocumentChange) {
-        guard let message = Message(document: change.document) else {
-            return
-        }
-        
-        switch change.type {
-        case .added:
-            insertNewMessage(message)
-        default:
-            break
+        if updateTableView {
+            scrollToBottom(animated: false)
         }
     }
     
+    private func updateMessageInTable(_ message: Message, updateTableView: Bool = true) {
+        guard let index = messages.indices(of: message) else { return }
+        
+        messages[index.0][index.1] = message
+        
+        if updateTableView {
+            tableView.reloadRows(at: [IndexPath(row: index.1, section: index.0)], with: .automatic)
+        }
+    }
+    
+    private func removeMessageFromTable(_ message: Message, updateTableView: Bool = true) {
+        guard let index = messages.indices(of: message) else { return }
+        
+        messages[index.0].remove(at: index.1)
+        
+        if updateTableView {
+            tableView.deleteRows(at: [IndexPath(row: index.1, section: index.0)], with: .automatic)
+        }
+    }
+    
+    private func handleFirestoreDocumentChanges(_ changes: [DocumentChange]) {
+        var messagesWithChangeType = [(Message, DocumentChangeType)]()
+        let reload = changes.count < 4
+        
+        for change in changes {
+            guard let message = Message(document: change.document) else { continue }
+            
+            switch change.type {
+            case .added:
+                insertMessageToTable(message, updateTableView: reload)
+            case .modified:
+                updateMessageInTable(message, updateTableView: reload)
+            case .removed:
+                removeMessageFromTable(message, updateTableView: reload)
+            }
+            
+            messagesWithChangeType.append((message, change.type))
+        }
+        
+        if reload == false {
+            tableView.reloadData()
+            scrollToBottom(animated: false)
+        }
+        
+        saveMessagesToDB(messagesWithChangeType)
+    }
+
     private func scrollToBottom(animated: Bool) {
         view.layoutIfNeeded()
         tableView.setContentOffset(bottomOffset(), animated: animated)
@@ -236,6 +271,53 @@ extension ConversationViewController {
             y: max(-tableView.contentInset.bottom - 10,
                    tableView.contentSize.height - (tableView.bounds.size.height - tableView.contentInset.bottom))
         )
+    }
+}
+
+extension ConversationViewController {
+    private func saveMessageToFirestore(_ message: Message) {
+        guard let channel = self.channel else { return }
+        FirestoreDataProvider.shared.createMessage(in: channel, message: message)
+    }
+    
+    private func fetchMessagesFromFirestore() {
+        guard let channel = self.channel else { return }
+        FirestoreDataProvider.shared.getMessages(in: channel, completion: { [weak self] changes in
+            self?.handleFirestoreDocumentChanges(changes)
+        })
+    }
+}
+
+extension ConversationViewController {
+    private func saveMessagesToDB(_ messagesWithChangeType: [(Message, DocumentChangeType)]) {
+        CoreDataStack.shared.performSave { (context) in
+            guard let channel = self.channel else { return }
+            
+            let channelDB = ChannelDB(channel: channel, in: context)
+            
+            //todo drop it before hand over homework
+            print(#function)
+            print(messagesWithChangeType.count)
+            
+            for (message, changeType) in messagesWithChangeType {
+                let messageDB = MessageDB(message: message, in: context)
+                messageDB.channel = channelDB
+                
+                if changeType == .removed {
+                    context.delete(messageDB)
+                }
+            }
+        }
+    }
+    
+    private func fetchMessagesFromDB() {
+        guard let channel = self.channel else { return }
+
+        MessageDB.fetchMessages(byChannelIdentifier: channel.identifier).forEach {
+            insertMessageToTable(Message(messageDB: $0), updateTableView: false)
+        }
+        
+        tableView.reloadData()
     }
 }
 
