@@ -295,10 +295,6 @@ extension ConversationViewController {
             
             let channelDB = ChannelDB(channel: channel, in: context)
             
-            //todo drop it before hand over homework
-            print(#function)
-            print(messagesWithChangeType.count)
-            
             for (message, changeType) in messagesWithChangeType {
                 let messageDB = MessageDB(message: message, in: context)
                 messageDB.channel = channelDB

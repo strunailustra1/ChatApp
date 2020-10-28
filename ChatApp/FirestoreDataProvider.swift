@@ -25,8 +25,7 @@ class FirestoreDataProvider {
                 }
                 return
             }
-            
-            print(snapshot.documentChanges.count)
+
             completion(snapshot.documentChanges)
         }
     }

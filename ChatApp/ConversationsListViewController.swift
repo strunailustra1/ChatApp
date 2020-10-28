@@ -283,11 +283,6 @@ extension ConversationsListViewController {
 extension ConversationsListViewController {
     private func saveChannelsToDB(_ channelsWithChangeType: [(Channel, DocumentChangeType)]) {
         CoreDataStack.shared.performSave { (context) in
-            
-            //todo drop it before hand over homework
-            print(#function)
-            print(channelsWithChangeType.count)
-            
             for (channel, changeType) in channelsWithChangeType {
                 let channel = ChannelDB(channel: channel, in: context)
                 

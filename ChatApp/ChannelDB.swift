@@ -56,10 +56,6 @@ extension ChannelDB {
         self.lastMessage = channel.lastMessage
         self.lastActivity = channel.lastActivity
     }
-    
-    var about: String {
-        return self.identifier + "\t" + self.name
-    }
 }
 
 extension ChannelDB {
@@ -79,5 +75,27 @@ extension ChannelDB {
             as? [ChannelDB] ?? [] else { return [] }
         
         return channelsDBList
+    }
+}
+
+extension ChannelDB: NSManagedObjectDescriptionProtocol {
+    override public var description: String {
+        "Channel id: \(identifier), name: \(name)"
+    }
+}
+
+extension ChannelDB {
+    var about: String {
+        var messages = self.messages?.allObjects.compactMap { $0 as? MessageDB } ?? []
+        messages.sort { (lhs: MessageDB, rhs: MessageDB) -> Bool in
+            lhs.created > rhs.created
+        }
+        
+        var about = "\(identifier)\t\(name)\t\(messages.count) messages\n"
+        for message in messages[..<min(messages.count, 2)] {
+            about += "\t\t\(message.created)\t\(message.senderName)\t\(message.content)\n"
+        }
+        
+        return about
     }
 }

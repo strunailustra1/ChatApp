@@ -29,8 +29,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FirebaseApp.configure()
         Logger.shared.appDelegateLog(stateFrom: "Inactive", stateTo: "Inactive")
         
-        CoreDataStack.shared.didUpdateDataBase = { stack in
-            stack.printDataBaseStatistice()
+        // Для вывода полного состояния бд после каждого сохранения
+        // нужно запустить схему ChatAppInfo
+        if Logger.shared.verboseLevel == .info {
+            CoreDataStack.shared.didUpdateDataBase = { stack in
+                stack.printStatFromDatabase()
+            }
         }
         CoreDataStack.shared.enableObservers()
     

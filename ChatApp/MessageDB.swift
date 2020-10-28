@@ -65,3 +65,9 @@ extension MessageDB {
         return messagesDB
     }
 }
+
+extension MessageDB: NSManagedObjectDescriptionProtocol {
+    override public var description: String {
+        "Message id: \(identifier), senderName: \(senderName), channel: \(channel?.name ?? "")\ncontent: \(content)"
+    }
+}

@@ -22,14 +22,14 @@ enum VerboseLevel: String {
 
 class Logger {
     
-    public static var shared = Logger()
+    public static let shared = Logger()
     
-    private static var subsystem = Bundle.main.bundleIdentifier ?? ""
+    private static let subsystem = Bundle.main.bundleIdentifier ?? ""
     
     private let appCycle = OSLog(subsystem: subsystem, category: "app cycle")
     private let viewCycle = OSLog(subsystem: subsystem, category: "view cycle")
     
-    private let verboseLevel = VerboseLevel.createFromEnvironment()
+    public let verboseLevel = VerboseLevel.createFromEnvironment()
     
     func appDelegateLog(stateFrom: String, stateTo: String, functionName: String = #function) {
         os_log("Application moved from %s to %s: %s",
