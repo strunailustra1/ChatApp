@@ -156,38 +156,68 @@
 				1E772F8F25379DB5001A5F8A /* Extensions */,
 				1EA4402D25156A8C00BFC316 /* Fonts */,
 				1E1ECB802546E8A100A13FF7 /* CoreData */,
-				1E30F11C250B944100DDF8DC /* AppDelegate.swift */,
+				1E46BC242549F63A00DED981 /* Models */,
+				1E46BC272549F6DE00DED981 /* Conversation */,
+				1E46BC262549F6D100DED981 /* ConversationList */,
+				1E46BC252549F6C600DED981 /* Profile */,
 				1E6B8FC1250E319800A5632E /* Logger.swift */,
-				1E676A4F251DF38E00E98C42 /* ConversationCell.swift */,
-				1E676A50251DF38E00E98C42 /* ConversationCell.xib */,
-				1E676A4D251DF28500E98C42 /* ConversationsListViewController.storyboard */,
-				1E676A55251DF48200E98C42 /* ConversationsListViewController.swift */,
-				1EBEF39325212DF100F6E541 /* ConversationViewController.storyboard */,
-				1EBEF39525212E2700F6E541 /* ConversationViewController.swift */,
+				1E30F11C250B944100DDF8DC /* AppDelegate.swift */,
 				1E4686B42540D72900EFF407 /* FirestoreDataProvider.swift */,
-				1E4686B22540C05900EFF407 /* KeyboardInfo.swift */,
 				1E164094252E7A1A00B37DD6 /* RootNavigationController.swift */,
-				1E4686B0254043A700EFF407 /* Message.swift */,
-				1ECC4820253EF51900789DDA /* Channel.swift */,
 				1EBEF38D251E255900F6E541 /* ConfigurableView.swift */,
-				1ECC481C253DB60900789DDA /* InputBarView.xib */,
-				1EBEF39925212FA000F6E541 /* MessageCell.swift */,
-				1EBEF39D252270A200F6E541 /* MessageSectionHeader.swift */,
-				1ECC481E253DEAD200789DDA /* InputBarView.swift */,
-				1EBEF39F2522724300F6E541 /* MessageSectionHeader.xib */,
-				1EBEF39A25212FA000F6E541 /* MessageCell.xib */,
-				1E5FFB1A2527374000F8187A /* ThemesViewController.swift */,
-				1E5FFB202527566800F8187A /* ThemesViewController.storyboard */,
-				1E30F120250B944100DDF8DC /* ProfileViewController.swift */,
-				1E4686B82540EE4400EFF407 /* ProfileEditImageAlertController.swift */,
-				1E30F122250B944100DDF8DC /* ProfileViewController.storyboard */,
-				1E4686B62540EB4900EFF407 /* ProfileImagePickerController.swift */,
 				1E30F125250B944700DDF8DC /* Assets.xcassets */,
 				1E30F127250B944700DDF8DC /* LaunchScreen.storyboard */,
 				1EB5D4952549EBAD00D31945 /* GoogleService-Info.plist */,
 				1E30F12A250B944700DDF8DC /* Info.plist */,
 			);
 			path = ChatApp;
+			sourceTree = "<group>";
+		};
+		1E46BC242549F63A00DED981 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				1ECC4820253EF51900789DDA /* Channel.swift */,
+				1E4686B0254043A700EFF407 /* Message.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		1E46BC252549F6C600DED981 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				1E30F120250B944100DDF8DC /* ProfileViewController.swift */,
+				1E4686B82540EE4400EFF407 /* ProfileEditImageAlertController.swift */,
+				1E4686B62540EB4900EFF407 /* ProfileImagePickerController.swift */,
+				1E30F122250B944100DDF8DC /* ProfileViewController.storyboard */,
+			);
+			name = Profile;
+			sourceTree = "<group>";
+		};
+		1E46BC262549F6D100DED981 /* ConversationList */ = {
+			isa = PBXGroup;
+			children = (
+				1E676A55251DF48200E98C42 /* ConversationsListViewController.swift */,
+				1E676A4F251DF38E00E98C42 /* ConversationCell.swift */,
+				1E676A50251DF38E00E98C42 /* ConversationCell.xib */,
+				1E676A4D251DF28500E98C42 /* ConversationsListViewController.storyboard */,
+			);
+			name = ConversationList;
+			sourceTree = "<group>";
+		};
+		1E46BC272549F6DE00DED981 /* Conversation */ = {
+			isa = PBXGroup;
+			children = (
+				1EBEF39525212E2700F6E541 /* ConversationViewController.swift */,
+				1EBEF39925212FA000F6E541 /* MessageCell.swift */,
+				1EBEF39D252270A200F6E541 /* MessageSectionHeader.swift */,
+				1ECC481E253DEAD200789DDA /* InputBarView.swift */,
+				1E4686B22540C05900EFF407 /* KeyboardInfo.swift */,
+				1EBEF39A25212FA000F6E541 /* MessageCell.xib */,
+				1ECC481C253DB60900789DDA /* InputBarView.xib */,
+				1EBEF39F2522724300F6E541 /* MessageSectionHeader.xib */,
+				1EBEF39325212DF100F6E541 /* ConversationViewController.storyboard */,
+			);
+			name = Conversation;
 			sourceTree = "<group>";
 		};
 		1E772F8A253796B1001A5F8A /* ProfileDataManager */ = {
@@ -216,6 +246,8 @@
 			children = (
 				1E16408E252BA55D00B37DD6 /* ThemesManager.swift */,
 				1E16408C252B340700B37DD6 /* ThemesPickerDelegate.swift */,
+				1E5FFB1A2527374000F8187A /* ThemesViewController.swift */,
+				1E5FFB202527566800F8187A /* ThemesViewController.storyboard */,
 			);
 			name = Themes;
 			sourceTree = "<group>";
