@@ -40,7 +40,7 @@
 		1EA44026251534BD00BFC316 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1EA44025251534BD00BFC316 /* Roboto-Regular.ttf */; };
 		1EB5D48F25488CA800D31945 /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB5D48E25488CA800D31945 /* Array+Extensions.swift */; };
 		1EB5D4912548A8EE00D31945 /* NSManagedObjectDescriptionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB5D4902548A8EE00D31945 /* NSManagedObjectDescriptionProtocol.swift */; };
-		1EBCEBE52538B7F2006FAA70 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1EBCEBE42538B7F1006FAA70 /* GoogleService-Info.plist */; };
+		1EB5D4962549EBAD00D31945 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1EB5D4952549EBAD00D31945 /* GoogleService-Info.plist */; };
 		1EBEF38E251E255900F6E541 /* ConfigurableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EBEF38D251E255900F6E541 /* ConfigurableView.swift */; };
 		1EBEF39425212DF100F6E541 /* ConversationViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1EBEF39325212DF100F6E541 /* ConversationViewController.storyboard */; };
 		1EBEF39625212E2700F6E541 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EBEF39525212E2700F6E541 /* ConversationViewController.swift */; };
@@ -90,7 +90,7 @@
 		1EA44025251534BD00BFC316 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		1EB5D48E25488CA800D31945 /* Array+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extensions.swift"; sourceTree = "<group>"; };
 		1EB5D4902548A8EE00D31945 /* NSManagedObjectDescriptionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSManagedObjectDescriptionProtocol.swift; sourceTree = "<group>"; };
-		1EBCEBE42538B7F1006FAA70 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/firebase_challenge/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		1EB5D4952549EBAD00D31945 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1EBEF38D251E255900F6E541 /* ConfigurableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableView.swift; sourceTree = "<group>"; };
 		1EBEF39325212DF100F6E541 /* ConversationViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ConversationViewController.storyboard; sourceTree = "<group>"; };
 		1EBEF39525212E2700F6E541 /* ConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
@@ -176,7 +176,6 @@
 				1ECC481E253DEAD200789DDA /* InputBarView.swift */,
 				1EBEF39F2522724300F6E541 /* MessageSectionHeader.xib */,
 				1EBEF39A25212FA000F6E541 /* MessageCell.xib */,
-				1EBCEBE42538B7F1006FAA70 /* GoogleService-Info.plist */,
 				1E5FFB1A2527374000F8187A /* ThemesViewController.swift */,
 				1E5FFB202527566800F8187A /* ThemesViewController.storyboard */,
 				1E30F120250B944100DDF8DC /* ProfileViewController.swift */,
@@ -185,6 +184,7 @@
 				1E4686B62540EB4900EFF407 /* ProfileImagePickerController.swift */,
 				1E30F125250B944700DDF8DC /* Assets.xcassets */,
 				1E30F127250B944700DDF8DC /* LaunchScreen.storyboard */,
+				1EB5D4952549EBAD00D31945 /* GoogleService-Info.plist */,
 				1E30F12A250B944700DDF8DC /* Info.plist */,
 			);
 			path = ChatApp;
@@ -311,11 +311,11 @@
 				1E30F126250B944700DDF8DC /* Assets.xcassets in Resources */,
 				1E676A4E251DF28500E98C42 /* ConversationsListViewController.storyboard in Resources */,
 				1EA44026251534BD00BFC316 /* Roboto-Regular.ttf in Resources */,
+				1EB5D4962549EBAD00D31945 /* GoogleService-Info.plist in Resources */,
 				1ECC481D253DB60900789DDA /* InputBarView.xib in Resources */,
 				1EBEF39C25212FA000F6E541 /* MessageCell.xib in Resources */,
 				1E5FFB212527566800F8187A /* ThemesViewController.storyboard in Resources */,
 				1EBEF3A02522724300F6E541 /* MessageSectionHeader.xib in Resources */,
-				1EBCEBE52538B7F2006FAA70 /* GoogleService-Info.plist in Resources */,
 				1EBEF39425212DF100F6E541 /* ConversationViewController.storyboard in Resources */,
 				1E30F124250B944100DDF8DC /* ProfileViewController.storyboard in Resources */,
 			);
@@ -339,7 +339,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif which ${PODS_ROOT}/SwiftLint/swiftlint >/dev/null; then\n  ${PODS_ROOT}/SwiftLint/swiftlint\nelse\n  echo \"error: SwiftLint does not exist, download it from https://github.com/realm/SwiftLint\"\n  exit 1\nfi\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif which \"${PODS_ROOT}/SwiftLint/swiftlint\" >/dev/null; then\n  \"${PODS_ROOT}/SwiftLint/swiftlint\"\nelse\n  echo \"error: SwiftLint does not exist, download it from https://github.com/realm/SwiftLint\"\n  exit 1\nfi\n";
 		};
 		5E72DDA387BE405D490F2339 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
