@@ -24,20 +24,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions
         launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        Logger.shared.appDelegateLog(stateFrom: "Inactive", stateTo: "Inactive")
+        
         applyTheme()
         ProfileStorage.fetchProfileOnStartApp(window)
         FirebaseApp.configure()
-        Logger.shared.appDelegateLog(stateFrom: "Inactive", stateTo: "Inactive")
+        CoreDataStack.shared.configure()
         
-        // Для вывода полного состояния бд после каждого сохранения
-        // нужно запустить схему ChatAppInfo
-        if Logger.shared.verboseLevel == .info {
-            CoreDataStack.shared.didUpdateDataBase = { stack in
-                stack.printStatFromDatabase()
-            }
-        }
-        CoreDataStack.shared.enableObservers()
-    
         return true
     }
     

@@ -164,4 +164,15 @@ class CoreDataStack {
             }
         }
     }
+    
+    func configure() {
+        // Для вывода полного состояния бд после каждого сохранения
+        // нужно запустить схему ChatAppInfo
+        if Logger.shared.verboseLevel == .info {
+            didUpdateDataBase = { stack in
+                stack.printStatFromDatabase()
+            }
+        }
+        enableObservers()
+    }
 }
