@@ -25,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      didFinishLaunchingWithOptions
         launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         applyTheme()
-        fetchProfile()
+        ProfileStorage.fetchProfileOnStartApp(window)
         FirebaseApp.configure()
         Logger.shared.appDelegateLog(stateFrom: "Inactive", stateTo: "Inactive")
         
@@ -59,22 +59,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationWillTerminate(_ application: UIApplication) {
         Logger.shared.appDelegateLog(stateFrom: "Background", stateTo: "across Suspended to Not Running")
-    }
-    
-    private func fetchProfile() {
-        let fetchDataCompletion: (Profile) -> Void = { [weak self] (profile) in
-            ProfileStorage.shared = profile
-            if let navVC = self?.window?.rootViewController as? UINavigationController,
-                let conversationListVC = navVC.viewControllers.first as? ConversationsListViewController {
-                conversationListVC.updateNavigationRightButtonImage()
-            }
-        }
-        
-        let profileDataManager: ProfileDataManagerProtocol = Bool.random()
-            ? GCDDataManager.shared
-            : OperationDataManager.shared
-        
-        profileDataManager.fetch(defaultProfile: ProfileStorage.shared, succesfullCompletion: fetchDataCompletion)
     }
     
     private func applyTheme() {
