@@ -41,6 +41,7 @@ class ConversationsListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(tableView)
+        fetchChannelsFromDB()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -50,19 +51,11 @@ class ConversationsListViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
-        FirestoreDataProvider.shared.getChannels(completion: { [weak self] change in
-            self?.handleDocumentChange(change)
-        })
+        fetchChannelsFromFirestore()
     }
-
+    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        
-        // костыль для подавления ворнинга
-        // не очень хорошо отключать обновление данных,
-        // но пока не понятно как тогда подавлять обновление интерфейса ConversationListVC, находясь на ConversationVC
-        // UITableView was told to layout its visible cells and other contents without being in the view hierarchy
         FirestoreDataProvider.shared.removeChannelsListener()
     }
     
@@ -92,7 +85,7 @@ class ConversationsListViewController: UIViewController {
     @objc func addChannel() {
         showAlert(title: "Add new channel", message: "Enter the name of the channel",
                   createActionHandler: { [weak self] (channelName) in
-                    self?.createChannel(channelName: channelName)
+                    self?.saveChannelToFirestore(channelName: channelName)
         })
     }
 }
@@ -189,7 +182,7 @@ extension ConversationsListViewController {
         let createAction = UIAlertAction(title: "Create", style: .default) { _ in
             guard let channelName = alert.textFields?.first?.text,
                 channelName.trimmingCharacters(in: .whitespacesAndNewlines).count != 0 else {
-                return
+                    return
             }
             createActionHandler(channelName)
         }
@@ -205,46 +198,71 @@ extension ConversationsListViewController {
 }
 
 extension ConversationsListViewController {
-    private func addChannelToTable(_ channel: Channel) {
+    private func addChannelToTable(_ channel: Channel, updateTableView: Bool = true) {
         guard !channels.contains(channel) else { return }
         
         channels.append(channel)
-        channels.sort(by: >)
-        
-        guard let index = channels.firstIndex(of: channel) else { return }
-        tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+
+        if updateTableView {
+            channels.sort(by: >)
+            guard let index = channels.firstIndex(of: channel) else { return }
+            tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+        }
     }
     
-    private func updateChannelInTable(_ channel: Channel) {
+    private func updateChannelInTable(_ channel: Channel, updateTableView: Bool = true) {
         guard let index = channels.firstIndex(of: channel) else { return }
         
         channels[index] = channel
-        tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+        
+        if updateTableView {
+            tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+        }
     }
     
-    private func removeChannelFromTable(_ channel: Channel) {
+    private func removeChannelFromTable(_ channel: Channel, updateTableView: Bool = true) {
         guard let index = channels.firstIndex(of: channel) else { return }
         
         channels.remove(at: index)
-        tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-    }
-    
-    private func handleDocumentChange(_ change: DocumentChange) {
-        guard let channel = Channel(document: change.document) else { return }
         
-        switch change.type {
-        case .added:
-            addChannelToTable(channel)
-            
-        case .modified:
-            updateChannelInTable(channel)
-            
-        case .removed:
-            removeChannelFromTable(channel)
+        if updateTableView {
+            tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
         }
     }
+    
+    private func handleFirestoreDocumentChanges(_ changes: [DocumentChange]) {
+        var channelsWithChangeType = [(Channel, DocumentChangeType)]()
 
-    private func createChannel(channelName: String) {
+        let reload = changes.count < 10
+        
+        for change in changes {
+            guard let channel = Channel(document: change.document) else { continue }
+            
+            switch change.type {
+            case .added:
+                addChannelToTable(channel, updateTableView: reload)
+                
+            case .modified:
+                updateChannelInTable(channel, updateTableView: reload)
+                
+            case .removed:
+                removeChannelFromTable(channel, updateTableView: reload)
+            }
+            
+            channelsWithChangeType.append((channel, change.type))
+        }
+        
+        if reload == false {
+            self.channels.sort(by: >)
+            tableView.reloadData()
+        }
+        
+        saveChannelsToDB(channelsWithChangeType)
+    }
+}
+
+extension ConversationsListViewController {
+    private func saveChannelToFirestore(channelName: String) {
         let channel = Channel(name: channelName)
         self.addChannelToTable(channel)
         // создаем документ со своим id, т.к. предварительно сами помещаем его наверх таблицы
@@ -253,5 +271,34 @@ extension ConversationsListViewController {
         FirestoreDataProvider.shared.createChannel(channel: channel) { [weak self] _ in
             self?.removeChannelFromTable(channel)
         }
+    }
+    
+    private func fetchChannelsFromFirestore() {
+        FirestoreDataProvider.shared.getChannels(completion: { [weak self] change in
+            self?.handleFirestoreDocumentChanges(change)
+        })
+    }
+}
+
+extension ConversationsListViewController {
+    private func saveChannelsToDB(_ channelsWithChangeType: [(Channel, DocumentChangeType)]) {
+        CoreDataStack.shared.performSave { (context) in
+            for (channel, changeType) in channelsWithChangeType {
+                let channel = ChannelDB(channel: channel, in: context)
+                
+                if changeType == .removed {
+                    context.delete(channel)
+                }
+            }
+        }
+    }
+    
+    private func fetchChannelsFromDB() {
+        ChannelDB.fetchChannels().forEach {
+            addChannelToTable(Channel(channelDB: $0), updateTableView: false)
+        }
+        
+        channels.sort(by: >)
+        tableView.reloadData()
     }
 }

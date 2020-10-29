@@ -22,6 +22,13 @@ struct Channel {
         lastActivity = Date() // хак чтобы созданный канал сразу отображался сверху
     }
     
+    init(channelDB: ChannelDB) {
+        identifier = channelDB.identifier
+        name = channelDB.name
+        lastMessage = channelDB.lastMessage
+        lastActivity = channelDB.lastActivity
+    }
+    
     init?(document: QueryDocumentSnapshot) {
         let data = document.data()
         

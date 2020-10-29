@@ -62,6 +62,22 @@ class ProfileStorage {
     static var shared = Profile(fullname: "Marina Dudarenko",
                                 description: "UX/UI designer, web-designer\nMoscow, Russia",
                                 profileImage: nil)
+    
+    static func fetchProfileOnStartApp(_ window: UIWindow?) {
+           let fetchDataCompletion: (Profile) -> Void = { (profile) in
+               ProfileStorage.shared = profile
+               if let navVC = window?.rootViewController as? UINavigationController,
+                   let conversationListVC = navVC.viewControllers.first as? ConversationsListViewController {
+                   conversationListVC.updateNavigationRightButtonImage()
+               }
+           }
+           
+           let profileDataManager: ProfileDataManagerProtocol = Bool.random()
+               ? GCDDataManager.shared
+               : OperationDataManager.shared
+           
+           profileDataManager.fetch(defaultProfile: ProfileStorage.shared, succesfullCompletion: fetchDataCompletion)
+       }
 }
 
 enum ProfilePath: String {
