@@ -40,6 +40,14 @@ class FirestoreDataProvider {
             })
     }
     
+    func deleteChannel(channel: Channel, errorCompletion: ((Error) -> Void)? = nil) {
+        db.collection("channels").document(channel.identifier).delete { error in
+            if let e = error {
+                errorCompletion?(e)
+            }
+        }
+    }
+    
     func removeChannelsListener() {
         channelsListener?.remove()
     }

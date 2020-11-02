@@ -140,6 +140,27 @@ extension ConversationsListViewController: UITableViewDelegate {
             navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         }
     }
+    
+    func tableView(
+        _ tableView: UITableView,
+        trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    ) -> UISwipeActionsConfiguration? {
+        var contextualActions: [UIContextualAction] = []
+
+        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") {[weak self] _, _, _ in
+            guard let channelDBFromMainContext = self?.fetchedResultsController.object(at: indexPath) else { return }
+
+            FirestoreDataProvider.shared.deleteChannel(channel: Channel(channelDB: channelDBFromMainContext))
+            
+            self?.deleteChannelFromDB(channelDBFromMainContext)
+        }
+        contextualActions.append(deleteAction)
+        
+        let swipeActionsConfiguration = UISwipeActionsConfiguration(actions: contextualActions)
+        swipeActionsConfiguration.performsFirstActionWithFullSwipe = false
+        
+        return swipeActionsConfiguration
+    }
 }
 
 extension ConversationsListViewController {
@@ -254,6 +275,14 @@ extension ConversationsListViewController {
                     context.delete(channel)
                 }
             }
+        }
+    }
+    
+    private func deleteChannelFromDB(_ channelDBFromMainContext: ChannelDB) {
+        CoreDataStack.shared.performSave { (context) in
+            guard let channelDBFromSaveContext = context.object(with: channelDBFromMainContext.objectID)
+                as? ChannelDB else { return }
+            context.delete(channelDBFromSaveContext)
         }
     }
 }
