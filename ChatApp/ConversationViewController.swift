@@ -283,6 +283,7 @@ extension ConversationViewController {
     private func fetchMessagesFromFirestore() {
         guard let channel = self.channel else { return }
         FirestoreDataProvider.shared.getMessages(in: channel, completion: { [weak self] changes in
+            print(changes)
             self?.handleFirestoreDocumentChanges(changes)
         })
     }

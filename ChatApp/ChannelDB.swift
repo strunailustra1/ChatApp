@@ -71,10 +71,10 @@ extension ChannelDB {
     }
     
     static func fetchChannels() -> [ChannelDB] {
-        guard let channelsDBList = try? CoreDataStack.shared.mainContext.fetch(ChannelDB.fetchRequest())
-            as? [ChannelDB] ?? [] else { return [] }
+        let fetchRequest: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "lastActivity", ascending: false)]
         
-        return channelsDBList
+        return (try? CoreDataStack.shared.mainContext.fetch(fetchRequest)) ?? []
     }
 }
 

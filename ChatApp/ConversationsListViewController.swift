@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import CoreData
 
 class ConversationsListViewController: UIViewController {
     
@@ -23,6 +24,21 @@ class ConversationsListViewController: UIViewController {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 40
         return tableView
+    }()
+    
+    private lazy var fetchedResultsController: NSFetchedResultsController<ChannelDB> = {
+        let fetchRequest: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "lastActivity", ascending: false)]
+        //todo batch size?
+        let fetchedResultsController = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: CoreDataStack.shared.mainContext,
+            sectionNameKeyPath: nil,
+            cacheName: nil //todo
+        )
+        fetchedResultsController.delegate = self
+
+        return fetchedResultsController
     }()
     
     private lazy var notificationCenter = NotificationCenter.default
@@ -41,7 +57,12 @@ class ConversationsListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(tableView)
-        fetchChannelsFromDB()
+        
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            print("\(error), \(error.localizedDescription)")
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -92,14 +113,17 @@ class ConversationsListViewController: UIViewController {
 
 extension ConversationsListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        channels.count
+        guard let sections = fetchedResultsController.sections else { return 0 }
+        return sections[section].numberOfObjects
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
             as? ConversationCell else { return UITableViewCell() }
         
-        let channel = channels[indexPath.row]
+        let channelDB = fetchedResultsController.object(at: indexPath)
+        let channel = Channel(channelDB: channelDB)
+
         cell.configure(with: .init(name: channel.name,
                                    message: channel.lastMessage ?? "",
                                    date: channel.lastActivity))
@@ -110,8 +134,8 @@ extension ConversationsListViewController: UITableViewDataSource {
 extension ConversationsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {        
         if let conversationVC = ConversationViewController.storyboardInstance() {
-            let channel = channels[indexPath.row]
-            conversationVC.channel = channel
+            let channelDB = fetchedResultsController.object(at: indexPath)
+            conversationVC.channel = Channel(channelDB: channelDB)
             navigationController?.pushViewController(conversationVC, animated: true)
             navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         }
@@ -198,79 +222,19 @@ extension ConversationsListViewController {
 }
 
 extension ConversationsListViewController {
-    private func addChannelToTable(_ channel: Channel, updateTableView: Bool = true) {
-        guard !channels.contains(channel) else { return }
-        
-        channels.append(channel)
-
-        if updateTableView {
-            channels.sort(by: >)
-            guard let index = channels.firstIndex(of: channel) else { return }
-            tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-        }
-    }
-    
-    private func updateChannelInTable(_ channel: Channel, updateTableView: Bool = true) {
-        guard let index = channels.firstIndex(of: channel) else { return }
-        
-        channels[index] = channel
-        
-        if updateTableView {
-            tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-        }
-    }
-    
-    private func removeChannelFromTable(_ channel: Channel, updateTableView: Bool = true) {
-        guard let index = channels.firstIndex(of: channel) else { return }
-        
-        channels.remove(at: index)
-        
-        if updateTableView {
-            tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-        }
-    }
-    
     private func handleFirestoreDocumentChanges(_ changes: [DocumentChange]) {
         var channelsWithChangeType = [(Channel, DocumentChangeType)]()
-
-        let reload = changes.count < 10
         
         for change in changes {
             guard let channel = Channel(document: change.document) else { continue }
-            
-            switch change.type {
-            case .added:
-                addChannelToTable(channel, updateTableView: reload)
-                
-            case .modified:
-                updateChannelInTable(channel, updateTableView: reload)
-                
-            case .removed:
-                removeChannelFromTable(channel, updateTableView: reload)
-            }
-            
             channelsWithChangeType.append((channel, change.type))
-        }
-        
-        if reload == false {
-            self.channels.sort(by: >)
-            tableView.reloadData()
         }
         
         saveChannelsToDB(channelsWithChangeType)
     }
-}
-
-extension ConversationsListViewController {
+    
     private func saveChannelToFirestore(channelName: String) {
-        let channel = Channel(name: channelName)
-        self.addChannelToTable(channel)
-        // создаем документ со своим id, т.к. предварительно сами помещаем его наверх таблицы
-        // неплохо было бы в api иметь поле с максимальной из двух дат (дата создания канала или последнего сообщения),
-        // чтобы сортировать по данной дате список каналов, но такого пока нет, поэтому костылим
-        FirestoreDataProvider.shared.createChannel(channel: channel) { [weak self] _ in
-            self?.removeChannelFromTable(channel)
-        }
+        FirestoreDataProvider.shared.createChannel(channel: Channel(name: channelName))
     }
     
     private func fetchChannelsFromFirestore() {
@@ -292,13 +256,45 @@ extension ConversationsListViewController {
             }
         }
     }
-    
-    private func fetchChannelsFromDB() {
-        ChannelDB.fetchChannels().forEach {
-            addChannelToTable(Channel(channelDB: $0), updateTableView: false)
+}
+
+extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
+    func controller(
+        _ controller: NSFetchedResultsController<NSFetchRequestResult>,
+        didChange anObject: Any, at indexPath: IndexPath?,
+        for type: NSFetchedResultsChangeType,
+        newIndexPath: IndexPath?
+    ) {
+        switch type {
+        case .insert:
+            if let indexPath = newIndexPath {
+                tableView.insertRows(at: [indexPath], with: .none)
+            }
+        case .update:
+            if let indexPath = indexPath {
+                tableView.insertRows(at: [indexPath], with: .none)
+            }
+        case .move:
+            if let indexPath = indexPath {
+                tableView.deleteRows(at: [indexPath], with: .none)
+            }
+            if let newIndexPath = newIndexPath {
+                tableView.insertRows(at: [newIndexPath], with: .none)
+            }
+        case .delete:
+            if let indexPath = indexPath {
+                tableView.deleteRows(at: [indexPath], with: .none)
+            }
+        @unknown default:
+            fatalError("undefined type")
         }
-        
-        channels.sort(by: >)
-        tableView.reloadData()
+    }
+    
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.beginUpdates()
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.endUpdates()
     }
 }

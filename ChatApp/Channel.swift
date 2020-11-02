@@ -62,7 +62,8 @@ protocol DatabaseRepresentation {
 extension Channel: DatabaseRepresentation {
     var representation: [String: Any] {
         return [
-            "name": name
+            "name": name,
+            "lastActivity": Timestamp(date: lastActivity ?? Date())
         ]
     }
 }
