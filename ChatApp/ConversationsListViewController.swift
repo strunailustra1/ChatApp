@@ -43,8 +43,6 @@ class ConversationsListViewController: UIViewController {
     
     private lazy var notificationCenter = NotificationCenter.default
     
-    private var channels = [Channel]()
-    
     static func storyboardInstance() -> ConversationsListViewController? {
         let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
         return storyboard.instantiateInitialViewController() as? ConversationsListViewController
@@ -149,10 +147,15 @@ extension ConversationsListViewController: UITableViewDelegate {
 
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete") {[weak self] _, _, _ in
             guard let channelDBFromMainContext = self?.fetchedResultsController.object(at: indexPath) else { return }
-
-            FirestoreDataProvider.shared.deleteChannel(channel: Channel(channelDB: channelDBFromMainContext))
             
-            self?.deleteChannelFromDB(channelDBFromMainContext)
+            self?.deleteChannelAlert(deleteChannelhandler: { [unowned self] _ in
+                FirestoreDataProvider.shared.deleteChannel(channel: Channel(channelDB: channelDBFromMainContext))
+                self?.deleteChannelFromDB(channelDBFromMainContext)
+            })
+
+//            FirestoreDataProvider.shared.deleteChannel(channel: Channel(channelDB: channelDBFromMainContext))
+//
+//            self?.deleteChannelFromDB(channelDBFromMainContext)
         }
         contextualActions.append(deleteAction)
         
@@ -301,7 +304,7 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
             }
         case .update:
             if let indexPath = indexPath {
-                tableView.insertRows(at: [indexPath], with: .none)
+                tableView.reloadRows(at: [indexPath], with: .none)
             }
         case .move:
             if let indexPath = indexPath {
@@ -325,5 +328,20 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.endUpdates()
+    }
+}
+
+extension ConversationsListViewController {
+    private func deleteChannelAlert(deleteChannelhandler: ((UIAlertAction) -> Void)? = nil) {
+        let alert = UIAlertController(title: nil,
+                                      message: "Do you really want to delete this channel?",
+                                      preferredStyle: .actionSheet)
+        let deleteAction = UIAlertAction(title: "Delete", style: .destructive, handler: deleteChannelhandler)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        
+        alert.addAction(deleteAction)
+        alert.addAction(cancelAction)
+        present(alert, animated: true, completion: nil)
+        alert.pruneNegativeWidthConstraints()
     }
 }

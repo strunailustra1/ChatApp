@@ -12,22 +12,15 @@ class MessageSectionHeader: UITableViewHeaderFooterView, ConfigurableView {
 
     @IBOutlet weak var sectionNameLabel: UILabel!
     @IBOutlet weak var sectionView: UIView!
-    
-    static var dateFormatter: DateFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.dateFormat = "E, MMM d"
-        return dateFormatter
-    }()
-    
+
     typealias ConfigurationModel = MessageSectionHeaderModel
     
     struct MessageSectionHeaderModel {
-        let date: Date
+        let title: String
     }
     
     func configure(with model: ConfigurationModel) {
-        sectionNameLabel.text = MessageSectionHeader.dateFormatter.string(from: model.date)
+        sectionNameLabel.text = model.title
         sectionView.layer.cornerRadius = 8
         sectionView.backgroundColor = ThemesManager.shared.getTheme().messageHeaderBackgroundColor
         sectionNameLabel.textColor = ThemesManager.shared.getTheme().messageHeaderLabelColor

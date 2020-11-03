@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import CoreData
 
 class ConversationViewController: UIViewController {
     
@@ -30,6 +31,21 @@ class ConversationViewController: UIViewController {
         tableView.keyboardDismissMode = .interactive
         
         return tableView
+    }()
+    
+    private lazy var fetchedResultsController: NSFetchedResultsController<MessageDB> = {
+        guard let channelId = self.channel?.identifier else { return NSFetchedResultsController<MessageDB>() }
+        let fetchRequest: NSFetchRequest<MessageDB> = MessageDB.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "created", ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "channel.identifier = %@", channelId)
+        let fetchedResultsController = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: CoreDataStack.shared.mainContext,
+            sectionNameKeyPath: "formattedDate",
+            cacheName: nil
+        )
+        fetchedResultsController.delegate = self
+        return fetchedResultsController
     }()
     
     private let notificationCenter = NotificationCenter.default
@@ -63,7 +79,6 @@ class ConversationViewController: UIViewController {
         return storyboard.instantiateInitialViewController() as? ConversationViewController
     }
     
-    var messages = [[Message]]()
     var channel: Channel?
     
     deinit {
@@ -76,8 +91,13 @@ class ConversationViewController: UIViewController {
         
         setupNavigationController()
         
-        fetchMessagesFromDB()
         fetchMessagesFromFirestore()
+        
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            print("\(error), \(error.localizedDescription)")
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -104,15 +124,18 @@ class ConversationViewController: UIViewController {
 extension ConversationViewController: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        messages.count
+        guard let sections = fetchedResultsController.sections else { return 0 }
+        return sections.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        messages[section].count
+        guard let sections = fetchedResultsController.sections else { return 0 }
+        return sections[section].numberOfObjects
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let message = messages[indexPath.section][indexPath.row]
+        let messageDB = fetchedResultsController.object(at: indexPath)
+        let message = Message(messageDB: messageDB)
         
         let cellIdentifier = message.isUpcomingMessage ? cellIdentifierUpcoming : cellIdentifierIncoming
         
@@ -159,11 +182,9 @@ extension ConversationViewController: UITableViewDelegate {
         guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: sectionHeaderIdentifier)
             as? MessageSectionHeader
             else { return nil }
+        guard let sections = fetchedResultsController.sections else { return nil }
         
-        guard let message = messages[section].first else { return nil }
-        
-        headerView.configure(with: .init(date: message.created))
-        
+        headerView.configure(with: .init(title: sections[section].indexTitle ?? ""))
         return headerView
     }
 }
@@ -182,82 +203,17 @@ extension ConversationViewController {
 }
 
 extension ConversationViewController {
-    private func insertMessageToTable(_ message: Message, updateTableView: Bool = true) {
-        if messages.indices(of: message) != nil { return }
-        
-        var hasSection = false
-        for (section, sectionMessages) in messages.enumerated() {
-            if let firstMessage = sectionMessages.first, firstMessage.stringDay == message.stringDay {
-                messages[section].append(message)
-                hasSection = true
-                
-                if updateTableView {
-                    tableView.insertRows(at: [IndexPath(row: messages[section].count - 1,
-                                                        section: section)],
-                                         with: .none)
-                }
-                
-                break
-            }
-        }
-        
-        if !hasSection {
-            messages.append([message])
-            if updateTableView {
-                tableView.insertSections(IndexSet(integer: messages.count - 1), with: .none)
-            }
-        }
-        
-        if updateTableView {
-            scrollToBottom(animated: false)
-        }
-    }
-    
-    private func updateMessageInTable(_ message: Message, updateTableView: Bool = true) {
-        guard let index = messages.indices(of: message) else { return }
-        
-        messages[index.0][index.1] = message
-        
-        if updateTableView {
-            tableView.reloadRows(at: [IndexPath(row: index.1, section: index.0)], with: .automatic)
-        }
-    }
-    
-    private func removeMessageFromTable(_ message: Message, updateTableView: Bool = true) {
-        guard let index = messages.indices(of: message) else { return }
-        
-        messages[index.0].remove(at: index.1)
-        
-        if updateTableView {
-            tableView.deleteRows(at: [IndexPath(row: index.1, section: index.0)], with: .automatic)
-        }
-    }
-    
     private func handleFirestoreDocumentChanges(_ changes: [DocumentChange]) {
         var messagesWithChangeType = [(Message, DocumentChangeType)]()
-        let reload = changes.count < 4
-        
+
         for change in changes {
             guard let message = Message(document: change.document) else { continue }
-            
-            switch change.type {
-            case .added:
-                insertMessageToTable(message, updateTableView: reload)
-            case .modified:
-                updateMessageInTable(message, updateTableView: reload)
-            case .removed:
-                removeMessageFromTable(message, updateTableView: reload)
-            }
-            
             messagesWithChangeType.append((message, change.type))
         }
         
-        if reload == false {
-            tableView.reloadData()
-            scrollToBottom(animated: false)
-        }
-        
         saveMessagesToDB(messagesWithChangeType)
+        
+        scrollToBottom(animated: false)
     }
 
     private func scrollToBottom(animated: Bool) {
@@ -305,16 +261,6 @@ extension ConversationViewController {
                 }
             }
         }
-    }
-    
-    private func fetchMessagesFromDB() {
-        guard let channel = self.channel else { return }
-
-        MessageDB.fetchMessages(byChannelIdentifier: channel.identifier).forEach {
-            insertMessageToTable(Message(messageDB: $0), updateTableView: false)
-        }
-        
-        tableView.reloadData()
     }
 }
 
@@ -387,5 +333,73 @@ extension ConversationViewController {
      */
     @objc func dismissKeyboard() {
         customInput?.textInputView.resignFirstResponder()
+    }
+}
+
+extension ConversationViewController: NSFetchedResultsControllerDelegate {
+    func controller(
+        _ controller: NSFetchedResultsController<NSFetchRequestResult>,
+        sectionIndexTitleForSectionName sectionName: String
+    ) -> String? {
+        return sectionName
+    }
+    
+    func controller(
+        _ controller: NSFetchedResultsController<NSFetchRequestResult>,
+        didChange sectionInfo: NSFetchedResultsSectionInfo,
+        atSectionIndex sectionIndex: Int,
+        for type: NSFetchedResultsChangeType
+    ) {
+        switch type {
+        case .insert:
+            tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
+        case .delete:
+            tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
+        case .move:
+            break
+        case .update:
+            break
+        @unknown default:
+            fatalError("undefined type")
+        }
+    }
+    
+    func controller(
+        _ controller: NSFetchedResultsController<NSFetchRequestResult>,
+        didChange anObject: Any, at indexPath: IndexPath?,
+        for type: NSFetchedResultsChangeType,
+        newIndexPath: IndexPath?
+    ) {
+        switch type {
+        case .insert:
+            if let indexPath = newIndexPath {
+                tableView.insertRows(at: [indexPath], with: .none)
+            }
+        case .update:
+            if let indexPath = indexPath {
+                tableView.reloadRows(at: [indexPath], with: .none)
+            }
+        case .move:
+            if let indexPath = indexPath {
+                tableView.deleteRows(at: [indexPath], with: .none)
+            }
+            if let newIndexPath = newIndexPath {
+                tableView.insertRows(at: [newIndexPath], with: .none)
+            }
+        case .delete:
+            if let indexPath = indexPath {
+                tableView.deleteRows(at: [indexPath], with: .none)
+            }
+        @unknown default:
+            fatalError("undefined type")
+        }
+    }
+    
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.beginUpdates()
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.endUpdates()
     }
 }

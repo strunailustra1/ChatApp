@@ -18,9 +18,20 @@ public class MessageDB: NSManagedObject {
     @NSManaged public var senderName: String
     @NSManaged public var channel: ChannelDB?
     
+    @objc var formattedDate: String {
+        return MessageDB.dayDateFormatter.string(from: created)
+    }
+    
     @nonobjc public class func fetchRequest() -> NSFetchRequest<MessageDB> {
         NSFetchRequest<MessageDB>(entityName: "MessageDB")
     }
+    
+    private static var dayDateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.dateFormat = "E, MMM d"
+        return dateFormatter
+    }()
 }
 
 extension MessageDB {
