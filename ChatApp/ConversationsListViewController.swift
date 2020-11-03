@@ -29,7 +29,7 @@ class ConversationsListViewController: UIViewController {
     private lazy var fetchedResultsController: NSFetchedResultsController<ChannelDB> = {
         let fetchRequest: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "lastActivity", ascending: false)]
-        //todo batch size?
+        fetchRequest.fetchBatchSize = 30
         let fetchedResultsController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
             managedObjectContext: CoreDataStack.shared.mainContext,
@@ -70,11 +70,16 @@ class ConversationsListViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        fetchedResultsController.delegate = self
         fetchChannelsFromFirestore()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        // Переходя на экран сообщений отписываемся от всех изменений
+        // Warning once only: UITableView was told to layout its visible cells
+        // and other contents without being in the view hierarchy
+        fetchedResultsController.delegate = nil
         FirestoreDataProvider.shared.removeChannelsListener()
     }
     
@@ -148,7 +153,7 @@ extension ConversationsListViewController: UITableViewDelegate {
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete") {[weak self] _, _, _ in
             guard let channelDBFromMainContext = self?.fetchedResultsController.object(at: indexPath) else { return }
             
-            self?.deleteChannelAlert(deleteChannelhandler: { [unowned self] _ in
+            self?.deleteChannelAlert(deleteChannelhandler: { [weak self] _ in
                 FirestoreDataProvider.shared.deleteChannel(channel: Channel(channelDB: channelDBFromMainContext))
                 self?.deleteChannelFromDB(channelDBFromMainContext)
             })
