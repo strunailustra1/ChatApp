@@ -56,11 +56,7 @@ class ConversationsListViewController: UIViewController {
         super.viewDidLoad()
         view.addSubview(tableView)
         
-        do {
-            try fetchedResultsController.performFetch()
-        } catch {
-            print("\(error), \(error.localizedDescription)")
-        }
+        try? fetchedResultsController.performFetch()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -153,14 +149,11 @@ extension ConversationsListViewController: UITableViewDelegate {
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete") {[weak self] _, _, _ in
             guard let channelDBFromMainContext = self?.fetchedResultsController.object(at: indexPath) else { return }
             
-            self?.deleteChannelAlert(deleteChannelhandler: { [weak self] _ in
+            self?.deleteChannelAlert(deleteChannelhandler: { _ in
                 FirestoreDataProvider.shared.deleteChannel(channel: Channel(channelDB: channelDBFromMainContext))
-                self?.deleteChannelFromDB(channelDBFromMainContext)
+                ChannelRepository.shared.deleteChannel(channelDBFromMainContext)
+                //self?.deleteChannelFromDB(channelDBFromMainContext)
             })
-
-//            FirestoreDataProvider.shared.deleteChannel(channel: Channel(channelDB: channelDBFromMainContext))
-//
-//            self?.deleteChannelFromDB(channelDBFromMainContext)
         }
         contextualActions.append(deleteAction)
         
@@ -259,7 +252,8 @@ extension ConversationsListViewController {
             channelsWithChangeType.append((channel, change.type))
         }
         
-        saveChannelsToDB(channelsWithChangeType)
+        //saveChannelsToDB(channelsWithChangeType)
+        ChannelRepository.shared.saveChannels(channelsWithChangeType)
     }
     
     private func saveChannelToFirestore(channelName: String) {
@@ -267,13 +261,14 @@ extension ConversationsListViewController {
     }
     
     private func fetchChannelsFromFirestore() {
-        FirestoreDataProvider.shared.getChannels(completion: { [weak self] change in
-            self?.handleFirestoreDocumentChanges(change)
+        FirestoreDataProvider.shared.getChannels(completion: { [weak self] changes in
+            self?.handleFirestoreDocumentChanges(changes)
         })
     }
 }
 
 extension ConversationsListViewController {
+    //todo drop it
     private func saveChannelsToDB(_ channelsWithChangeType: [(Channel, DocumentChangeType)]) {
         CoreDataStack.shared.performSave { (context) in
             for (channel, changeType) in channelsWithChangeType {
@@ -286,6 +281,7 @@ extension ConversationsListViewController {
         }
     }
     
+    //todo drop it
     private func deleteChannelFromDB(_ channelDBFromMainContext: ChannelDB) {
         CoreDataStack.shared.performSave { (context) in
             guard let channelDBFromSaveContext = context.object(with: channelDBFromMainContext.objectID)
@@ -304,8 +300,8 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
     ) {
         switch type {
         case .insert:
-            if let indexPath = newIndexPath {
-                tableView.insertRows(at: [indexPath], with: .none)
+            if let newIndexPath = newIndexPath {
+                tableView.insertRows(at: [newIndexPath], with: .none)
             }
         case .update:
             if let indexPath = indexPath {

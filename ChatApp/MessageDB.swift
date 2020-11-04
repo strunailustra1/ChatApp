@@ -64,6 +64,7 @@ extension MessageDB {
 }
 
 extension MessageDB {
+    //todo drop it
     static func fetchMessages(byChannelIdentifier param: String) -> [MessageDB] {
         guard let channelDB = ChannelDB.fetchChannel(byIdentifier: param) else { return [] }
 

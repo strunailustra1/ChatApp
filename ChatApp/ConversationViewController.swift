@@ -91,13 +91,7 @@ class ConversationViewController: UIViewController {
         
         setupNavigationController()
         
-        fetchMessagesFromFirestore()
-        
-        do {
-            try fetchedResultsController.performFetch()
-        } catch {
-            print("\(error), \(error.localizedDescription)")
-        }
+        try? fetchedResultsController.performFetch()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -112,6 +106,12 @@ class ConversationViewController: UIViewController {
         super.viewDidLayoutSubviews()
         
         scrollToBottom(animated: false)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        fetchMessagesFromFirestore()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -211,7 +211,8 @@ extension ConversationViewController {
             messagesWithChangeType.append((message, change.type))
         }
         
-        saveMessagesToDB(messagesWithChangeType)
+        //saveMessagesToDB(messagesWithChangeType)
+        MessageRepository.shared.saveMessages(messagesWithChangeType, channelId: channel?.identifier ?? "")
         
         scrollToBottom(animated: false)
     }
@@ -239,13 +240,13 @@ extension ConversationViewController {
     private func fetchMessagesFromFirestore() {
         guard let channel = self.channel else { return }
         FirestoreDataProvider.shared.getMessages(in: channel, completion: { [weak self] changes in
-            print(changes)
             self?.handleFirestoreDocumentChanges(changes)
         })
     }
 }
 
 extension ConversationViewController {
+    //todo drop it
     private func saveMessagesToDB(_ messagesWithChangeType: [(Message, DocumentChangeType)]) {
         CoreDataStack.shared.performSave { (context) in
             guard let channel = self.channel else { return }
@@ -372,8 +373,8 @@ extension ConversationViewController: NSFetchedResultsControllerDelegate {
     ) {
         switch type {
         case .insert:
-            if let indexPath = newIndexPath {
-                tableView.insertRows(at: [indexPath], with: .none)
+            if let newIndexPath = newIndexPath {
+                tableView.insertRows(at: [newIndexPath], with: .none)
             }
         case .update:
             if let indexPath = indexPath {

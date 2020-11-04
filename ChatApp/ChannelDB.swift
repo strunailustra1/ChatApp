@@ -59,6 +59,7 @@ extension ChannelDB {
 }
 
 extension ChannelDB {
+    //todo удалить
     static func fetchChannel(byIdentifier param: String) -> ChannelDB? {
         let fetchChannelRequest: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
         fetchChannelRequest.predicate = NSPredicate(format: "identifier = %@", param)
@@ -70,6 +71,7 @@ extension ChannelDB {
         return channelDB
     }
     
+    //todo удалить
     static func fetchChannels() -> [ChannelDB] {
         let fetchRequest: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "lastActivity", ascending: false)]
