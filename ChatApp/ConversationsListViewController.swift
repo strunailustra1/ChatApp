@@ -157,7 +157,6 @@ extension ConversationsListViewController: UITableViewDelegate {
             self?.deleteChannelAlert(deleteChannelhandler: { _ in
                 FirestoreDataProvider.shared.deleteChannel(channel: Channel(channelDB: channelDBFromMainContext))
                 ChannelRepository.shared.deleteChannel(channelDBFromMainContext)
-                //self?.deleteChannelFromDB(channelDBFromMainContext)
             })
         }
         contextualActions.append(deleteAction)
@@ -257,7 +256,6 @@ extension ConversationsListViewController {
             channelsWithChangeType.append((channel, change.type))
         }
         
-        //saveChannelsToDB(channelsWithChangeType)
         ChannelRepository.shared.saveChannels(channelsWithChangeType)
     }
     
@@ -269,30 +267,6 @@ extension ConversationsListViewController {
         FirestoreDataProvider.shared.getChannels(completion: { [weak self] changes in
             self?.handleFirestoreDocumentChanges(changes)
         })
-    }
-}
-
-extension ConversationsListViewController {
-    //todo drop it
-    private func saveChannelsToDB(_ channelsWithChangeType: [(Channel, DocumentChangeType)]) {
-        CoreDataStack.shared.performSave { (context) in
-            for (channel, changeType) in channelsWithChangeType {
-                let channel = ChannelDB(channel: channel, in: context)
-                
-                if changeType == .removed {
-                    context.delete(channel)
-                }
-            }
-        }
-    }
-    
-    //todo drop it
-    private func deleteChannelFromDB(_ channelDBFromMainContext: ChannelDB) {
-        CoreDataStack.shared.performSave { (context) in
-            guard let channelDBFromSaveContext = context.object(with: channelDBFromMainContext.objectID)
-                as? ChannelDB else { return }
-            context.delete(channelDBFromSaveContext)
-        }
     }
 }
 

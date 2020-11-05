@@ -133,23 +133,23 @@ class CoreDataStack {
         
         if let inserts = userInfo[NSInsertedObjectsKey] as? Set<NSManagedObject>, inserts.count > 0 {
             print("Добавлено объектов: \(inserts.count)")
-//            inserts.forEach {
-//                print(($0 as? NSManagedObjectDescriptionProtocol)?.description ?? "")
-//            }
+            inserts.forEach {
+                print(($0 as? NSManagedObjectDescriptionProtocol)?.description ?? "")
+            }
         }
         
         if let updates = userInfo[NSUpdatedObjectsKey] as? Set<NSManagedObject>, updates.count > 0 {
             print("Обновлено объектов: \(updates.count)")
-//            updates.forEach {
-//                print(($0 as? NSManagedObjectDescriptionProtocol)?.description ?? "")
-//            }
+            updates.forEach {
+                print(($0 as? NSManagedObjectDescriptionProtocol)?.description ?? "")
+            }
         }
         
         if let deletes = userInfo[NSDeletedObjectsKey] as? Set<NSManagedObject>, deletes.count > 0 {
             print("Удалено объектов: \(deletes.count)")
-//            deletes.forEach {
-//                print(($0 as? NSManagedObjectDescriptionProtocol)?.description ?? "")
-//            }
+            deletes.forEach {
+                print(($0 as? NSManagedObjectDescriptionProtocol)?.description ?? "")
+            }
         }
     }
     
@@ -173,7 +173,7 @@ class CoreDataStack {
         // нужно запустить схему ChatAppInfo
         if Logger.shared.verboseLevel == .info {
             didUpdateDataBase = { stack in
-                //stack.printStatFromDatabase()
+                stack.printStatFromDatabase()
             }
         }
         enableObservers()

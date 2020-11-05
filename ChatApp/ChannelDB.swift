@@ -58,28 +58,6 @@ extension ChannelDB {
     }
 }
 
-extension ChannelDB {
-    //todo удалить
-    static func fetchChannel(byIdentifier param: String) -> ChannelDB? {
-        let fetchChannelRequest: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
-        fetchChannelRequest.predicate = NSPredicate(format: "identifier = %@", param)
-        
-        let channelDBList = try? CoreDataStack.shared.mainContext.fetch(fetchChannelRequest)
-        
-        guard let channelDB = channelDBList?.first else { return nil }
-        
-        return channelDB
-    }
-    
-    //todo удалить
-    static func fetchChannels() -> [ChannelDB] {
-        let fetchRequest: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "lastActivity", ascending: false)]
-        
-        return (try? CoreDataStack.shared.mainContext.fetch(fetchRequest)) ?? []
-    }
-}
-
 extension ChannelDB: NSManagedObjectDescriptionProtocol {
     override public var description: String {
         "Channel id: \(identifier), name: \(name)"

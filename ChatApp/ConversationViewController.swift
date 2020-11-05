@@ -211,7 +211,6 @@ extension ConversationViewController {
             messagesWithChangeType.append((message, change.type))
         }
         
-        //saveMessagesToDB(messagesWithChangeType)
         MessageRepository.shared.saveMessages(messagesWithChangeType, channelId: channel?.identifier ?? "")
         
         scrollToBottom(animated: false)
@@ -242,26 +241,6 @@ extension ConversationViewController {
         FirestoreDataProvider.shared.getMessages(in: channel, completion: { [weak self] changes in
             self?.handleFirestoreDocumentChanges(changes)
         })
-    }
-}
-
-extension ConversationViewController {
-    //todo drop it
-    private func saveMessagesToDB(_ messagesWithChangeType: [(Message, DocumentChangeType)]) {
-        CoreDataStack.shared.performSave { (context) in
-            guard let channel = self.channel else { return }
-            
-            let channelDB = ChannelDB(channel: channel, in: context)
-            
-            for (message, changeType) in messagesWithChangeType {
-                let messageDB = MessageDB(message: message, in: context)
-                messageDB.channel = channelDB
-                
-                if changeType == .removed {
-                    context.delete(messageDB)
-                }
-            }
-        }
     }
 }
 

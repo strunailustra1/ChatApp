@@ -63,21 +63,6 @@ extension MessageDB {
     }
 }
 
-extension MessageDB {
-    //todo drop it
-    static func fetchMessages(byChannelIdentifier param: String) -> [MessageDB] {
-        guard let channelDB = ChannelDB.fetchChannel(byIdentifier: param) else { return [] }
-
-        let fetchRequest: NSFetchRequest<MessageDB> = MessageDB.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "created", ascending: true)]
-        fetchRequest.predicate = NSPredicate(format: "channel = %@", channelDB)
-        
-        guard let messagesDB = try? CoreDataStack.shared.mainContext.fetch(fetchRequest) else { return [] }
-        
-        return messagesDB
-    }
-}
-
 extension MessageDB: NSManagedObjectDescriptionProtocol {
     override public var description: String {
         "Message id: \(identifier), senderName: \(senderName), channel: \(channel?.name ?? "")\ncontent: \(content)"
