@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import CoreData
 
 class ConversationsListViewController: UIViewController {
     
@@ -25,9 +26,22 @@ class ConversationsListViewController: UIViewController {
         return tableView
     }()
     
-    private lazy var notificationCenter = NotificationCenter.default
+    private lazy var fetchedResultsController: NSFetchedResultsController<ChannelDB> = {
+        let fetchRequest: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "lastActivity", ascending: false)]
+        fetchRequest.fetchBatchSize = 30
+        let fetchedResultsController = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: CoreDataStack.shared.mainContext,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+        fetchedResultsController.delegate = self
+
+        return fetchedResultsController
+    }()
     
-    private var channels = [Channel]()
+    private lazy var notificationCenter = NotificationCenter.default
     
     static func storyboardInstance() -> ConversationsListViewController? {
         let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
@@ -41,7 +55,12 @@ class ConversationsListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(tableView)
-        fetchChannelsFromDB()
+        
+        FirestoreDataProvider.shared.getChannelsId { (channelIdList) in
+            ChannelRepository.shared.deleteMissingChannels(channelIdList)
+        }
+        
+        try? fetchedResultsController.performFetch()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -51,11 +70,16 @@ class ConversationsListViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        fetchedResultsController.delegate = self
         fetchChannelsFromFirestore()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        // Переходя на экран сообщений отписываемся от всех изменений
+        // Warning once only: UITableView was told to layout its visible cells
+        // and other contents without being in the view hierarchy
+        fetchedResultsController.delegate = nil
         FirestoreDataProvider.shared.removeChannelsListener()
     }
     
@@ -92,14 +116,17 @@ class ConversationsListViewController: UIViewController {
 
 extension ConversationsListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        channels.count
+        guard let sections = fetchedResultsController.sections else { return 0 }
+        return sections[section].numberOfObjects
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
             as? ConversationCell else { return UITableViewCell() }
         
-        let channel = channels[indexPath.row]
+        let channelDB = fetchedResultsController.object(at: indexPath)
+        let channel = Channel(channelDB: channelDB)
+
         cell.configure(with: .init(name: channel.name,
                                    message: channel.lastMessage ?? "",
                                    date: channel.lastActivity))
@@ -110,11 +137,33 @@ extension ConversationsListViewController: UITableViewDataSource {
 extension ConversationsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {        
         if let conversationVC = ConversationViewController.storyboardInstance() {
-            let channel = channels[indexPath.row]
-            conversationVC.channel = channel
+            let channelDB = fetchedResultsController.object(at: indexPath)
+            conversationVC.channel = Channel(channelDB: channelDB)
             navigationController?.pushViewController(conversationVC, animated: true)
             navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         }
+    }
+    
+    func tableView(
+        _ tableView: UITableView,
+        trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    ) -> UISwipeActionsConfiguration? {
+        var contextualActions: [UIContextualAction] = []
+
+        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") {[weak self] _, _, _ in
+            guard let channelDBFromMainContext = self?.fetchedResultsController.object(at: indexPath) else { return }
+            
+            self?.deleteChannelAlert(deleteChannelhandler: { _ in
+                FirestoreDataProvider.shared.deleteChannel(channel: Channel(channelDB: channelDBFromMainContext))
+                ChannelRepository.shared.deleteChannel(channelDBFromMainContext)
+            })
+        }
+        contextualActions.append(deleteAction)
+        
+        let swipeActionsConfiguration = UISwipeActionsConfiguration(actions: contextualActions)
+        swipeActionsConfiguration.performsFirstActionWithFullSwipe = false
+        
+        return swipeActionsConfiguration
     }
 }
 
@@ -198,107 +247,80 @@ extension ConversationsListViewController {
 }
 
 extension ConversationsListViewController {
-    private func addChannelToTable(_ channel: Channel, updateTableView: Bool = true) {
-        guard !channels.contains(channel) else { return }
-        
-        channels.append(channel)
-
-        if updateTableView {
-            channels.sort(by: >)
-            guard let index = channels.firstIndex(of: channel) else { return }
-            tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-        }
-    }
-    
-    private func updateChannelInTable(_ channel: Channel, updateTableView: Bool = true) {
-        guard let index = channels.firstIndex(of: channel) else { return }
-        
-        channels[index] = channel
-        
-        if updateTableView {
-            tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-        }
-    }
-    
-    private func removeChannelFromTable(_ channel: Channel, updateTableView: Bool = true) {
-        guard let index = channels.firstIndex(of: channel) else { return }
-        
-        channels.remove(at: index)
-        
-        if updateTableView {
-            tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-        }
-    }
-    
     private func handleFirestoreDocumentChanges(_ changes: [DocumentChange]) {
         var channelsWithChangeType = [(Channel, DocumentChangeType)]()
-
-        let reload = changes.count < 10
         
         for change in changes {
             guard let channel = Channel(document: change.document) else { continue }
-            
-            switch change.type {
-            case .added:
-                addChannelToTable(channel, updateTableView: reload)
-                
-            case .modified:
-                updateChannelInTable(channel, updateTableView: reload)
-                
-            case .removed:
-                removeChannelFromTable(channel, updateTableView: reload)
-            }
-            
             channelsWithChangeType.append((channel, change.type))
         }
         
-        if reload == false {
-            self.channels.sort(by: >)
-            tableView.reloadData()
-        }
-        
-        saveChannelsToDB(channelsWithChangeType)
+        ChannelRepository.shared.saveChannels(channelsWithChangeType)
     }
-}
-
-extension ConversationsListViewController {
+    
     private func saveChannelToFirestore(channelName: String) {
-        let channel = Channel(name: channelName)
-        self.addChannelToTable(channel)
-        // создаем документ со своим id, т.к. предварительно сами помещаем его наверх таблицы
-        // неплохо было бы в api иметь поле с максимальной из двух дат (дата создания канала или последнего сообщения),
-        // чтобы сортировать по данной дате список каналов, но такого пока нет, поэтому костылим
-        FirestoreDataProvider.shared.createChannel(channel: channel) { [weak self] _ in
-            self?.removeChannelFromTable(channel)
-        }
+        FirestoreDataProvider.shared.createChannel(channel: Channel(name: channelName))
     }
     
     private func fetchChannelsFromFirestore() {
-        FirestoreDataProvider.shared.getChannels(completion: { [weak self] change in
-            self?.handleFirestoreDocumentChanges(change)
+        FirestoreDataProvider.shared.getChannels(completion: { [weak self] changes in
+            self?.handleFirestoreDocumentChanges(changes)
         })
     }
 }
 
-extension ConversationsListViewController {
-    private func saveChannelsToDB(_ channelsWithChangeType: [(Channel, DocumentChangeType)]) {
-        CoreDataStack.shared.performSave { (context) in
-            for (channel, changeType) in channelsWithChangeType {
-                let channel = ChannelDB(channel: channel, in: context)
-                
-                if changeType == .removed {
-                    context.delete(channel)
-                }
+extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
+    func controller(
+        _ controller: NSFetchedResultsController<NSFetchRequestResult>,
+        didChange anObject: Any, at indexPath: IndexPath?,
+        for type: NSFetchedResultsChangeType,
+        newIndexPath: IndexPath?
+    ) {
+        switch type {
+        case .insert:
+            if let newIndexPath = newIndexPath {
+                tableView.insertRows(at: [newIndexPath], with: .none)
             }
+        case .update:
+            if let indexPath = indexPath {
+                tableView.reloadRows(at: [indexPath], with: .none)
+            }
+        case .move:
+            if let indexPath = indexPath {
+                tableView.deleteRows(at: [indexPath], with: .none)
+            }
+            if let newIndexPath = newIndexPath {
+                tableView.insertRows(at: [newIndexPath], with: .none)
+            }
+        case .delete:
+            if let indexPath = indexPath {
+                tableView.deleteRows(at: [indexPath], with: .none)
+            }
+        @unknown default:
+            fatalError("undefined type")
         }
     }
     
-    private func fetchChannelsFromDB() {
-        ChannelDB.fetchChannels().forEach {
-            addChannelToTable(Channel(channelDB: $0), updateTableView: false)
-        }
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.beginUpdates()
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.endUpdates()
+    }
+}
+
+extension ConversationsListViewController {
+    private func deleteChannelAlert(deleteChannelhandler: ((UIAlertAction) -> Void)? = nil) {
+        let alert = UIAlertController(title: nil,
+                                      message: "Do you really want to delete this channel?",
+                                      preferredStyle: .actionSheet)
+        let deleteAction = UIAlertAction(title: "Delete", style: .destructive, handler: deleteChannelhandler)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
         
-        channels.sort(by: >)
-        tableView.reloadData()
+        alert.addAction(deleteAction)
+        alert.addAction(cancelAction)
+        present(alert, animated: true, completion: nil)
+        alert.pruneNegativeWidthConstraints()
     }
 }

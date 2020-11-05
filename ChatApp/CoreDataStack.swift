@@ -81,6 +81,11 @@ class CoreDataStack {
         context.performAndWait { [weak self] in
             handler(context)
             if context.hasChanges {
+                do {
+                    try context.obtainPermanentIDs(for: Array(context.insertedObjects))
+                } catch {
+                    assertionFailure(error.localizedDescription)
+                }
                 self?.performSave(in: context)
             }
         }
