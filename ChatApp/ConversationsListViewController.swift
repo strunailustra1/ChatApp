@@ -57,7 +57,6 @@ class ConversationsListViewController: UIViewController {
         view.addSubview(tableView)
         
         FirestoreDataProvider.shared.getChannelsId { (channelIdList) in
-            print(channelIdList.count)
             ChannelRepository.shared.deleteMissingChannels(channelIdList)
         }
         
