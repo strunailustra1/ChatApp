@@ -62,4 +62,15 @@ class ChannelRepository {
             context.delete(channelDBFromSaveContext)
         }
     }
+    
+    func deleteMissingChannels(_ channelsId: [String]) {
+        CoreDataStack.shared.performSave { (context) in
+            let channelDBList = try? context.fetch(ChannelDB.fetchRequest()) as? [ChannelDB]
+            channelDBList?.forEach({ (channelDB) in
+                if channelsId.firstIndex(of: channelDB.identifier) == nil {
+                    context.delete(channelDB)
+                }
+            })
+        }
+    }
 }

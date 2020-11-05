@@ -34,7 +34,7 @@ class ConversationsListViewController: UIViewController {
             fetchRequest: fetchRequest,
             managedObjectContext: CoreDataStack.shared.mainContext,
             sectionNameKeyPath: nil,
-            cacheName: nil //todo
+            cacheName: nil
         )
         fetchedResultsController.delegate = self
 
@@ -55,6 +55,11 @@ class ConversationsListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(tableView)
+        
+        FirestoreDataProvider.shared.getChannelsId { (channelIdList) in
+            print(channelIdList.count)
+            ChannelRepository.shared.deleteMissingChannels(channelIdList)
+        }
         
         try? fetchedResultsController.performFetch()
     }

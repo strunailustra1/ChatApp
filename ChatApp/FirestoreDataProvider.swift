@@ -30,6 +30,17 @@ class FirestoreDataProvider {
         }
     }
     
+    func getChannelsId(completion: @escaping ([String]) -> Void) {
+        db.collection("channels").getDocuments { (querySnaphot, _) in
+            guard let snapshot = querySnaphot else { return }
+            var channelsId = [String]()
+            for document in snapshot.documents {
+                channelsId.append(document.documentID)
+            }
+            completion(channelsId)
+        }
+    }
+    
     func createChannel(channel: Channel, errorCompletion: ((Error) -> Void)? = nil) {
         db.collection("channels")
             .document(channel.identifier)
