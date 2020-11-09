@@ -31,6 +31,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FirebaseApp.configure()
         CoreDataStack.shared.configure()
         
+        self.window = UIWindow(frame: UIScreen.main.bounds)
+        let rootViewController = ConversationsListViewController()
+        let navigationController = RootNavigationController(rootViewController: rootViewController)
+        window?.rootViewController = navigationController
+        window?.makeKeyAndVisible()
+        
         return true
     }
     

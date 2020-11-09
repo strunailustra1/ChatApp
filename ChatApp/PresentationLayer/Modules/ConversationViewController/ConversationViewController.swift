@@ -74,11 +74,6 @@ class ConversationViewController: UIViewController {
         return true
     }
     
-    static func storyboardInstance() -> ConversationViewController? {
-        let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
-        return storyboard.instantiateInitialViewController() as? ConversationViewController
-    }
-    
     var channel: Channel?
     
     deinit {

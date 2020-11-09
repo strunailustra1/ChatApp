@@ -328,7 +328,7 @@ class ThemesManager: ThemesPickerDelegate {
         labelAppearance.textColor = theme.labelTextColor
         
         let secondaryLabelAppearance = ConversationSecondaryLabel.appearance()
-        secondaryLabelAppearance.textColor = ThemesManager.shared.getTheme().conversationCellMessageTextColor
+        secondaryLabelAppearance.textColor = theme.conversationCellMessageTextColor
         
         let tableViewAppearance = UITableView.appearance()
         tableViewAppearance.backgroundColor = theme.tableViewCellBackgroundColor

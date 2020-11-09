@@ -43,11 +43,6 @@ class ConversationsListViewController: UIViewController {
     
     private lazy var notificationCenter = NotificationCenter.default
     
-    static func storyboardInstance() -> ConversationsListViewController? {
-        let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
-        return storyboard.instantiateInitialViewController() as? ConversationsListViewController
-    }
-    
     deinit {
         FirestoreDataProvider.shared.removeChannelsListener()
     }
@@ -135,13 +130,12 @@ extension ConversationsListViewController: UITableViewDataSource {
 }
 
 extension ConversationsListViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {        
-        if let conversationVC = ConversationViewController.storyboardInstance() {
-            let channelDB = fetchedResultsController.object(at: indexPath)
-            conversationVC.channel = Channel(channelDB: channelDB)
-            navigationController?.pushViewController(conversationVC, animated: true)
-            navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let conversationVC = ConversationViewController()
+        let channelDB = fetchedResultsController.object(at: indexPath)
+        conversationVC.channel = Channel(channelDB: channelDB)
+        navigationController?.pushViewController(conversationVC, animated: true)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
     
     func tableView(

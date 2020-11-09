@@ -12,7 +12,8 @@ class ProfileViewController: UIViewController {
     
     static func storyboardInstance() -> ProfileViewController? {
         let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
-        return storyboard.instantiateInitialViewController() as? ProfileViewController
+        let vc = storyboard.instantiateInitialViewController() as? ProfileViewController
+        return vc
     }
     
     var closeHandler: (() -> Void)?
