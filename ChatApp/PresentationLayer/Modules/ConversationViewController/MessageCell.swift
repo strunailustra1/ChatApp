@@ -34,7 +34,7 @@ class MessageCell: UITableViewCell, ConfigurableView {
         return dateFormatter
     }()
     
-    func configure(with model: ConfigurationModel) {
+    func configure(with model: ConfigurationModel, theme: Theme? = nil) {
         messageLabel.text = model.text
         bubleView.layer.cornerRadius = 8
         messageLabel.font = UIFont.systemFont(ofSize: 16, weight: .regular)

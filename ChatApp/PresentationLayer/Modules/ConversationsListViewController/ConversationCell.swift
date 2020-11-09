@@ -38,7 +38,7 @@ class ConversationCell: UITableViewCell, ConfigurableView {
         return dateFormatter
     }()
     
-    func configure(with model: ConfigurationModel) {
+    func configure(with model: ConfigurationModel, theme: Theme? = nil) {
         nameLabel.text = model.name
         messageLabel.text = model.message
         

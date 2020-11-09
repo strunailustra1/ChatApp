@@ -19,11 +19,11 @@ class MessageSectionHeader: UITableViewHeaderFooterView, ConfigurableView {
         let title: String
     }
     
-    func configure(with model: ConfigurationModel) {
+    func configure(with model: ConfigurationModel, theme: Theme?) {
         sectionNameLabel.text = model.title
         sectionView.layer.cornerRadius = 8
-        sectionView.backgroundColor = ThemesManager.shared.getTheme().messageHeaderBackgroundColor
-        sectionNameLabel.textColor = ThemesManager.shared.getTheme().messageHeaderLabelColor
+        sectionView.backgroundColor = theme?.messageHeaderBackgroundColor
+        sectionNameLabel.textColor = theme?.messageHeaderLabelColor
         sectionNameLabel.font = UIFont.systemFont(ofSize: 12, weight: UIFont.Weight.semibold)
     }
 }

@@ -20,28 +20,38 @@ class ConversationsListViewController: UIViewController {
                            forCellReuseIdentifier: cellIdentifier)
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.separatorColor = ThemesManager.shared.getTheme().tableViewSeparatorColor
+        tableView.separatorColor = themesManager.getTheme().tableViewSeparatorColor
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 40
         return tableView
     }()
     
     private lazy var fetchedResultsController: NSFetchedResultsController<ChannelDB> = {
-        let fetchRequest: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "lastActivity", ascending: false)]
-        fetchRequest.fetchBatchSize = 30
-        let fetchedResultsController = NSFetchedResultsController(
-            fetchRequest: fetchRequest,
-            managedObjectContext: CoreDataStack.shared.mainContext,
-            sectionNameKeyPath: nil,
-            cacheName: nil
-        )
-        fetchedResultsController.delegate = self
-
-        return fetchedResultsController
+        let frc = channelRepository.createFetchedResultsController()
+        frc.delegate = self
+        return frc
     }()
     
     private lazy var notificationCenter = NotificationCenter.default
+    
+    private let channelRepository: ChannelRepository
+    private let presentationAssembly: PresentationAssemblyProtocol
+    private let themesManager: ThemesManagerProtocol
+    
+    init(
+        channelRepository: ChannelRepository,
+        presentationAssembly: PresentationAssemblyProtocol,
+        themesManager: ThemesManagerProtocol
+    ) {
+        self.channelRepository = channelRepository
+        self.presentationAssembly = presentationAssembly
+        self.themesManager = themesManager
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     deinit {
         FirestoreDataProvider.shared.removeChannelsListener()
@@ -51,8 +61,8 @@ class ConversationsListViewController: UIViewController {
         super.viewDidLoad()
         view.addSubview(tableView)
         
-        FirestoreDataProvider.shared.getChannelsId { (channelIdList) in
-            ChannelRepository.shared.deleteMissingChannels(channelIdList)
+        FirestoreDataProvider.shared.getChannelsId { [weak self] (channelIdList) in
+            self?.channelRepository.deleteMissingChannels(channelIdList)
         }
         
         try? fetchedResultsController.performFetch()
@@ -79,7 +89,7 @@ class ConversationsListViewController: UIViewController {
     }
     
     @objc func editProfile() {
-        if let profileVC = ProfileViewController.storyboardInstance() {
+        if let profileVC = presentationAssembly.profileViewController() {
             profileVC.closeHandler = { [weak self] in
                 self?.updateNavigationRightButtonImage()
             }
@@ -90,14 +100,12 @@ class ConversationsListViewController: UIViewController {
     }
     
     @objc func editTheme() {
-        if let themesVC = ThemesViewController.storyboardInstance() {
+        if let themesVC = presentationAssembly.themesViewController() {
             navigationController?.pushViewController(themesVC, animated: true)
             navigationItem.backBarButtonItem = UIBarButtonItem(title: "Channels",
                                                                style: .plain,
                                                                target: nil,
                                                                action: nil)
-            themesVC.delegate = ThemesManager.shared
-            themesVC.themeChangeHandler = ThemesManager.shared.themeChangeHandler
         }
     }
     
@@ -131,7 +139,7 @@ extension ConversationsListViewController: UITableViewDataSource {
 
 extension ConversationsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let conversationVC = ConversationViewController()
+        let conversationVC = presentationAssembly.conversationViewController()
         let channelDB = fetchedResultsController.object(at: indexPath)
         conversationVC.channel = Channel(channelDB: channelDB)
         navigationController?.pushViewController(conversationVC, animated: true)
@@ -149,7 +157,7 @@ extension ConversationsListViewController: UITableViewDelegate {
             
             self?.deleteChannelAlert(deleteChannelhandler: { _ in
                 FirestoreDataProvider.shared.deleteChannel(channel: Channel(channelDB: channelDBFromMainContext))
-                ChannelRepository.shared.deleteChannel(channelDBFromMainContext)
+                self?.channelRepository.deleteChannel(channelDBFromMainContext)
             })
         }
         contextualActions.append(deleteAction)
@@ -173,7 +181,7 @@ extension ConversationsListViewController {
         navigationItem.title = "Channels"
         updateNavigationRightButtonImage()
         
-        let settingImage = ThemesManager.shared.getTheme().settingImageColor
+        let settingImage = themesManager.getTheme().settingImageColor
         let themesTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.editTheme))
         settingImage.addGestureRecognizer(themesTapGestureRecognizer)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: settingImage)
@@ -249,7 +257,7 @@ extension ConversationsListViewController {
             channelsWithChangeType.append((channel, change.type))
         }
         
-        ChannelRepository.shared.saveChannels(channelsWithChangeType)
+        channelRepository.saveChannels(channelsWithChangeType)
     }
     
     private func saveChannelToFirestore(channelName: String) {

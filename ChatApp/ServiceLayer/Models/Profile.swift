@@ -35,6 +35,7 @@ struct ProfileChangedFields {
     let profileImageChanged: Bool
 }
 
+//todo вынести в отдельный сервис-хелпер
 class ProfileComparator {
     static func isEqualImages(oldProfile: Profile,
                               newProfile: Profile,
@@ -58,6 +59,7 @@ class ProfileComparator {
     }
 }
 
+//todo вынести в отдельный сервис-хелпер
 class ProfileStorage {
     static var shared = Profile(fullname: "Marina Dudarenko",
                                 description: "UX/UI designer, web-designer\nMoscow, Russia",
@@ -80,6 +82,7 @@ class ProfileStorage {
        }
 }
 
+//todo переносим в коре лэйер в джисиди и оперейшн
 enum ProfilePath: String {
     case image = "profileImage.png"
     case fullname = "profileFullname.txt"

@@ -42,9 +42,21 @@ class ThemesViewController: UIViewController {
      */
     var themeChangeHandler: ((_ theme: Theme) -> Void)?
     
-    static func storyboardInstance() -> ThemesViewController? {
+    var themesManager: ThemesManagerProtocol?
+    
+    static func storyboardInstance(
+        themesManager: ThemesManagerProtocol,
+        delegate: ThemesPickerDelegate,
+        themeChangeHandler: @escaping ((_ theme: Theme) -> Void)
+    ) -> ThemesViewController? {
         let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
-        return storyboard.instantiateInitialViewController() as? ThemesViewController
+        let themeVC = storyboard.instantiateInitialViewController() as? ThemesViewController
+        
+        themeVC?.themesManager = themesManager
+        themeVC?.delegate = delegate
+        themeVC?.themeChangeHandler = themeChangeHandler
+        
+        return themeVC
     }
     
     override func viewDidLoad() {
@@ -54,16 +66,18 @@ class ThemesViewController: UIViewController {
         customizeColorLabels()
         customizeThemesNames()
         
-        switch ThemesManager.shared.getTheme() {
+        switch themesManager?.getTheme() {
         case .classic:
             classicThemeButton.isSelected = true
         case .day:
             dayThemeButton.isSelected = true
         case .night:
             nightThemeButton.isSelected = true
+        case .none:
+            break
         }
 
-        view.backgroundColor = ThemesManager.shared.getTheme().themesVCBackgroundColor
+        view.backgroundColor = themesManager?.getTheme().themesVCBackgroundColor
     }
     
     @IBAction func chooseClassicTheme(_ sender: UIButton) {
@@ -88,7 +102,7 @@ class ThemesViewController: UIViewController {
         if let handler = themeChangeHandler {
             handler(theme)
         }
-        view.backgroundColor = ThemesManager.shared.getTheme().themesVCBackgroundColor
+        view.backgroundColor = themesManager?.getTheme().themesVCBackgroundColor
     }
     
     private func customizeButtons() {

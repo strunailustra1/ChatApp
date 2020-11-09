@@ -34,18 +34,9 @@ class ConversationViewController: UIViewController {
     }()
     
     private lazy var fetchedResultsController: NSFetchedResultsController<MessageDB> = {
-        guard let channelId = self.channel?.identifier else { return NSFetchedResultsController<MessageDB>() }
-        let fetchRequest: NSFetchRequest<MessageDB> = MessageDB.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "created", ascending: true)]
-        fetchRequest.predicate = NSPredicate(format: "channel.identifier = %@", channelId)
-        let fetchedResultsController = NSFetchedResultsController(
-            fetchRequest: fetchRequest,
-            managedObjectContext: CoreDataStack.shared.mainContext,
-            sectionNameKeyPath: "formattedDate",
-            cacheName: nil
-        )
-        fetchedResultsController.delegate = self
-        return fetchedResultsController
+        let frc = messageRepository.createFetchedResultsController(channel: channel)
+        frc.delegate = self
+        return frc
     }()
     
     private let notificationCenter = NotificationCenter.default
@@ -53,11 +44,24 @@ class ConversationViewController: UIViewController {
     private var shouldAdjustForKeyboard = false
     private var customInput: InputBarView?
     
+    private let messageRepository: MessageRepository
+    private let themesManager: ThemesManagerProtocol
+    
+    init(messageRepository: MessageRepository, themesManager: ThemesManagerProtocol) {
+        self.messageRepository = messageRepository
+        self.themesManager = themesManager
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override var inputAccessoryView: UIView? {
         if customInput == nil {
             customInput = Bundle.main.loadNibNamed("InputBarView", owner: self,
                                                    options: nil)?.first as? InputBarView
-            customInput?.confugureInputView()
+            customInput?.configure(with: .init(), theme: themesManager.getTheme())
             customInput?.sendMessageHandler = { [weak self] messageText in
                 let message = Message(content: messageText)
                 self?.saveMessageToFirestore(message)
@@ -141,18 +145,18 @@ extension ConversationViewController: UITableViewDataSource {
         cell.configure(with: .init(text: message.content, sender: message.senderName, date: message.created))
         
         cell.bubleView.backgroundColor = message.isUpcomingMessage
-            ? ThemesManager.shared.getTheme().messageUpcomingBubbleViewColor
-            : ThemesManager.shared.getTheme().messageIncomingBubbleViewColor
+            ? themesManager.getTheme().messageUpcomingBubbleViewColor
+            : themesManager.getTheme().messageIncomingBubbleViewColor
         
         cell.messageLabel.textColor = message.isUpcomingMessage
-            ? ThemesManager.shared.getTheme().messageUpcomingTextColor
-            : ThemesManager.shared.getTheme().messageIncomingTextColor
+            ? themesManager.getTheme().messageUpcomingTextColor
+            : themesManager.getTheme().messageIncomingTextColor
         
         cell.dateLabel.textColor = message.isUpcomingMessage
-            ? ThemesManager.shared.getTheme().messageDateLabelUpcomingColor
-            : ThemesManager.shared.getTheme().messageDateLabelIncomingColor
+            ? themesManager.getTheme().messageDateLabelUpcomingColor
+            : themesManager.getTheme().messageDateLabelIncomingColor
         
-        cell.senderNameLabel.textColor = ThemesManager.shared.getTheme().messageSenderNameLabelColor
+        cell.senderNameLabel.textColor = themesManager.getTheme().messageSenderNameLabelColor
         
         if message.isUpcomingMessage {
             cell.leadingConstraint?.isActive = false
@@ -179,7 +183,7 @@ extension ConversationViewController: UITableViewDelegate {
             else { return nil }
         guard let sections = fetchedResultsController.sections else { return nil }
         
-        headerView.configure(with: .init(title: sections[section].indexTitle ?? ""))
+        headerView.configure(with: .init(title: sections[section].indexTitle ?? ""), theme: themesManager.getTheme())
         return headerView
     }
 }
@@ -189,7 +193,7 @@ extension ConversationViewController {
         navigationItem.title = channel?.name
         navigationController?.navigationBar.titleTextAttributes = [
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: .semibold),
-            NSAttributedString.Key.foregroundColor: ThemesManager.shared.getTheme().navigationTitleColor
+            NSAttributedString.Key.foregroundColor: themesManager.getTheme().navigationTitleColor
         ]
         navigationItem.largeTitleDisplayMode = .never
         
@@ -206,7 +210,7 @@ extension ConversationViewController {
             messagesWithChangeType.append((message, change.type))
         }
         
-        MessageRepository.shared.saveMessages(messagesWithChangeType, channelId: channel?.identifier ?? "")
+        messageRepository.saveMessages(messagesWithChangeType, channelId: channel?.identifier ?? "")
         
         scrollToBottom(animated: false)
     }

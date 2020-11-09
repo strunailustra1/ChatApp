@@ -277,9 +277,7 @@ enum Theme: Int {
     }
 }
 
-class ThemesManager: ThemesPickerDelegate {
-    
-    public static var shared = ThemesManager()
+class ThemesManager: ThemesPickerDelegate, ThemesPickerHandler, ThemesManagerProtocol {
     
     private var currentTheme: Theme = .night
     

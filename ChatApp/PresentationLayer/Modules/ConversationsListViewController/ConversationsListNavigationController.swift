@@ -9,8 +9,10 @@
 import Foundation
 import UIKit
 
-class RootNavigationController: UINavigationController {
+class ConversationsListNavigationController: UINavigationController {
+    var themesManager: ThemesManagerProtocol?
+    
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return ThemesManager.shared.getTheme().statusBarStyle
+        return themesManager?.getTheme().statusBarStyle ?? .default
     }
 }

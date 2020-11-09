@@ -8,7 +8,11 @@
 
 import UIKit
 
-class InputBarView: UIView {
+class InputBarView: UIView, ConfigurableView {
+    typealias ConfigurationModel = InputBarModel
+    
+    struct InputBarModel {
+    }
     
     @IBOutlet weak var customInputView: UIView!
     @IBOutlet weak var textInputView: UITextView!
@@ -39,13 +43,13 @@ class InputBarView: UIView {
         return textViewContentSize()
     }
     
-    func confugureInputView() {
-        customInputView.backgroundColor = ThemesManager.shared.getTheme().messageInputBackgroundColor
-        textInputView.backgroundColor = ThemesManager.shared.getTheme().messageTextInputBackgroundColor
+    func configure(with model: InputBarModel, theme: Theme?) {
+        customInputView.backgroundColor = theme?.messageInputBackgroundColor
+        textInputView.backgroundColor = theme?.messageTextInputBackgroundColor
         textInputView.layer.cornerRadius = 16
-        textInputView.layer.borderColor = ThemesManager.shared.getTheme().messageTextInputBorderColor
+        textInputView.layer.borderColor = theme?.messageTextInputBorderColor
         textInputView.layer.borderWidth = 0.5
-        textInputView.textColor = ThemesManager.shared.getTheme().labelTextColor
+        textInputView.textColor = theme?.labelTextColor
         textInputView.delegate = self
         
         sendMessageButton.isHidden = true

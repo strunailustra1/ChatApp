@@ -14,6 +14,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     
+    private let rootAssembly = RootAssembly()
+
     func application(_ application: UIApplication,
                      willFinishLaunchingWithOptions
         launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
@@ -29,12 +31,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         applyTheme()
         ProfileStorage.fetchProfileOnStartApp(window)
         FirebaseApp.configure()
-        CoreDataStack.shared.configure()
         
         self.window = UIWindow(frame: UIScreen.main.bounds)
-        let rootViewController = ConversationsListViewController()
-        let navigationController = RootNavigationController(rootViewController: rootViewController)
-        window?.rootViewController = navigationController
+        window?.rootViewController = rootAssembly.presentationAssembly.conversationsListNavigationController()
         window?.makeKeyAndVisible()
         
         return true
@@ -61,7 +60,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     private func applyTheme() {
-        let theme = ThemesManager.shared.getTheme()
-        ThemesManager.shared.applyTheme(theme)
+        let theme = rootAssembly.themesManager.getTheme()
+        rootAssembly.themesManager.applyTheme(theme)
     }
 }

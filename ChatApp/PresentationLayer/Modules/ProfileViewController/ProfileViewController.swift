@@ -10,12 +10,14 @@ import UIKit
 
 class ProfileViewController: UIViewController {
     
-    static func storyboardInstance() -> ProfileViewController? {
+    static func storyboardInstance(themesManager: ThemesManagerProtocol) -> ProfileViewController? {
         let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
-        let vc = storyboard.instantiateInitialViewController() as? ProfileViewController
-        return vc
+        let profileVC = storyboard.instantiateInitialViewController() as? ProfileViewController
+        profileVC?.themesManager = themesManager
+        return profileVC
     }
-    
+
+    var themesManager: ThemesManagerProtocol?
     var closeHandler: (() -> Void)?
     
     @IBOutlet weak var gcdButton: UIButton!
@@ -67,7 +69,7 @@ class ProfileViewController: UIViewController {
         
         view.addSubview(activityIndicator)
         
-        view.backgroundColor = ThemesManager.shared.getTheme().profileVCBackgroundColor
+        view.backgroundColor = themesManager?.getTheme().profileVCBackgroundColor
         
         updateSaveButtonAvailability()
     }
@@ -124,11 +126,11 @@ class ProfileViewController: UIViewController {
     
     @objc func editProfile() {
         fullNameText.isUserInteractionEnabled = true
-        fullNameText.layer.borderColor = ThemesManager.shared.getTheme().labelBorderColor
+        fullNameText.layer.borderColor = themesManager?.getTheme().labelBorderColor
         fullNameText.layer.borderWidth = 1
         
         descriptionTextView.isUserInteractionEnabled = true
-        descriptionTextView.layer.borderColor = ThemesManager.shared.getTheme().labelBorderColor
+        descriptionTextView.layer.borderColor = themesManager?.getTheme().labelBorderColor
         descriptionTextView.layer.borderWidth = 1
         
         editButton.isEnabled = true
@@ -153,11 +155,11 @@ class ProfileViewController: UIViewController {
 
 extension ProfileViewController {
     private func setupSaveButton() {
-        gcdButton.layer.backgroundColor = ThemesManager.shared.getTheme().profileVCButtonBackgroundColor
+        gcdButton.layer.backgroundColor = themesManager?.getTheme().profileVCButtonBackgroundColor
         gcdButton.clipsToBounds = true
         gcdButton.setTitle("GCD", for: .normal)
         
-        operationButton.layer.backgroundColor = ThemesManager.shared.getTheme().profileVCButtonBackgroundColor
+        operationButton.layer.backgroundColor = themesManager?.getTheme().profileVCButtonBackgroundColor
         operationButton.clipsToBounds = true
         operationButton.setTitle("Operation", for: .normal)
     }
@@ -179,8 +181,8 @@ extension ProfileViewController {
         fullNameText.placeholder = "Username"
         fullNameText.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         fullNameText.textAlignment = .center
-        fullNameText.backgroundColor = ThemesManager.shared.getTheme().profileVCBackgroundColor
-        fullNameText.textColor = ThemesManager.shared.getTheme().labelTextColor
+        fullNameText.backgroundColor = themesManager?.getTheme().profileVCBackgroundColor
+        fullNameText.textColor = themesManager?.getTheme().labelTextColor
         fullNameText.layer.borderWidth = 0
         fullNameText.resignFirstResponder()
         
@@ -199,8 +201,8 @@ extension ProfileViewController {
                 NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: .regular)
             ]
         )
-        descriptionTextView.backgroundColor = ThemesManager.shared.getTheme().profileVCBackgroundColor
-        descriptionTextView.textColor = ThemesManager.shared.getTheme().labelTextColor
+        descriptionTextView.backgroundColor = themesManager?.getTheme().profileVCBackgroundColor
+        descriptionTextView.textColor = themesManager?.getTheme().labelTextColor
         descriptionTextView.layer.borderWidth = 0
         descriptionTextView.resignFirstResponder()
         

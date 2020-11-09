@@ -11,13 +11,35 @@ import CoreData
 import Firebase 
 
 class MessageRepository {
-    static let shared = MessageRepository()
+    
+    private let coreDataStack: CoreDataStack
+    private let channelRepository: ChannelRepository
+
+    init(coreDataStack: CoreDataStack, channelRepository: ChannelRepository) {
+        self.coreDataStack = coreDataStack
+        self.channelRepository = channelRepository
+    }
+    
+    func createFetchedResultsController(channel: Channel?) -> NSFetchedResultsController<MessageDB> {
+        guard let channelId = channel?.identifier else { return NSFetchedResultsController<MessageDB>() }
+        let fetchRequest: NSFetchRequest<MessageDB> = MessageDB.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "created", ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "channel.identifier = %@", channelId)
+        let fetchedResultsController = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: coreDataStack.mainContext,
+            sectionNameKeyPath: "formattedDate",
+            cacheName: nil
+        )
+ 
+        return fetchedResultsController
+    }
     
     func fetchMessage(byIdentifier id: String, from context: NSManagedObjectContext? = nil) -> MessageDB? {
         let fetchMessageRequest: NSFetchRequest<MessageDB> = MessageDB.fetchRequest()
         fetchMessageRequest.predicate = NSPredicate(format: "identifier = %@", id)
         
-        let fetchContext = context ?? CoreDataStack.shared.mainContext
+        let fetchContext = context ?? coreDataStack.mainContext
         
         let messageDBList = try? fetchContext.fetch(fetchMessageRequest)
         
@@ -27,12 +49,12 @@ class MessageRepository {
     }
     
     func saveMessages(_ messagesWithChangeType: [(Message, DocumentChangeType)], channelId: String) {
-        CoreDataStack.shared.performSave { (context) in
-            guard let channelDB = ChannelRepository.shared.fetchChannel(byIdentifier: channelId, from: context)
+        coreDataStack.performSave { [weak self] (context) in
+            guard let channelDB = self?.channelRepository.fetchChannel(byIdentifier: channelId, from: context)
                 else { return }
 
             for (message, changeType) in messagesWithChangeType {
-                if let messageInDB = self.fetchMessage(byIdentifier: message.identifier, from: context) {
+                if let messageInDB = self?.fetchMessage(byIdentifier: message.identifier, from: context) {
                     if changeType == .removed {
                         context.delete(messageInDB)
                         continue

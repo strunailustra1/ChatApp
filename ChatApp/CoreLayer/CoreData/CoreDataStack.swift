@@ -9,10 +9,15 @@
 import Foundation
 import CoreData
 
+//todo логгер в зависимостях
+//todo протокол для класса
 class CoreDataStack {
-    static let shared = CoreDataStack()
     
     var didUpdateDataBase: ((CoreDataStack) -> Void)?
+    
+    init() {
+        configure()
+    }
     
     private var storeURL: URL = {
         guard let documentsUrl = FileManager.default.urls(for: .documentDirectory,
@@ -168,7 +173,7 @@ class CoreDataStack {
         }
     }
     
-    func configure() {
+    private func configure() {
         // Для вывода полного состояния бд после каждого сохранения
         // нужно запустить схему ChatAppInfo
         if Logger.shared.verboseLevel == .info {
