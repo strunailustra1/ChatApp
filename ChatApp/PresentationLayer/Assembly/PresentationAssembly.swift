@@ -26,7 +26,8 @@ class PresentationAssembly: PresentationAssemblyProtocol {
         let rootVC = ConversationsListViewController(
             channelRepository: serviceAssembly.channelRepository,
             presentationAssembly: self,
-            themesManager: serviceAssembly.themesManager
+            themesManager: serviceAssembly.themesManager,
+            channelAPIManager: serviceAssembly.channelAPIManager
         )
         let nav = ConversationsListNavigationController(rootViewController: rootVC)
         nav.themesManager = serviceAssembly.themesManager
@@ -36,7 +37,8 @@ class PresentationAssembly: PresentationAssemblyProtocol {
     func conversationViewController() -> ConversationViewController {
         return ConversationViewController(
             messageRepository: serviceAssembly.messageRepository,
-            themesManager: serviceAssembly.themesManager
+            themesManager: serviceAssembly.themesManager,
+            messageAPIManager: serviceAssembly.messageAPIManager
         )
     }
     

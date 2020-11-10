@@ -19,15 +19,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      willFinishLaunchingWithOptions
         launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-        Logger.shared.appDelegateLog(stateFrom: "Not Running", stateTo: "Inactive")
+      //  Logger.shared.appDelegateLog(stateFrom: "Not Running", stateTo: "Inactive")
+        rootAssembly.logger.appDelegateLog(stateFrom: "Not Running", stateTo: "Inactive", functionName: #function)
         return true
     }
     
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions
         launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        Logger.shared.appDelegateLog(stateFrom: "Inactive", stateTo: "Inactive")
-        
+      //  Logger.shared.appDelegateLog(stateFrom: "Inactive", stateTo: "Inactive")
+        rootAssembly.logger.appDelegateLog(stateFrom: "Inactive", stateTo: "Inactive", functionName: #function)
         applyTheme()
         ProfileStorage.fetchProfileOnStartApp(window)
         FirebaseApp.configure()
@@ -40,23 +41,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationWillResignActive(_ application: UIApplication) {
-        Logger.shared.appDelegateLog(stateFrom: "Active", stateTo: "Inactive")
+      //  Logger.shared.appDelegateLog(stateFrom: "Active", stateTo: "Inactive")
+        rootAssembly.logger.appDelegateLog(stateFrom: "Active", stateTo: "Inactive", functionName: #function)
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
-        Logger.shared.appDelegateLog(stateFrom: "Inactive", stateTo: "Active")
+       // Logger.shared.appDelegateLog(stateFrom: "Inactive", stateTo: "Active")
+        rootAssembly.logger.appDelegateLog(stateFrom: "Inactive", stateTo: "Active", functionName: #function)
     }
     
     func applicationDidEnterBackground(_ application: UIApplication) {
-        Logger.shared.appDelegateLog(stateFrom: "Inactive", stateTo: "Background")
+      //  Logger.shared.appDelegateLog(stateFrom: "Inactive", stateTo: "Background")
+        rootAssembly.logger.appDelegateLog(stateFrom: "Inactive", stateTo: "Background", functionName: #function)
     }
     
     func applicationWillEnterForeground(_ application: UIApplication) {
-        Logger.shared.appDelegateLog(stateFrom: "Background", stateTo: "Inactive")
+       // Logger.shared.appDelegateLog(stateFrom: "Background", stateTo: "Inactive")
+        rootAssembly.logger.appDelegateLog(stateFrom: "Background", stateTo: "Inactive", functionName: #function)
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
-        Logger.shared.appDelegateLog(stateFrom: "Background", stateTo: "across Suspended to Not Running")
+       // Logger.shared.appDelegateLog(stateFrom: "Background", stateTo: "across Suspended to Not Running")
+        rootAssembly.logger.appDelegateLog(stateFrom: "Background",
+                                           stateTo: "across Suspended to Not Running",
+                                           functionName: #function)
     }
     
     private func applyTheme() {

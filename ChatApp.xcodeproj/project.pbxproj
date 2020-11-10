@@ -45,6 +45,8 @@
 		1EA982122559CCC9004B6FD6 /* RootAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA982112559CCC9004B6FD6 /* RootAssembly.swift */; };
 		1EA982152559E0BC004B6FD6 /* ThemesPickerHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA982142559E0BC004B6FD6 /* ThemesPickerHandler.swift */; };
 		1EA982172559E193004B6FD6 /* ThemesManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA982162559E193004B6FD6 /* ThemesManagerProtocol.swift */; };
+		1EA98219255B14CA004B6FD6 /* ChannelAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA98218255B14CA004B6FD6 /* ChannelAPIManager.swift */; };
+		1EA9821B255B14D7004B6FD6 /* MessageAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA9821A255B14D7004B6FD6 /* MessageAPIManager.swift */; };
 		1EB5D48F25488CA800D31945 /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB5D48E25488CA800D31945 /* Array+Extensions.swift */; };
 		1EB5D4912548A8EE00D31945 /* NSManagedObjectDescriptionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB5D4902548A8EE00D31945 /* NSManagedObjectDescriptionProtocol.swift */; };
 		1EB5D4962549EBAD00D31945 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1EB5D4952549EBAD00D31945 /* GoogleService-Info.plist */; };
@@ -101,6 +103,8 @@
 		1EA982112559CCC9004B6FD6 /* RootAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootAssembly.swift; sourceTree = "<group>"; };
 		1EA982142559E0BC004B6FD6 /* ThemesPickerHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesPickerHandler.swift; sourceTree = "<group>"; };
 		1EA982162559E193004B6FD6 /* ThemesManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesManagerProtocol.swift; sourceTree = "<group>"; };
+		1EA98218255B14CA004B6FD6 /* ChannelAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelAPIManager.swift; sourceTree = "<group>"; };
+		1EA9821A255B14D7004B6FD6 /* MessageAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageAPIManager.swift; sourceTree = "<group>"; };
 		1EB5D48E25488CA800D31945 /* Array+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extensions.swift"; sourceTree = "<group>"; };
 		1EB5D4902548A8EE00D31945 /* NSManagedObjectDescriptionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSManagedObjectDescriptionProtocol.swift; sourceTree = "<group>"; };
 		1EB5D4952549EBAD00D31945 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -311,6 +315,8 @@
 			children = (
 				1EA982132559E00E004B6FD6 /* Themes */,
 				1E6B8FC1250E319800A5632E /* Logger.swift */,
+				1EA98218255B14CA004B6FD6 /* ChannelAPIManager.swift */,
+				1EA9821A255B14D7004B6FD6 /* MessageAPIManager.swift */,
 				1E46BC2A2553257800DED981 /* MessageRepository.swift */,
 				1E46BC282553256A00DED981 /* ChannelRepository.swift */,
 			);
@@ -544,6 +550,7 @@
 				1EB5D48F25488CA800D31945 /* Array+Extensions.swift in Sources */,
 				1E4686B72540EB4900EFF407 /* ProfileImagePickerController.swift in Sources */,
 				1E16408F252BA55D00B37DD6 /* ThemesManager.swift in Sources */,
+				1EA98219255B14CA004B6FD6 /* ChannelAPIManager.swift in Sources */,
 				1EA982152559E0BC004B6FD6 /* ThemesPickerHandler.swift in Sources */,
 				1E49C018253781A30025BB36 /* UITextField+Extensions.swift in Sources */,
 				1E5FFB192524A67900F8187A /* Profile.swift in Sources */,
@@ -569,6 +576,7 @@
 				1E6B8FC2250E319800A5632E /* Logger.swift in Sources */,
 				1E4686B52540D72900EFF407 /* FirestoreDataProvider.swift in Sources */,
 				1EB5D4912548A8EE00D31945 /* NSManagedObjectDescriptionProtocol.swift in Sources */,
+				1EA9821B255B14D7004B6FD6 /* MessageAPIManager.swift in Sources */,
 				1E319EE52559C5430019078B /* CoreAssembly.swift in Sources */,
 				1E30F11D250B944100DDF8DC /* AppDelegate.swift in Sources */,
 			);

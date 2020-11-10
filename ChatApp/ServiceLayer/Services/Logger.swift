@@ -20,9 +20,21 @@ enum VerboseLevel: String {
     }
 }
 
-class Logger {
-    
-    public static let shared = Logger()
+protocol LoggerVerboseLevel {
+    var verboseLevel: VerboseLevel { get }
+}
+
+protocol LoggerAppLifeCycle {
+    func appDelegateLog(stateFrom: String, stateTo: String, functionName: String)
+}
+
+protocol LoggerVCLifeCycle {
+    func vcLog(stateFrom: String, stateTo: String, functionName: String)
+    func vcLog(description: String, functionName: String)
+    func vcLog(frame: String)
+}
+
+class Logger: LoggerVerboseLevel, LoggerAppLifeCycle, LoggerVCLifeCycle {
     
     private static let subsystem = Bundle.main.bundleIdentifier ?? ""
     

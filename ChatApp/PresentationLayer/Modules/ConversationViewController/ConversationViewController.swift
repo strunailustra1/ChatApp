@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Firebase
 import CoreData
 
 class ConversationViewController: UIViewController {
@@ -18,7 +17,7 @@ class ConversationViewController: UIViewController {
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: view.frame, style: .plain)
-
+        
         tableView.register(UINib(nibName: String(describing: MessageCell.self), bundle: nil),
                            forCellReuseIdentifier: cellIdentifierUpcoming)
         tableView.register(UINib(nibName: String(describing: MessageCell.self), bundle: nil),
@@ -46,10 +45,16 @@ class ConversationViewController: UIViewController {
     
     private let messageRepository: MessageRepository
     private let themesManager: ThemesManagerProtocol
+    private let messageAPIManager: MessageAPIManager
     
-    init(messageRepository: MessageRepository, themesManager: ThemesManagerProtocol) {
+    init(messageRepository: MessageRepository,
+         themesManager: ThemesManagerProtocol,
+         messageAPIManager: MessageAPIManager
+    ) {
         self.messageRepository = messageRepository
         self.themesManager = themesManager
+        self.messageAPIManager = messageAPIManager
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -63,8 +68,9 @@ class ConversationViewController: UIViewController {
                                                    options: nil)?.first as? InputBarView
             customInput?.configure(with: .init(), theme: themesManager.getTheme())
             customInput?.sendMessageHandler = { [weak self] messageText in
-                let message = Message(content: messageText)
-                self?.saveMessageToFirestore(message)
+                if let channel = self?.channel {
+                    self?.messageAPIManager.createMessage(channel: channel, messageText: messageText)
+                }
             }
         }
         return customInput
@@ -81,7 +87,7 @@ class ConversationViewController: UIViewController {
     var channel: Channel?
     
     deinit {
-        FirestoreDataProvider.shared.removeMessagesListener()
+        messageAPIManager.removeListener()
     }
     
     override func viewDidLoad() {
@@ -110,7 +116,11 @@ class ConversationViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        fetchMessagesFromFirestore()
+        if let channel = self.channel {
+            messageAPIManager.fetchMessages(channel: channel, completion: { [weak self] in
+                self?.scrollToBottom(animated: false)
+            })
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -202,19 +212,6 @@ extension ConversationViewController {
 }
 
 extension ConversationViewController {
-    private func handleFirestoreDocumentChanges(_ changes: [DocumentChange]) {
-        var messagesWithChangeType = [(Message, DocumentChangeType)]()
-
-        for change in changes {
-            guard let message = Message(document: change.document) else { continue }
-            messagesWithChangeType.append((message, change.type))
-        }
-        
-        messageRepository.saveMessages(messagesWithChangeType, channelId: channel?.identifier ?? "")
-        
-        scrollToBottom(animated: false)
-    }
-
     private func scrollToBottom(animated: Bool) {
         view.layoutIfNeeded()
         tableView.setContentOffset(bottomOffset(), animated: animated)
@@ -226,20 +223,6 @@ extension ConversationViewController {
             y: max(-tableView.contentInset.bottom - 10,
                    tableView.contentSize.height - (tableView.bounds.size.height - tableView.contentInset.bottom))
         )
-    }
-}
-
-extension ConversationViewController {
-    private func saveMessageToFirestore(_ message: Message) {
-        guard let channel = self.channel else { return }
-        FirestoreDataProvider.shared.createMessage(in: channel, message: message)
-    }
-    
-    private func fetchMessagesFromFirestore() {
-        guard let channel = self.channel else { return }
-        FirestoreDataProvider.shared.getMessages(in: channel, completion: { [weak self] changes in
-            self?.handleFirestoreDocumentChanges(changes)
-        })
     }
 }
 

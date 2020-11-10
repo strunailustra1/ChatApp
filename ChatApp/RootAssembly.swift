@@ -12,10 +12,13 @@ class RootAssembly {
     lazy var presentationAssembly: PresentationAssemblyProtocol = PresentationAssembly(serviceAssembly:
         self.serviceAssembly)
     private lazy var serviceAssembly: ServicesAssemblyProtocol = ServicesAssembly(coreAssembly: self.coreAssembly)
-    private lazy var coreAssembly: CoreAssemblyProtocol = CoreAssembly()
+    private lazy var coreAssembly: CoreAssemblyProtocol = CoreAssembly(logger: self.logger)
     
     // нужен для установки темы при запуске приложения в AppDelegate
     lazy var themesManager: ThemesManagerProtocol = {
         return serviceAssembly.themesManager
     }()
+    
+    // используется на многих уровнях приложения и в AppDelegate, глобальная зависимость
+    lazy var logger: LoggerVerboseLevel & LoggerAppLifeCycle = Logger()
 }

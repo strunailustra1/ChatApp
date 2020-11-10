@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Firebase
 import CoreData
 
 class ConversationsListViewController: UIViewController {
@@ -37,15 +36,18 @@ class ConversationsListViewController: UIViewController {
     private let channelRepository: ChannelRepository
     private let presentationAssembly: PresentationAssemblyProtocol
     private let themesManager: ThemesManagerProtocol
+    private let channelAPIManager: ChannelAPIManager
     
     init(
         channelRepository: ChannelRepository,
         presentationAssembly: PresentationAssemblyProtocol,
-        themesManager: ThemesManagerProtocol
+        themesManager: ThemesManagerProtocol,
+        channelAPIManager: ChannelAPIManager
     ) {
         self.channelRepository = channelRepository
         self.presentationAssembly = presentationAssembly
         self.themesManager = themesManager
+        self.channelAPIManager = channelAPIManager
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -54,16 +56,14 @@ class ConversationsListViewController: UIViewController {
     }
     
     deinit {
-        FirestoreDataProvider.shared.removeChannelsListener()
+        channelAPIManager.removeListener()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(tableView)
         
-        FirestoreDataProvider.shared.getChannelsId { [weak self] (channelIdList) in
-            self?.channelRepository.deleteMissingChannels(channelIdList)
-        }
+        channelAPIManager.deleteMissingChannels()
         
         try? fetchedResultsController.performFetch()
     }
@@ -76,7 +76,7 @@ class ConversationsListViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         fetchedResultsController.delegate = self
-        fetchChannelsFromFirestore()
+        channelAPIManager.fetchChannels()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -85,7 +85,7 @@ class ConversationsListViewController: UIViewController {
         // Warning once only: UITableView was told to layout its visible cells
         // and other contents without being in the view hierarchy
         fetchedResultsController.delegate = nil
-        FirestoreDataProvider.shared.removeChannelsListener()
+        channelAPIManager.removeListener()
     }
     
     @objc func editProfile() {
@@ -112,7 +112,7 @@ class ConversationsListViewController: UIViewController {
     @objc func addChannel() {
         showAlert(title: "Add new channel", message: "Enter the name of the channel",
                   createActionHandler: { [weak self] (channelName) in
-                    self?.saveChannelToFirestore(channelName: channelName)
+                    self?.channelAPIManager.createChannel(channelName: channelName)
         })
     }
 }
@@ -156,8 +156,7 @@ extension ConversationsListViewController: UITableViewDelegate {
             guard let channelDBFromMainContext = self?.fetchedResultsController.object(at: indexPath) else { return }
             
             self?.deleteChannelAlert(deleteChannelhandler: { _ in
-                FirestoreDataProvider.shared.deleteChannel(channel: Channel(channelDB: channelDBFromMainContext))
-                self?.channelRepository.deleteChannel(channelDBFromMainContext)
+                self?.channelAPIManager.deleteChannel(channelDBFromMainContext)
             })
         }
         contextualActions.append(deleteAction)
@@ -245,29 +244,6 @@ extension ConversationsListViewController {
         alert.addAction(cancelAction)
         
         present(alert, animated: true)
-    }
-}
-
-extension ConversationsListViewController {
-    private func handleFirestoreDocumentChanges(_ changes: [DocumentChange]) {
-        var channelsWithChangeType = [(Channel, DocumentChangeType)]()
-        
-        for change in changes {
-            guard let channel = Channel(document: change.document) else { continue }
-            channelsWithChangeType.append((channel, change.type))
-        }
-        
-        channelRepository.saveChannels(channelsWithChangeType)
-    }
-    
-    private func saveChannelToFirestore(channelName: String) {
-        FirestoreDataProvider.shared.createChannel(channel: Channel(name: channelName))
-    }
-    
-    private func fetchChannelsFromFirestore() {
-        FirestoreDataProvider.shared.getChannels(completion: { [weak self] changes in
-            self?.handleFirestoreDocumentChanges(changes)
-        })
     }
 }
 

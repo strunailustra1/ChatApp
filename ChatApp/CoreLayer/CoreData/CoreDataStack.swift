@@ -13,9 +13,12 @@ import CoreData
 //todo протокол для класса
 class CoreDataStack {
     
+    private var logger: LoggerVerboseLevel
+    
     var didUpdateDataBase: ((CoreDataStack) -> Void)?
     
-    init() {
+    init(logger: LoggerVerboseLevel) {
+        self.logger = logger
         configure()
     }
     
@@ -176,7 +179,7 @@ class CoreDataStack {
     private func configure() {
         // Для вывода полного состояния бд после каждого сохранения
         // нужно запустить схему ChatAppInfo
-        if Logger.shared.verboseLevel == .info {
+        if logger.verboseLevel == .info {
             didUpdateDataBase = { stack in
                 stack.printStatFromDatabase()
             }

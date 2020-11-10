@@ -16,8 +16,14 @@ protocol CoreAssemblyProtocol {
 }
 
 class CoreAssembly: CoreAssemblyProtocol {
-    lazy var coreDataStack: CoreDataStack = CoreDataStack()
+    lazy var coreDataStack: CoreDataStack = CoreDataStack(logger: logger)
     lazy var firestoreDataProvider: FirestoreDataProvider = FirestoreDataProvider()
     lazy var gcdDataManager: ProfileDataManagerProtocol = GCDDataManager()
     lazy var operationDataManager: ProfileDataManagerProtocol = OperationDataManager()
+    
+    private var logger: LoggerVerboseLevel
+    
+    init(logger: LoggerVerboseLevel) {
+        self.logger = logger
+    }
 }

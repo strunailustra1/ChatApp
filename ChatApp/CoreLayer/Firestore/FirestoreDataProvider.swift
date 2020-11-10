@@ -10,8 +10,6 @@ import Foundation
 import Firebase
 
 class FirestoreDataProvider {
-    static let shared = FirestoreDataProvider()
-    
     lazy private var db = Firestore.firestore()
     
     private var channelsListener: ListenerRegistration?
