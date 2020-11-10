@@ -11,23 +11,32 @@ import CoreData
 
 class ConversationsListViewController: UIViewController {
     
-    private let cellIdentifier = String(describing: ConversationCell.self)
-    
     private lazy var tableView: UITableView = {
+        tableViewDataSourceDelegate.fetchedResultsController = fetchedResultsController
+        tableViewDataSourceDelegate.channelAPIManager = channelAPIManager
+        tableViewDataSourceDelegate.presentationAssembly = presentationAssembly
+        tableViewDataSourceDelegate.controller = self
+        
         let tableView = UITableView(frame: view.frame, style: .plain)
-        tableView.register(UINib(nibName: String(describing: ConversationCell.self), bundle: nil),
-                           forCellReuseIdentifier: cellIdentifier)
-        tableView.dataSource = self
-        tableView.delegate = self
+        
+        tableView.register(tableViewDataSourceDelegate.cellIdentifierUINib,
+                           forCellReuseIdentifier: tableViewDataSourceDelegate.cellIdentifier)
+        
+        tableView.dataSource = tableViewDataSourceDelegate
+        tableView.delegate = tableViewDataSourceDelegate
+        
         tableView.separatorColor = themesManager.getTheme().tableViewSeparatorColor
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 40
+        
+        frcDelegate.tableView = tableView
+        
         return tableView
     }()
     
     private lazy var fetchedResultsController: NSFetchedResultsController<ChannelDB> = {
         let frc = channelRepository.createFetchedResultsController()
-        frc.delegate = self
+        frc.delegate = frcDelegate
         return frc
     }()
     
@@ -37,17 +46,24 @@ class ConversationsListViewController: UIViewController {
     private let presentationAssembly: PresentationAssemblyProtocol
     private let themesManager: ThemesManagerProtocol
     private let channelAPIManager: ChannelAPIManager
+    private let frcDelegate: ConversationsListFRCDelegate
+    private let tableViewDataSourceDelegate: ConversationsListDataSourceDelegate
     
     init(
         channelRepository: ChannelRepository,
         presentationAssembly: PresentationAssemblyProtocol,
         themesManager: ThemesManagerProtocol,
-        channelAPIManager: ChannelAPIManager
+        channelAPIManager: ChannelAPIManager,
+        frcDelegate: ConversationsListFRCDelegate,
+        tableViewDataSourceDelegate: ConversationsListDataSourceDelegate
     ) {
         self.channelRepository = channelRepository
         self.presentationAssembly = presentationAssembly
         self.themesManager = themesManager
         self.channelAPIManager = channelAPIManager
+        self.frcDelegate = frcDelegate
+        self.tableViewDataSourceDelegate = tableViewDataSourceDelegate
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -75,7 +91,7 @@ class ConversationsListViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        fetchedResultsController.delegate = self
+        fetchedResultsController.delegate = frcDelegate
         channelAPIManager.fetchChannels()
     }
     
@@ -114,57 +130,6 @@ class ConversationsListViewController: UIViewController {
                   createActionHandler: { [weak self] (channelName) in
                     self?.channelAPIManager.createChannel(channelName: channelName)
         })
-    }
-}
-
-extension ConversationsListViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let sections = fetchedResultsController.sections else { return 0 }
-        return sections[section].numberOfObjects
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
-            as? ConversationCell else { return UITableViewCell() }
-        
-        let channelDB = fetchedResultsController.object(at: indexPath)
-        let channel = Channel(channelDB: channelDB)
-
-        cell.configure(with: .init(name: channel.name,
-                                   message: channel.lastMessage ?? "",
-                                   date: channel.lastActivity))
-        return cell
-    }
-}
-
-extension ConversationsListViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let conversationVC = presentationAssembly.conversationViewController()
-        let channelDB = fetchedResultsController.object(at: indexPath)
-        conversationVC.channel = Channel(channelDB: channelDB)
-        navigationController?.pushViewController(conversationVC, animated: true)
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-    }
-    
-    func tableView(
-        _ tableView: UITableView,
-        trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
-    ) -> UISwipeActionsConfiguration? {
-        var contextualActions: [UIContextualAction] = []
-
-        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") {[weak self] _, _, _ in
-            guard let channelDBFromMainContext = self?.fetchedResultsController.object(at: indexPath) else { return }
-            
-            self?.deleteChannelAlert(deleteChannelhandler: { _ in
-                self?.channelAPIManager.deleteChannel(channelDBFromMainContext)
-            })
-        }
-        contextualActions.append(deleteAction)
-        
-        let swipeActionsConfiguration = UISwipeActionsConfiguration(actions: contextualActions)
-        swipeActionsConfiguration.performsFirstActionWithFullSwipe = false
-        
-        return swipeActionsConfiguration
     }
 }
 
@@ -244,61 +209,5 @@ extension ConversationsListViewController {
         alert.addAction(cancelAction)
         
         present(alert, animated: true)
-    }
-}
-
-extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
-    func controller(
-        _ controller: NSFetchedResultsController<NSFetchRequestResult>,
-        didChange anObject: Any, at indexPath: IndexPath?,
-        for type: NSFetchedResultsChangeType,
-        newIndexPath: IndexPath?
-    ) {
-        switch type {
-        case .insert:
-            if let newIndexPath = newIndexPath {
-                tableView.insertRows(at: [newIndexPath], with: .none)
-            }
-        case .update:
-            if let indexPath = indexPath {
-                tableView.reloadRows(at: [indexPath], with: .none)
-            }
-        case .move:
-            if let indexPath = indexPath {
-                tableView.deleteRows(at: [indexPath], with: .none)
-            }
-            if let newIndexPath = newIndexPath {
-                tableView.insertRows(at: [newIndexPath], with: .none)
-            }
-        case .delete:
-            if let indexPath = indexPath {
-                tableView.deleteRows(at: [indexPath], with: .none)
-            }
-        @unknown default:
-            fatalError("undefined type")
-        }
-    }
-    
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.beginUpdates()
-    }
-    
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.endUpdates()
-    }
-}
-
-extension ConversationsListViewController {
-    private func deleteChannelAlert(deleteChannelhandler: ((UIAlertAction) -> Void)? = nil) {
-        let alert = UIAlertController(title: nil,
-                                      message: "Do you really want to delete this channel?",
-                                      preferredStyle: .actionSheet)
-        let deleteAction = UIAlertAction(title: "Delete", style: .destructive, handler: deleteChannelhandler)
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-        
-        alert.addAction(deleteAction)
-        alert.addAction(cancelAction)
-        present(alert, animated: true, completion: nil)
-        alert.pruneNegativeWidthConstraints()
     }
 }

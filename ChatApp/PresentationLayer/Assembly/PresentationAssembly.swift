@@ -27,7 +27,9 @@ class PresentationAssembly: PresentationAssemblyProtocol {
             channelRepository: serviceAssembly.channelRepository,
             presentationAssembly: self,
             themesManager: serviceAssembly.themesManager,
-            channelAPIManager: serviceAssembly.channelAPIManager
+            channelAPIManager: serviceAssembly.channelAPIManager,
+            frcDelegate: ConversationsListFRCDelegate(),
+            tableViewDataSourceDelegate: ConversationsListDataSourceDelegate()
         )
         let nav = ConversationsListNavigationController(rootViewController: rootVC)
         nav.themesManager = serviceAssembly.themesManager
