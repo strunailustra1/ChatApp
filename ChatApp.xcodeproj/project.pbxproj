@@ -59,6 +59,8 @@
 		1ECC481D253DB60900789DDA /* InputBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1ECC481C253DB60900789DDA /* InputBarView.xib */; };
 		1ECC481F253DEAD200789DDA /* InputBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ECC481E253DEAD200789DDA /* InputBarView.swift */; };
 		1ECC4821253EF51900789DDA /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ECC4820253EF51900789DDA /* Channel.swift */; };
+		1EFEF871255B284C0069F6BA /* ConversationFRCDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EFEF870255B284C0069F6BA /* ConversationFRCDelegate.swift */; };
+		1EFEF873255B2EE80069F6BA /* ConversationTableViewDataSourceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EFEF872255B2EE80069F6BA /* ConversationTableViewDataSourceDelegate.swift */; };
 		752F8ED2E20B2747BFC181A7 /* Pods_ChatApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DCB4E99DBAA6BC84E6E2D2E /* Pods_ChatApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -117,6 +119,8 @@
 		1ECC481C253DB60900789DDA /* InputBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InputBarView.xib; sourceTree = "<group>"; };
 		1ECC481E253DEAD200789DDA /* InputBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputBarView.swift; sourceTree = "<group>"; };
 		1ECC4820253EF51900789DDA /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
+		1EFEF870255B284C0069F6BA /* ConversationFRCDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationFRCDelegate.swift; sourceTree = "<group>"; };
+		1EFEF872255B2EE80069F6BA /* ConversationTableViewDataSourceDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationTableViewDataSourceDelegate.swift; sourceTree = "<group>"; };
 		65B2EF8EDC1FD9B0C9FDAD85 /* Pods-ChatApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatApp.debug.xcconfig"; path = "Target Support Files/Pods-ChatApp/Pods-ChatApp.debug.xcconfig"; sourceTree = "<group>"; };
 		8DCB4E99DBAA6BC84E6E2D2E /* Pods_ChatApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChatApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		947D0CA18A80459E53EABE33 /* Pods-ChatApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatApp.release.xcconfig"; path = "Target Support Files/Pods-ChatApp/Pods-ChatApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -272,6 +276,8 @@
 			children = (
 				1EBEF39525212E2700F6E541 /* ConversationViewController.swift */,
 				1EBEF39D252270A200F6E541 /* MessageSectionHeader.swift */,
+				1EFEF870255B284C0069F6BA /* ConversationFRCDelegate.swift */,
+				1EFEF872255B2EE80069F6BA /* ConversationTableViewDataSourceDelegate.swift */,
 				1EBEF39925212FA000F6E541 /* MessageCell.swift */,
 				1ECC481E253DEAD200789DDA /* InputBarView.swift */,
 				1E4686B22540C05900EFF407 /* KeyboardInfo.swift */,
@@ -572,6 +578,7 @@
 				1E5FFB1B2527374000F8187A /* ThemesViewController.swift in Sources */,
 				1E48E60F2534CA9000455C27 /* GCDDataManager.swift in Sources */,
 				1EA982172559E193004B6FD6 /* ThemesManagerProtocol.swift in Sources */,
+				1EFEF871255B284C0069F6BA /* ConversationFRCDelegate.swift in Sources */,
 				1E48E6112534CAA400455C27 /* OperationDataManager.swift in Sources */,
 				1E6B8FC2250E319800A5632E /* Logger.swift in Sources */,
 				1E4686B52540D72900EFF407 /* FirestoreDataProvider.swift in Sources */,
@@ -579,6 +586,7 @@
 				1EA9821B255B14D7004B6FD6 /* MessageAPIManager.swift in Sources */,
 				1E319EE52559C5430019078B /* CoreAssembly.swift in Sources */,
 				1E30F11D250B944100DDF8DC /* AppDelegate.swift in Sources */,
+				1EFEF873255B2EE80069F6BA /* ConversationTableViewDataSourceDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

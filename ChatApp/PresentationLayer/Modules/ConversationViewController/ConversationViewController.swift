@@ -10,31 +10,33 @@ import UIKit
 import CoreData
 
 class ConversationViewController: UIViewController {
-    
-    private let cellIdentifierUpcoming = String(describing: MessageCell.self) + "Upcoming"
-    private let cellIdentifierIncoming = String(describing: MessageCell.self) + "Incoming"
-    private let sectionHeaderIdentifier = String(describing: MessageSectionHeader.self)
-    
+
     private lazy var tableView: UITableView = {
+        tableViewDataSourceDelegate.themesManager = themesManager
+        tableViewDataSourceDelegate.fetchedResultsController = fetchedResultsController
+
         let tableView = UITableView(frame: view.frame, style: .plain)
         
-        tableView.register(UINib(nibName: String(describing: MessageCell.self), bundle: nil),
-                           forCellReuseIdentifier: cellIdentifierUpcoming)
-        tableView.register(UINib(nibName: String(describing: MessageCell.self), bundle: nil),
-                           forCellReuseIdentifier: cellIdentifierIncoming)
-        tableView.register(UINib(nibName: String(describing: MessageSectionHeader.self), bundle: nil),
-                           forHeaderFooterViewReuseIdentifier: sectionHeaderIdentifier)
-        tableView.dataSource = self
-        tableView.delegate = self
+        tableView.register(tableViewDataSourceDelegate.cellIdentifierUpcomingUINib,
+                           forCellReuseIdentifier: tableViewDataSourceDelegate.cellIdentifierUpcoming)
+        tableView.register(tableViewDataSourceDelegate.cellIdentifierIncomingUINib,
+                           forCellReuseIdentifier: tableViewDataSourceDelegate.cellIdentifierIncoming)
+        tableView.register(tableViewDataSourceDelegate.sectionHeaderIdentifierUINib,
+                           forHeaderFooterViewReuseIdentifier: tableViewDataSourceDelegate.sectionHeaderIdentifier)
+        
+        tableView.dataSource = tableViewDataSourceDelegate
+        tableView.delegate = tableViewDataSourceDelegate
         tableView.separatorStyle = .none
         tableView.keyboardDismissMode = .interactive
+        
+        frcDelegate.tableView = tableView
         
         return tableView
     }()
     
     private lazy var fetchedResultsController: NSFetchedResultsController<MessageDB> = {
         let frc = messageRepository.createFetchedResultsController(channel: channel)
-        frc.delegate = self
+        frc.delegate = frcDelegate
         return frc
     }()
     
@@ -46,14 +48,20 @@ class ConversationViewController: UIViewController {
     private let messageRepository: MessageRepository
     private let themesManager: ThemesManagerProtocol
     private let messageAPIManager: MessageAPIManager
+    private let frcDelegate: ConversationFRCDelegate
+    private let tableViewDataSourceDelegate: ConversationTableViewDataSourceDelegate
     
     init(messageRepository: MessageRepository,
          themesManager: ThemesManagerProtocol,
-         messageAPIManager: MessageAPIManager
+         messageAPIManager: MessageAPIManager,
+         frcDelegate: ConversationFRCDelegate,
+         tableViewDataSourceDelegate: ConversationTableViewDataSourceDelegate
     ) {
         self.messageRepository = messageRepository
         self.themesManager = themesManager
         self.messageAPIManager = messageAPIManager
+        self.frcDelegate = frcDelegate
+        self.tableViewDataSourceDelegate = tableViewDataSourceDelegate
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -127,74 +135,6 @@ class ConversationViewController: UIViewController {
         super.viewWillDisappear(animated)
         
         unregisterKeyboardNotifications()
-    }
-}
-
-extension ConversationViewController: UITableViewDataSource {
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        guard let sections = fetchedResultsController.sections else { return 0 }
-        return sections.count
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let sections = fetchedResultsController.sections else { return 0 }
-        return sections[section].numberOfObjects
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let messageDB = fetchedResultsController.object(at: indexPath)
-        let message = Message(messageDB: messageDB)
-        
-        let cellIdentifier = message.isUpcomingMessage ? cellIdentifierUpcoming : cellIdentifierIncoming
-        
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
-            as? MessageCell
-            else { return UITableViewCell()}
-        
-        cell.configure(with: .init(text: message.content, sender: message.senderName, date: message.created))
-        
-        cell.bubleView.backgroundColor = message.isUpcomingMessage
-            ? themesManager.getTheme().messageUpcomingBubbleViewColor
-            : themesManager.getTheme().messageIncomingBubbleViewColor
-        
-        cell.messageLabel.textColor = message.isUpcomingMessage
-            ? themesManager.getTheme().messageUpcomingTextColor
-            : themesManager.getTheme().messageIncomingTextColor
-        
-        cell.dateLabel.textColor = message.isUpcomingMessage
-            ? themesManager.getTheme().messageDateLabelUpcomingColor
-            : themesManager.getTheme().messageDateLabelIncomingColor
-        
-        cell.senderNameLabel.textColor = themesManager.getTheme().messageSenderNameLabelColor
-        
-        if message.isUpcomingMessage {
-            cell.leadingConstraint?.isActive = false
-            
-            cell.senderNameLabel.isHidden = true
-            cell.constraintToSenderNameLabel?.isActive = false
-            cell.constraintToViewTop?.constant = 8
-        } else {
-            cell.trailingConstraint?.isActive = false
-            
-            cell.senderNameLabel.isHidden = false
-            cell.constraintToSenderNameLabel?.isActive = true
-            cell.constraintToViewTop?.isActive = false
-        }
-        
-        return cell
-    }
-}
-
-extension ConversationViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: sectionHeaderIdentifier)
-            as? MessageSectionHeader
-            else { return nil }
-        guard let sections = fetchedResultsController.sections else { return nil }
-        
-        headerView.configure(with: .init(title: sections[section].indexTitle ?? ""), theme: themesManager.getTheme())
-        return headerView
     }
 }
 
@@ -295,73 +235,5 @@ extension ConversationViewController {
      */
     @objc func dismissKeyboard() {
         customInput?.textInputView.resignFirstResponder()
-    }
-}
-
-extension ConversationViewController: NSFetchedResultsControllerDelegate {
-    func controller(
-        _ controller: NSFetchedResultsController<NSFetchRequestResult>,
-        sectionIndexTitleForSectionName sectionName: String
-    ) -> String? {
-        return sectionName
-    }
-    
-    func controller(
-        _ controller: NSFetchedResultsController<NSFetchRequestResult>,
-        didChange sectionInfo: NSFetchedResultsSectionInfo,
-        atSectionIndex sectionIndex: Int,
-        for type: NSFetchedResultsChangeType
-    ) {
-        switch type {
-        case .insert:
-            tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
-        case .delete:
-            tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
-        case .move:
-            break
-        case .update:
-            break
-        @unknown default:
-            fatalError("undefined type")
-        }
-    }
-    
-    func controller(
-        _ controller: NSFetchedResultsController<NSFetchRequestResult>,
-        didChange anObject: Any, at indexPath: IndexPath?,
-        for type: NSFetchedResultsChangeType,
-        newIndexPath: IndexPath?
-    ) {
-        switch type {
-        case .insert:
-            if let newIndexPath = newIndexPath {
-                tableView.insertRows(at: [newIndexPath], with: .none)
-            }
-        case .update:
-            if let indexPath = indexPath {
-                tableView.reloadRows(at: [indexPath], with: .none)
-            }
-        case .move:
-            if let indexPath = indexPath {
-                tableView.deleteRows(at: [indexPath], with: .none)
-            }
-            if let newIndexPath = newIndexPath {
-                tableView.insertRows(at: [newIndexPath], with: .none)
-            }
-        case .delete:
-            if let indexPath = indexPath {
-                tableView.deleteRows(at: [indexPath], with: .none)
-            }
-        @unknown default:
-            fatalError("undefined type")
-        }
-    }
-    
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.beginUpdates()
-    }
-    
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.endUpdates()
     }
 }

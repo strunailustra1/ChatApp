@@ -38,7 +38,9 @@ class PresentationAssembly: PresentationAssemblyProtocol {
         return ConversationViewController(
             messageRepository: serviceAssembly.messageRepository,
             themesManager: serviceAssembly.themesManager,
-            messageAPIManager: serviceAssembly.messageAPIManager
+            messageAPIManager: serviceAssembly.messageAPIManager,
+            frcDelegate: ConversationFRCDelegate(),
+            tableViewDataSourceDelegate: ConversationTableViewDataSourceDelegate()
         )
     }
     

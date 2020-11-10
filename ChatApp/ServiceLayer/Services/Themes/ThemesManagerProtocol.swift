@@ -11,4 +11,5 @@ import Foundation
 protocol ThemesManagerProtocol {
     func getTheme() -> Theme
     func applyTheme(_ theme: Theme)
+    func applyCurrentTheme()
 }

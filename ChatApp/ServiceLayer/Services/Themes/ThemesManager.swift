@@ -343,6 +343,10 @@ class ThemesManager: ThemesPickerDelegate, ThemesPickerHandler, ThemesManagerPro
         UIApplication.shared.delegate?.window??.rootViewController?.setNeedsStatusBarAppearanceUpdate()
     }
     
+    func applyCurrentTheme() {
+        applyTheme(currentTheme)
+    }
+    
     private func updateTheme(_ theme: Theme) {
         currentTheme = theme
         
