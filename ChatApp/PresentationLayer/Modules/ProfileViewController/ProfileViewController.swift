@@ -124,11 +124,11 @@ class ProfileViewController: UIViewController {
     }
     
     @IBAction func gcdAction() {
-        saveProfile(dataManager: GCDDataManager.shared)
+        saveProfile(by: .gcd)
     }
     
     @IBAction func operationAction() {
-        saveProfile(dataManager: OperationDataManager.shared)
+        saveProfile(by: .operation)
     }
 
     @objc func closeProfile() {
@@ -250,14 +250,15 @@ extension ProfileViewController {
 }
 
 extension ProfileViewController {
-    private func saveProfile(dataManager: ProfileDataManagerProtocol) {
+    private func saveProfile(by saveMethod: ProfileSaveMethod) {
         guard let savedProfile = newProfile else { return }
         
         gcdButton.isEnabled = false
         operationButton.isEnabled = false
         activityIndicator.startAnimating()
         
-        dataManager.save(
+        profileRepository?.saveToStorage(
+            by: saveMethod,
             profile: savedProfile,
             changedFields: ProfileChangedFields(
                 fullnameChanged: oldProfile?.fullname != newProfile?.fullname,
@@ -272,14 +273,13 @@ extension ProfileViewController {
                 if let newProfile = self?.newProfile {
                     self?.oldProfile = newProfile
                     self?.photoHasBeenChanged = false
-                    self?.profileRepository?.profile = newProfile
                 }
             },
             errorCompletion: { [weak self] in
                 self?.activityIndicator.stopAnimating()
                 self?.fullNameText.resignFirstResponder()
                 self?.descriptionTextView.resignFirstResponder()
-                self?.errorSaveAlert(dataManager: dataManager)
+                self?.errorSaveAlert(by: saveMethod)
                 self?.updateSaveButtonAvailability()
             }
         )
@@ -292,11 +292,11 @@ extension ProfileViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    private func errorSaveAlert(dataManager: ProfileDataManagerProtocol) {
+    private func errorSaveAlert(by saveMethod: ProfileSaveMethod) {
         let alert = UIAlertController(title: "Error", message: "Failed to save data", preferredStyle: .alert)
         let OkAction = UIAlertAction(title: "OK", style: .default)
         let repeatAction = UIAlertAction(title: "Repeat", style: .default, handler: { [unowned self] _ in
-            self.saveProfile(dataManager: dataManager)
+            self.saveProfile(by: saveMethod)
         })
         alert.addAction(OkAction)
         alert.addAction(repeatAction)

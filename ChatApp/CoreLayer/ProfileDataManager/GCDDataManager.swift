@@ -11,8 +11,6 @@ import UIKit
 
 class GCDDataManager: ProfileDataManagerProtocol {
     
-    static let shared = GCDDataManager()
-    
     private let queue: DispatchQueue
     
     init() {

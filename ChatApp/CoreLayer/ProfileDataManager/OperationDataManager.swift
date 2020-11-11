@@ -11,8 +11,6 @@ import UIKit
 
 class OperationDataManager: ProfileDataManagerProtocol {
     
-    static let shared = OperationDataManager()
-    
     private let queue: OperationQueue
     
     init() {

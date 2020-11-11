@@ -8,6 +8,11 @@
 
 import Foundation
 
+enum ProfileSaveMethod {
+    case gcd
+    case operation
+}
+
 class ProfileRepository {
     private static var shared = Profile(
         fullname: "Marina Dudarenko",
@@ -49,5 +54,32 @@ class ProfileRepository {
             defaultProfile: self.profile,
             succesfullCompletion: fetchDataCompletion
         )
+    }
+    
+    func saveToStorage(
+        by saveMethod: ProfileSaveMethod,
+        profile: Profile,
+        changedFields: ProfileChangedFields,
+        succesfullCompletion: @escaping() -> Void,
+        errorCompletion: @escaping() -> Void
+    ) {
+        dataManager(by: saveMethod).save(
+            profile: profile,
+            changedFields: changedFields,
+            succesfullCompletion: { [weak self] in
+                self?.profile = profile
+                succesfullCompletion()
+            },
+            errorCompletion: errorCompletion
+        )
+    }
+    
+    private func dataManager(by saveMethod: ProfileSaveMethod) -> ProfileDataManagerProtocol {
+        switch saveMethod {
+        case .gcd:
+            return gcdDataManager
+        case .operation:
+            return operationDataManager
+        }
     }
 }
