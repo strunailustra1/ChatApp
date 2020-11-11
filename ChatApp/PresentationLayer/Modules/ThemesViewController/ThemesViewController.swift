@@ -61,23 +61,12 @@ class ThemesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         setupNavigationController()
         customizeButtons()
         customizeColorLabels()
         customizeThemesNames()
-        
-        switch themesManager?.getTheme() {
-        case .classic:
-            classicThemeButton.isSelected = true
-        case .day:
-            dayThemeButton.isSelected = true
-        case .night:
-            nightThemeButton.isSelected = true
-        case .none:
-            break
-        }
-
-        view.backgroundColor = themesManager?.getTheme().themesVCBackgroundColor
+        setupCurrentTheme()
     }
     
     @IBAction func chooseClassicTheme(_ sender: UIButton) {
@@ -93,16 +82,33 @@ class ThemesViewController: UIViewController {
     }
     
     private func chooseTheme(_ sender: UIButton, theme: Theme) {
-        sender.isSelected = true
-        for anotherButton in themesButtons where sender !== anotherButton {
-                anotherButton.isSelected = false
-            }
-        
         delegate?.setTheme(theme)
         if let handler = themeChangeHandler {
             handler(theme)
         }
-        view.backgroundColor = themesManager?.getTheme().themesVCBackgroundColor
+        
+        setupCurrentTheme()
+    }
+    
+    private func setupCurrentTheme() {
+        themesButtons.forEach { (button) in
+            button.isSelected = false
+        }
+        
+        let theme = themesManager?.getTheme()
+        
+        switch theme {
+        case .classic:
+            classicThemeButton.isSelected = true
+        case .day:
+            dayThemeButton.isSelected = true
+        case .night:
+            nightThemeButton.isSelected = true
+        case .none:
+            break
+        }
+        
+        view.backgroundColor = theme?.themesVCBackgroundColor
     }
     
     private func customizeButtons() {
