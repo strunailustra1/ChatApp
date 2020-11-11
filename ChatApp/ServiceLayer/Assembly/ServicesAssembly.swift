@@ -15,8 +15,9 @@ protocol ServicesAssemblyProtocol {
     var channelRepository: ChannelRepository { get }
     var channelAPIManager: ChannelAPIManager { get }
     var messageAPIManager: MessageAPIManager { get }
+    var imageComparator: ImageCompare { get }
+    var profileRepository: ProfileRepository { get }
     //todo profileDataManager
-    //todo firebase
 }
 
 class ServicesAssembly: ServicesAssemblyProtocol {
@@ -46,5 +47,12 @@ class ServicesAssembly: ServicesAssemblyProtocol {
     lazy var messageAPIManager: MessageAPIManager = MessageAPIManager(
         messageRepository: messageRepository,
         firestoreDataProvider: coreAssembly.firestoreDataProvider
+    )
+    
+    lazy var imageComparator: ImageCompare = ImageComparator()
+    
+    lazy var profileRepository: ProfileRepository = ProfileRepository(
+        gcdDataManager: coreAssembly.gcdDataManager,
+        operationDataManager: coreAssembly.operationDataManager
     )
 }

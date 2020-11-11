@@ -10,14 +10,22 @@ import UIKit
 
 class ProfileViewController: UIViewController {
     
-    static func storyboardInstance(themesManager: ThemesManagerProtocol) -> ProfileViewController? {
+    static func storyboardInstance(
+        themesManager: ThemesManagerProtocol,
+        imageComparator: ImageCompare,
+        profileRepository: ProfileRepository
+    ) -> ProfileViewController? {
         let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
         let profileVC = storyboard.instantiateInitialViewController() as? ProfileViewController
         profileVC?.themesManager = themesManager
+        profileVC?.imageComparator = imageComparator
+        profileVC?.profileRepository = profileRepository
         return profileVC
     }
 
     var themesManager: ThemesManagerProtocol?
+    var imageComparator: ImageCompare?
+    var profileRepository: ProfileRepository?
     var closeHandler: (() -> Void)?
     
     @IBOutlet weak var gcdButton: UIButton!
@@ -30,13 +38,13 @@ class ProfileViewController: UIViewController {
     
     private let notificationCenter = NotificationCenter.default
     
-    private var oldProfile = ProfileStorage.shared {
+    private var oldProfile: Profile? {
         didSet {
             self.updateSaveButtonAvailability()
         }
     }
     
-    private var newProfile = ProfileStorage.shared {
+    private var newProfile: Profile? {
         didSet {
             self.updateSaveButtonAvailability()
         }
@@ -54,10 +62,13 @@ class ProfileViewController: UIViewController {
         activityIndicator.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
         activityIndicator.center = view.center
         return activityIndicator
-        }()
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        oldProfile = profileRepository?.profile
+        newProfile = profileRepository?.profile
         
         setupSaveButton()
         setupEditButton()
@@ -171,13 +182,13 @@ extension ProfileViewController {
     }
     
     private func setupLogoLabel() {
-        logoLabel.text = newProfile.initials
+        logoLabel.text = newProfile?.initials
         logoLabel.font = UIFont(name: "Roboto-Regular", size: 120)
         logoLabel.textColor = UIColor(red: 0.212, green: 0.216, blue: 0.22, alpha: 1)
     }
     
     private func setupTextInputs() {
-        fullNameText.text = newProfile.fullname
+        fullNameText.text = newProfile?.fullname
         fullNameText.placeholder = "Username"
         fullNameText.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         fullNameText.textAlignment = .center
@@ -189,14 +200,14 @@ extension ProfileViewController {
         let descriptionParagraphStyle = NSMutableParagraphStyle()
         descriptionParagraphStyle.lineHeightMultiple = 1.15
         descriptionTextView.attributedText = NSMutableAttributedString(
-            string: newProfile.description,
+            string: newProfile?.description ?? "",
             attributes: [
                 NSAttributedString.Key.kern: -0.33,
                 NSAttributedString.Key.paragraphStyle: descriptionParagraphStyle
             ]
         )
         descriptionTextView.attributedText = NSMutableAttributedString(
-            string: newProfile.description,
+            string: newProfile?.description ?? "",
             attributes: [
                 NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: .regular)
             ]
@@ -214,7 +225,7 @@ extension ProfileViewController {
         photoView.layer.cornerRadius = photoView.frame.width / 2
         photoView.clipsToBounds = true
         
-        if let image = newProfile.profileImage {
+        if let image = newProfile?.profileImage {
             photoView.image = image
             photoView.contentMode = photoView.frame.width > photoView.frame.height ? .scaleAspectFit : .scaleAspectFill
             logoLabel.isHidden = true
@@ -240,15 +251,17 @@ extension ProfileViewController {
 
 extension ProfileViewController {
     private func saveProfile(dataManager: ProfileDataManagerProtocol) {
+        guard let savedProfile = newProfile else { return }
+        
         gcdButton.isEnabled = false
         operationButton.isEnabled = false
         activityIndicator.startAnimating()
         
         dataManager.save(
-            profile: newProfile,
+            profile: savedProfile,
             changedFields: ProfileChangedFields(
-                fullnameChanged: oldProfile.fullname != newProfile.fullname,
-                descriptionChanged: oldProfile.description != newProfile.description,
+                fullnameChanged: oldProfile?.fullname != newProfile?.fullname,
+                descriptionChanged: oldProfile?.description != newProfile?.description,
                 profileImageChanged: photoHasBeenChanged
             ),
             succesfullCompletion: { [weak self] in
@@ -259,7 +272,7 @@ extension ProfileViewController {
                 if let newProfile = self?.newProfile {
                     self?.oldProfile = newProfile
                     self?.photoHasBeenChanged = false
-                    ProfileStorage.shared = newProfile
+                    self?.profileRepository?.profile = newProfile
                 }
             },
             errorCompletion: { [weak self] in
@@ -292,8 +305,8 @@ extension ProfileViewController {
     
     private func updateSaveButtonAvailability() {
         let isEnabled = photoHasBeenChanged
-            || oldProfile.fullname != newProfile.fullname
-            || oldProfile.description != newProfile.description
+            || oldProfile?.fullname != newProfile?.fullname
+            || oldProfile?.description != newProfile?.description
         
         gcdButton.isEnabled = isEnabled
         operationButton.isEnabled = isEnabled
@@ -327,14 +340,14 @@ extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerCo
         
         guard let image = info[.editedImage] as? UIImage else { return }
         
-        let profile = Profile(fullname: self.newProfile.fullname,
-                              description: self.newProfile.description,
+        let profile = Profile(fullname: self.newProfile?.fullname ?? "",
+                              description: self.newProfile?.description ?? "",
                               profileImage: image)
         self.newProfile = profile
         
-        ProfileComparator.isEqualImages(
-            oldProfile: oldProfile,
-            newProfile: newProfile,
+        imageComparator?.isEqualImages(
+            leftImage: oldProfile?.profileImage,
+            rightImage: newProfile?.profileImage,
             completion: { [weak self] isEqualImages in
                 self?.photoHasBeenChanged = !isEqualImages
             }
@@ -386,9 +399,9 @@ extension ProfileViewController: UITextFieldDelegate, UITextViewDelegate {
     }
     
     private func updateNewProfile(fullname: String?, description: String?) {
-        let profile = Profile(fullname: fullname ?? self.newProfile.fullname,
-                              description: description ?? self.newProfile.description,
-                              profileImage: self.newProfile.profileImage)
+        let profile = Profile(fullname: fullname ?? self.newProfile?.fullname ?? "",
+                              description: description ?? self.newProfile?.description ?? "",
+                              profileImage: self.newProfile?.profileImage)
         self.newProfile = profile
     }
 }

@@ -18,8 +18,8 @@ class MessageAPIManager {
         self.firestoreDataProvider = firestoreDataProvider
     }
     
-    func createMessage(channel: Channel, messageText: String) {
-        let message = Message(content: messageText)
+    func createMessage(channel: Channel, profile: Profile, messageText: String) {
+        let message = Message(content: messageText, profile: profile)
         firestoreDataProvider.createMessage(in: channel, message: message)
     }
     

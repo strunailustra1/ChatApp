@@ -31,9 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
         rootAssembly.logger.appDelegateLog(stateFrom: "Inactive", stateTo: "Inactive", functionName: #function)
-        
-        rootAssembly.themesManager.applyCurrentTheme()
-        ProfileStorage.fetchProfileOnStartApp(window) //todo перенести куда-нибудь
+
         FirebaseApp.configure()
         
         self.window = UIWindow(frame: UIScreen.main.bounds)

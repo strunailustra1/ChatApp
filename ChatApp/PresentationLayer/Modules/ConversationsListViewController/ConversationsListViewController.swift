@@ -48,6 +48,7 @@ class ConversationsListViewController: UIViewController {
     private let channelAPIManager: ChannelAPIManager
     private let frcDelegate: ConversationsListFRCDelegate
     private let tableViewDataSourceDelegate: ConversationsListDataSourceDelegate
+    private let profileRepository: ProfileRepository
     
     init(
         channelRepository: ChannelRepository,
@@ -55,7 +56,8 @@ class ConversationsListViewController: UIViewController {
         themesManager: ThemesManagerProtocol,
         channelAPIManager: ChannelAPIManager,
         frcDelegate: ConversationsListFRCDelegate,
-        tableViewDataSourceDelegate: ConversationsListDataSourceDelegate
+        tableViewDataSourceDelegate: ConversationsListDataSourceDelegate,
+        profileRepository: ProfileRepository
     ) {
         self.channelRepository = channelRepository
         self.presentationAssembly = presentationAssembly
@@ -63,6 +65,7 @@ class ConversationsListViewController: UIViewController {
         self.channelAPIManager = channelAPIManager
         self.frcDelegate = frcDelegate
         self.tableViewDataSourceDelegate = tableViewDataSourceDelegate
+        self.profileRepository = profileRepository
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -152,7 +155,7 @@ extension ConversationsListViewController {
     }
     
     func updateNavigationRightButtonImage() {
-        if let image = ProfileStorage.shared.profileImage {
+        if let image = profileRepository.profile.profileImage {
             let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
             imageView.image = image
             imageView.layer.cornerRadius = imageView.frame.width / 2
@@ -170,7 +173,7 @@ extension ConversationsListViewController {
             button.addTarget(self, action: #selector(editProfile), for: .touchUpInside)
             button.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
             button.clipsToBounds = true
-            button.setTitle(ProfileStorage.shared.initials, for: .normal)
+            button.setTitle(profileRepository.profile.initials, for: .normal)
             button.layer.cornerRadius = button.frame.width / 2
             button.backgroundColor = UIColor(red: 0.894, green: 0.908, blue: 0.17, alpha: 1)
             button.setTitleColor(UIColor(red: 0.212, green: 0.216, blue: 0.22, alpha: 1), for: .normal)

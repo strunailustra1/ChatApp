@@ -59,6 +59,9 @@
 		1ECC481D253DB60900789DDA /* InputBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1ECC481C253DB60900789DDA /* InputBarView.xib */; };
 		1ECC481F253DEAD200789DDA /* InputBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ECC481E253DEAD200789DDA /* InputBarView.swift */; };
 		1ECC4821253EF51900789DDA /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ECC4820253EF51900789DDA /* Channel.swift */; };
+		1EDF80F0255C55CB007C2E51 /* ImageComparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EDF80EF255C55CB007C2E51 /* ImageComparator.swift */; };
+		1EDF80F2255C62D4007C2E51 /* ProfileRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EDF80F1255C62D4007C2E51 /* ProfileRepository.swift */; };
+		1EDF80F4255C6336007C2E51 /* ProfilePath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EDF80F3255C6336007C2E51 /* ProfilePath.swift */; };
 		1EFEF871255B284C0069F6BA /* ConversationFRCDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EFEF870255B284C0069F6BA /* ConversationFRCDelegate.swift */; };
 		1EFEF873255B2EE80069F6BA /* ConversationTableViewDataSourceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EFEF872255B2EE80069F6BA /* ConversationTableViewDataSourceDelegate.swift */; };
 		1EFEF875255B36B10069F6BA /* ConversationsListFRCDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EFEF874255B36B10069F6BA /* ConversationsListFRCDelegate.swift */; };
@@ -121,6 +124,9 @@
 		1ECC481C253DB60900789DDA /* InputBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InputBarView.xib; sourceTree = "<group>"; };
 		1ECC481E253DEAD200789DDA /* InputBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputBarView.swift; sourceTree = "<group>"; };
 		1ECC4820253EF51900789DDA /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
+		1EDF80EF255C55CB007C2E51 /* ImageComparator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageComparator.swift; sourceTree = "<group>"; };
+		1EDF80F1255C62D4007C2E51 /* ProfileRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileRepository.swift; sourceTree = "<group>"; };
+		1EDF80F3255C6336007C2E51 /* ProfilePath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePath.swift; sourceTree = "<group>"; };
 		1EFEF870255B284C0069F6BA /* ConversationFRCDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationFRCDelegate.swift; sourceTree = "<group>"; };
 		1EFEF872255B2EE80069F6BA /* ConversationTableViewDataSourceDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationTableViewDataSourceDelegate.swift; sourceTree = "<group>"; };
 		1EFEF874255B36B10069F6BA /* ConversationsListFRCDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsListFRCDelegate.swift; sourceTree = "<group>"; };
@@ -178,6 +184,7 @@
 			isa = PBXGroup;
 			children = (
 				1E48E60E2534CA9000455C27 /* GCDDataManager.swift */,
+				1EDF80F3255C6336007C2E51 /* ProfilePath.swift */,
 				1E48E6102534CAA400455C27 /* OperationDataManager.swift */,
 				1E772F8B2537973C001A5F8A /* ProfileDataManagerProtocol.swift */,
 			);
@@ -328,8 +335,10 @@
 				1EA982132559E00E004B6FD6 /* Themes */,
 				1E6B8FC1250E319800A5632E /* Logger.swift */,
 				1EA98218255B14CA004B6FD6 /* ChannelAPIManager.swift */,
+				1EDF80EF255C55CB007C2E51 /* ImageComparator.swift */,
 				1EA9821A255B14D7004B6FD6 /* MessageAPIManager.swift */,
 				1E46BC2A2553257800DED981 /* MessageRepository.swift */,
+				1EDF80F1255C62D4007C2E51 /* ProfileRepository.swift */,
 				1E46BC282553256A00DED981 /* ChannelRepository.swift */,
 			);
 			path = Services;
@@ -552,12 +561,15 @@
 				1E16408D252B340700B37DD6 /* ThemesPickerDelegate.swift in Sources */,
 				1E676A51251DF38E00E98C42 /* ConversationCell.swift in Sources */,
 				1E319EE92559C58E0019078B /* PresentationAssembly.swift in Sources */,
+				1EDF80F2255C62D4007C2E51 /* ProfileRepository.swift in Sources */,
 				1E1ECB7D2546E69700A13FF7 /* MessageDB.swift in Sources */,
+				1EDF80F0255C55CB007C2E51 /* ImageComparator.swift in Sources */,
 				1E4686B92540EE4400EFF407 /* ProfileEditImageAlertController.swift in Sources */,
 				1E1ECB6C2546DCA800A13FF7 /* CoreDataStack.swift in Sources */,
 				1E4686B32540C05A00EFF407 /* KeyboardInfo.swift in Sources */,
 				1E1ECB7F2546E6A100A13FF7 /* ChannelDB.swift in Sources */,
 				1E772F8E25379D38001A5F8A /* UIAlertController+Extensions.swift in Sources */,
+				1EDF80F4255C6336007C2E51 /* ProfilePath.swift in Sources */,
 				1ECC4821253EF51900789DDA /* Channel.swift in Sources */,
 				1EB5D48F25488CA800D31945 /* Array+Extensions.swift in Sources */,
 				1E4686B72540EB4900EFF407 /* ProfileImagePickerController.swift in Sources */,

@@ -47,18 +47,21 @@ class ConversationViewController: UIViewController {
     
     private let messageRepository: MessageRepository
     private let themesManager: ThemesManagerProtocol
+    private let profileRepository: ProfileRepository
     private let messageAPIManager: MessageAPIManager
     private let frcDelegate: ConversationFRCDelegate
     private let tableViewDataSourceDelegate: ConversationTableViewDataSourceDelegate
     
     init(messageRepository: MessageRepository,
          themesManager: ThemesManagerProtocol,
+         profileRepository: ProfileRepository,
          messageAPIManager: MessageAPIManager,
          frcDelegate: ConversationFRCDelegate,
          tableViewDataSourceDelegate: ConversationTableViewDataSourceDelegate
     ) {
         self.messageRepository = messageRepository
         self.themesManager = themesManager
+        self.profileRepository = profileRepository
         self.messageAPIManager = messageAPIManager
         self.frcDelegate = frcDelegate
         self.tableViewDataSourceDelegate = tableViewDataSourceDelegate
@@ -76,8 +79,12 @@ class ConversationViewController: UIViewController {
                                                    options: nil)?.first as? InputBarView
             customInput?.configure(with: .init(), theme: themesManager.getTheme())
             customInput?.sendMessageHandler = { [weak self] messageText in
-                if let channel = self?.channel {
-                    self?.messageAPIManager.createMessage(channel: channel, messageText: messageText)
+                if let channel = self?.channel, let profile = self?.profileRepository.profile {
+                    self?.messageAPIManager.createMessage(
+                        channel: channel,
+                        profile: profile,
+                        messageText: messageText
+                    )
                 }
             }
         }

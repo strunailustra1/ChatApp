@@ -32,11 +32,11 @@ struct Message {
         return dateFormatter
     }()
     
-    init(content: String) {
+    init(content: String, profile: Profile) {
         self.content = content
         created = Date()
         senderId = UIDevice.current.identifierForVendor?.uuidString ?? ""
-        senderName = ProfileStorage.shared.fullname
+        senderName = profile.fullname
         identifier = UUID().uuidString
     }
     

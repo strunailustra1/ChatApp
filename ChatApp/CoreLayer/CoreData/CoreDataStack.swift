@@ -9,7 +9,6 @@
 import Foundation
 import CoreData
 
-//todo логгер в зависимостях
 //todo протокол для класса
 class CoreDataStack {
     
@@ -126,7 +125,7 @@ class CoreDataStack {
         if let parent = context.parent { performSave(in: parent) }
     }
     
-    func enableObservers() {
+    private func enableObservers() {
         let notification = NotificationCenter.default
         notification.addObserver(self,
                                  selector: #selector(managedObjectContextObjectsDidChange(notification:)),
@@ -134,7 +133,7 @@ class CoreDataStack {
                                  object: mainContext)
     }
     
-    @objc func managedObjectContextObjectsDidChange(notification: NSNotification) {
+    @objc private func managedObjectContextObjectsDidChange(notification: NSNotification) {
         guard let userInfo = notification.userInfo else { return }
         
         didUpdateDataBase?(self)
@@ -161,7 +160,7 @@ class CoreDataStack {
         }
     }
     
-    func printStatFromDatabase() {
+    private func printStatFromDatabase() {
         mainContext.perform {
             do {
                 let count = try self.mainContext.count(for: ChannelDB.fetchRequest())
