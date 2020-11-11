@@ -42,6 +42,7 @@
 		1E772F8C2537973C001A5F8A /* ProfileDataManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E772F8B2537973C001A5F8A /* ProfileDataManagerProtocol.swift */; };
 		1E772F8E25379D38001A5F8A /* UIAlertController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E772F8D25379D38001A5F8A /* UIAlertController+Extensions.swift */; };
 		1EA44026251534BD00BFC316 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1EA44025251534BD00BFC316 /* Roboto-Regular.ttf */; };
+		1EA7151F255C8C1A007AA9A0 /* CustomButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA7151E255C8C1A007AA9A0 /* CustomButtons.swift */; };
 		1EA982122559CCC9004B6FD6 /* RootAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA982112559CCC9004B6FD6 /* RootAssembly.swift */; };
 		1EA982152559E0BC004B6FD6 /* ThemesPickerHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA982142559E0BC004B6FD6 /* ThemesPickerHandler.swift */; };
 		1EA982172559E193004B6FD6 /* ThemesManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA982162559E193004B6FD6 /* ThemesManagerProtocol.swift */; };
@@ -62,6 +63,8 @@
 		1EDF80F0255C55CB007C2E51 /* ImageComparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EDF80EF255C55CB007C2E51 /* ImageComparator.swift */; };
 		1EDF80F2255C62D4007C2E51 /* ProfileRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EDF80F1255C62D4007C2E51 /* ProfileRepository.swift */; };
 		1EDF80F4255C6336007C2E51 /* ProfilePath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EDF80F3255C6336007C2E51 /* ProfilePath.swift */; };
+		1EDF80F6255C7F5D007C2E51 /* ProfileTextFieldDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EDF80F5255C7F5D007C2E51 /* ProfileTextFieldDelegate.swift */; };
+		1EDF80F8255C7F84007C2E51 /* ProfileTextViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EDF80F7255C7F84007C2E51 /* ProfileTextViewDelegate.swift */; };
 		1EFEF871255B284C0069F6BA /* ConversationFRCDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EFEF870255B284C0069F6BA /* ConversationFRCDelegate.swift */; };
 		1EFEF873255B2EE80069F6BA /* ConversationTableViewDataSourceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EFEF872255B2EE80069F6BA /* ConversationTableViewDataSourceDelegate.swift */; };
 		1EFEF875255B36B10069F6BA /* ConversationsListFRCDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EFEF874255B36B10069F6BA /* ConversationsListFRCDelegate.swift */; };
@@ -107,6 +110,7 @@
 		1E772F8B2537973C001A5F8A /* ProfileDataManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDataManagerProtocol.swift; sourceTree = "<group>"; };
 		1E772F8D25379D38001A5F8A /* UIAlertController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertController+Extensions.swift"; sourceTree = "<group>"; };
 		1EA44025251534BD00BFC316 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
+		1EA7151E255C8C1A007AA9A0 /* CustomButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButtons.swift; sourceTree = "<group>"; };
 		1EA982112559CCC9004B6FD6 /* RootAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootAssembly.swift; sourceTree = "<group>"; };
 		1EA982142559E0BC004B6FD6 /* ThemesPickerHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesPickerHandler.swift; sourceTree = "<group>"; };
 		1EA982162559E193004B6FD6 /* ThemesManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesManagerProtocol.swift; sourceTree = "<group>"; };
@@ -127,6 +131,8 @@
 		1EDF80EF255C55CB007C2E51 /* ImageComparator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageComparator.swift; sourceTree = "<group>"; };
 		1EDF80F1255C62D4007C2E51 /* ProfileRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileRepository.swift; sourceTree = "<group>"; };
 		1EDF80F3255C6336007C2E51 /* ProfilePath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePath.swift; sourceTree = "<group>"; };
+		1EDF80F5255C7F5D007C2E51 /* ProfileTextFieldDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTextFieldDelegate.swift; sourceTree = "<group>"; };
+		1EDF80F7255C7F84007C2E51 /* ProfileTextViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTextViewDelegate.swift; sourceTree = "<group>"; };
 		1EFEF870255B284C0069F6BA /* ConversationFRCDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationFRCDelegate.swift; sourceTree = "<group>"; };
 		1EFEF872255B2EE80069F6BA /* ConversationTableViewDataSourceDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationTableViewDataSourceDelegate.swift; sourceTree = "<group>"; };
 		1EFEF874255B36B10069F6BA /* ConversationsListFRCDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsListFRCDelegate.swift; sourceTree = "<group>"; };
@@ -307,6 +313,8 @@
 				1E30F120250B944100DDF8DC /* ProfileViewController.swift */,
 				1E4686B82540EE4400EFF407 /* ProfileEditImageAlertController.swift */,
 				1E4686B62540EB4900EFF407 /* ProfileImagePickerController.swift */,
+				1EDF80F7255C7F84007C2E51 /* ProfileTextViewDelegate.swift */,
+				1EDF80F5255C7F5D007C2E51 /* ProfileTextFieldDelegate.swift */,
 				1E30F122250B944100DDF8DC /* ProfileViewController.storyboard */,
 			);
 			path = ProfileViewController;
@@ -366,6 +374,7 @@
 				1E49C017253781A30025BB36 /* UITextField+Extensions.swift */,
 				1EB5D48E25488CA800D31945 /* Array+Extensions.swift */,
 				1E772F8D25379D38001A5F8A /* UIAlertController+Extensions.swift */,
+				1EA7151E255C8C1A007AA9A0 /* CustomButtons.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -562,6 +571,7 @@
 				1E676A51251DF38E00E98C42 /* ConversationCell.swift in Sources */,
 				1E319EE92559C58E0019078B /* PresentationAssembly.swift in Sources */,
 				1EDF80F2255C62D4007C2E51 /* ProfileRepository.swift in Sources */,
+				1EDF80F8255C7F84007C2E51 /* ProfileTextViewDelegate.swift in Sources */,
 				1E1ECB7D2546E69700A13FF7 /* MessageDB.swift in Sources */,
 				1EDF80F0255C55CB007C2E51 /* ImageComparator.swift in Sources */,
 				1E4686B92540EE4400EFF407 /* ProfileEditImageAlertController.swift in Sources */,
@@ -584,6 +594,7 @@
 				1E46BC2B2553257800DED981 /* MessageRepository.swift in Sources */,
 				1E46BC292553256A00DED981 /* ChannelRepository.swift in Sources */,
 				1E772F8C2537973C001A5F8A /* ProfileDataManagerProtocol.swift in Sources */,
+				1EDF80F6255C7F5D007C2E51 /* ProfileTextFieldDelegate.swift in Sources */,
 				1ECC481F253DEAD200789DDA /* InputBarView.swift in Sources */,
 				1E676A56251DF48200E98C42 /* ConversationsListViewController.swift in Sources */,
 				1EBEF39E252270A200F6E541 /* MessageSectionHeader.swift in Sources */,
@@ -592,6 +603,7 @@
 				1E319EE72559C5770019078B /* ServicesAssembly.swift in Sources */,
 				1EA982122559CCC9004B6FD6 /* RootAssembly.swift in Sources */,
 				1EBEF38E251E255900F6E541 /* ConfigurableView.swift in Sources */,
+				1EA7151F255C8C1A007AA9A0 /* CustomButtons.swift in Sources */,
 				1E4686B1254043A700EFF407 /* Message.swift in Sources */,
 				1E5FFB1B2527374000F8187A /* ThemesViewController.swift in Sources */,
 				1E48E60F2534CA9000455C27 /* GCDDataManager.swift in Sources */,

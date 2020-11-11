@@ -62,7 +62,9 @@ class PresentationAssembly: PresentationAssemblyProtocol {
         return ProfileViewController.storyboardInstance(
             themesManager: serviceAssembly.themesManager,
             imageComparator: serviceAssembly.imageComparator,
-            profileRepository: serviceAssembly.profileRepository
+            profileRepository: serviceAssembly.profileRepository,
+            profileTextFieldDelegate: ProfileTextFieldDelegate(),
+            profileTextViewDelegate: ProfileTextViewDelegate()
         )
     }
     

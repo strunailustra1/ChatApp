@@ -10,9 +10,13 @@ import Foundation
 import UIKit
 
 class ProfileImagePickerController: UIImagePickerController {
-    func configureAndPresent(
-        delegate: UIImagePickerControllerDelegate & UINavigationControllerDelegate & UIViewController,
-        sourceType: UIImagePickerController.SourceType) {
+
+    var didFinishPickingMediaCompletion: ((UIImage) -> Void)?
+    
+    func configure(
+        sourceType: UIImagePickerController.SourceType,
+        didFinishPickingMediaCompletion: ((UIImage) -> Void)? = nil
+    ) -> UIViewController {
         if !UIImagePickerController.isSourceTypeAvailable(sourceType) {
             let message = sourceType == .camera
                 ? "Camera is not available on this device"
@@ -20,9 +24,9 @@ class ProfileImagePickerController: UIImagePickerController {
             let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
             let okAction = UIAlertAction(title: "Ok", style: .default)
             alertController.addAction(okAction)
-            delegate.present(alertController, animated: true, completion: nil)
+            return alertController
         } else {
-            self.delegate = delegate
+            self.delegate = self
             self.sourceType = sourceType
             self.allowsEditing = true
             if self.sourceType == .camera {
@@ -32,7 +36,24 @@ class ProfileImagePickerController: UIImagePickerController {
             if self.sourceType == .photoLibrary {
                 self.modalPresentationStyle = .fullScreen
             }
-            delegate.present(self, animated: true, completion: nil)
+            self.didFinishPickingMediaCompletion = didFinishPickingMediaCompletion
+            return self
         }
+    }
+}
+
+extension ProfileImagePickerController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController,
+                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+        
+        picker.dismiss(animated: true, completion: nil)
+        
+        guard let image = info[.editedImage] as? UIImage else { return }
+        
+        didFinishPickingMediaCompletion?(image)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
     }
 }

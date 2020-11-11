@@ -13,19 +13,28 @@ class ProfileViewController: UIViewController {
     static func storyboardInstance(
         themesManager: ThemesManagerProtocol,
         imageComparator: ImageCompare,
-        profileRepository: ProfileRepository
+        profileRepository: ProfileRepository,
+        profileTextFieldDelegate: TextFieldDelegateWithCompletion,
+        profileTextViewDelegate: TextViewDelegateWithCompletion
     ) -> ProfileViewController? {
         let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
         let profileVC = storyboard.instantiateInitialViewController() as? ProfileViewController
+        
         profileVC?.themesManager = themesManager
         profileVC?.imageComparator = imageComparator
         profileVC?.profileRepository = profileRepository
+        profileVC?.profileTextFieldDelegate = profileTextFieldDelegate
+        profileVC?.profileTextViewDelegate = profileTextViewDelegate
+        
         return profileVC
     }
 
     var themesManager: ThemesManagerProtocol?
     var imageComparator: ImageCompare?
     var profileRepository: ProfileRepository?
+    var profileTextFieldDelegate: TextFieldDelegateWithCompletion?
+    var profileTextViewDelegate: TextViewDelegateWithCompletion?
+    
     var closeHandler: (() -> Void)?
     
     @IBOutlet weak var gcdButton: UIButton!
@@ -75,8 +84,16 @@ class ProfileViewController: UIViewController {
         setupLogoLabel()
         setupTextInputs()
         setupNavigationContoller()
-        fullNameText.delegate = self
-        descriptionTextView.delegate = self
+        
+        profileTextFieldDelegate?.endEditingCompletion = { [weak self] fullname in
+            self?.updateProfileTextFields(fullname: fullname, description: nil)
+        }
+        fullNameText.delegate = profileTextFieldDelegate
+        
+        profileTextViewDelegate?.endEditingCompletion = { [weak self] description in
+            self?.updateProfileTextFields(fullname: nil, description: description)
+        }
+        descriptionTextView.delegate = profileTextViewDelegate
         
         view.addSubview(activityIndicator)
         
@@ -318,50 +335,40 @@ extension ProfileViewController {
         let alert = ProfileEditImageAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         alert.configure(
             galleryHandler: { [unowned self] _ in
-                self.presentImagePickerController(from: .photoLibrary)
+                self.presentImagePickerControllerOrAlert(from: .photoLibrary)
             }, photoHandler: { [unowned self] _ in
-                self.presentImagePickerController(from: .camera)
+                self.presentImagePickerControllerOrAlert(from: .camera)
             }
         )
         present(alert, animated: true, completion: nil)
     }
     
-    private func presentImagePickerController(from sourceType: UIImagePickerController.SourceType) {
-        let pickerController = ProfileImagePickerController()
-        pickerController.configureAndPresent(delegate: self, sourceType: sourceType)
-    }
-}
-
-extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-    func imagePickerController(_ picker: UIImagePickerController,
-                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-        
-        picker.dismiss(animated: true, completion: nil)
-        
-        guard let image = info[.editedImage] as? UIImage else { return }
-        
-        let profile = Profile(fullname: self.newProfile?.fullname ?? "",
-                              description: self.newProfile?.description ?? "",
-                              profileImage: image)
-        self.newProfile = profile
-        
-        imageComparator?.isEqualImages(
-            leftImage: oldProfile?.profileImage,
-            rightImage: newProfile?.profileImage,
-            completion: { [weak self] isEqualImages in
-                self?.photoHasBeenChanged = !isEqualImages
+    private func presentImagePickerControllerOrAlert(from sourceType: UIImagePickerController.SourceType) {
+        let presentedVC = ProfileImagePickerController().configure(
+            sourceType: sourceType,
+            didFinishPickingMediaCompletion: { [weak self] image in
+                let profile = Profile(fullname: self?.newProfile?.fullname ?? "",
+                                      description: self?.newProfile?.description ?? "",
+                                      profileImage: image)
+                self?.newProfile = profile
+                
+                self?.imageComparator?.isEqualImages(
+                    leftImage: self?.oldProfile?.profileImage,
+                    rightImage: self?.newProfile?.profileImage,
+                    completion: { [weak self] isEqualImages in
+                        self?.photoHasBeenChanged = !isEqualImages
+                    }
+                )
+                
+                self?.setupPhotoView()
             }
         )
         
-        setupPhotoView()
-    }
-    
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        picker.dismiss(animated: true, completion: nil)
+        present(presentedVC, animated: true, completion: nil)
     }
 }
 
-extension ProfileViewController: UITextFieldDelegate, UITextViewDelegate {
+extension ProfileViewController {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if touches.first != nil {
             view.endEditing(true)
@@ -369,47 +376,10 @@ extension ProfileViewController: UITextFieldDelegate, UITextViewDelegate {
         super.touchesBegan(touches, with: event)
     }
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        updateNewProfile(fullname: textField.text, description: nil)
-    }
-    
-    func textField(_ textField: UITextField,
-                   shouldChangeCharactersIn range: NSRange,
-                   replacementString string: String) -> Bool {
-        if let textFieldString = textField.fullTextWith(range: range, replacementString: string) {
-            updateNewProfile(fullname: textFieldString, description: nil)
-        }
-        return true
-    }
-    
-    func textViewDidEndEditing(_ textView: UITextView) {
-        updateNewProfile(fullname: nil, description: textView.text)
-    }
-    
-    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        if let textFieldString = textView.fullTextWith(range: range, replacementString: text) {
-            updateNewProfile(fullname: nil, description: textFieldString)
-        }
-        return true
-    }
-    
-    private func updateNewProfile(fullname: String?, description: String?) {
+    private func updateProfileTextFields(fullname: String?, description: String?) {
         let profile = Profile(fullname: fullname ?? self.newProfile?.fullname ?? "",
                               description: description ?? self.newProfile?.description ?? "",
                               profileImage: self.newProfile?.profileImage)
         self.newProfile = profile
-    }
-}
-
-class UIButtonDisableColored: UIButton {
-    override var isEnabled: Bool {
-        didSet {
-            setTitleColor(isEnabled ? UIColor.systemBlue : UIColor.gray, for: .normal)
-        }
     }
 }

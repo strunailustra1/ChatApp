@@ -159,14 +159,3 @@ extension ThemesViewController {
         ]
     }
 }
-
-class SelectedButton: UIButton {
-    override var isSelected: Bool {
-        didSet {
-            layer.borderColor = isSelected
-                ? UIColor(red: 0, green: 0.478, blue: 1, alpha: 1).cgColor
-                : UIColor(red: 0.592, green: 0.592, blue: 0.592, alpha: 1).cgColor
-            layer.borderWidth = isSelected ? 3 : 1
-        }
-    }
-}
