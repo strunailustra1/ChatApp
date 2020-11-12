@@ -9,38 +9,49 @@
 import Foundation
 import Firebase
 
-class ChannelAPIManager {
-    private let channelRepository: ChannelRepository
-    private let firestoreDataProvider: FirestoreDataProvider
+protocol ChannelAPIManagerProtocol {
+    func createChannel(channelName: String)
+    func fetchChannels()
+    func deleteChannel(_ channelDBFromMainContext: ChannelDB)
+    func deleteMissingChannels()
+    func removeListener()
+}
+
+class ChannelAPIManager: ChannelAPIManagerProtocol {
+    private let channelRepository: ChannelRepositoryProtocol
+    private let apiDataProvider: APIDataProviderProtocol
     
-    init(channelRepository: ChannelRepository, firestoreDataProvider: FirestoreDataProvider) {
+    init(channelRepository: ChannelRepositoryProtocol, apiDataProvider: APIDataProviderProtocol) {
         self.channelRepository = channelRepository
-        self.firestoreDataProvider = firestoreDataProvider
+        self.apiDataProvider = apiDataProvider
     }
     
     func createChannel(channelName: String) {
-        firestoreDataProvider.createChannel(channel: Channel(name: channelName))
+        apiDataProvider.createChannel(channel: Channel(name: channelName), errorCompletion: nil)
     }
         
     func fetchChannels() {
-        firestoreDataProvider.getChannels(completion: { [weak self] changes in
-            self?.handleFirestoreDocumentChanges(changes)
-        })
+        apiDataProvider.getChannels(
+            completion: { [weak self] changes in
+                self?.handleFirestoreDocumentChanges(changes)
+            },
+            errorCompletion: nil
+        )
     }
     
     func deleteChannel(_ channelDBFromMainContext: ChannelDB) {
-        firestoreDataProvider.deleteChannel(channel: Channel(channelDB: channelDBFromMainContext))
+        apiDataProvider.deleteChannel(channel: Channel(channelDB: channelDBFromMainContext), errorCompletion: nil)
         channelRepository.deleteChannel(channelDBFromMainContext)
     }
     
     func deleteMissingChannels() {
-        firestoreDataProvider.getChannelsId { [weak self] (channelIdList) in
+        apiDataProvider.getChannelsId { [weak self] (channelIdList) in
             self?.channelRepository.deleteMissingChannels(channelIdList)
         }
     }
      
     func removeListener() {
-        firestoreDataProvider.removeChannelsListener()
+        apiDataProvider.removeChannelsListener()
     }
     
     private func handleFirestoreDocumentChanges(_ changes: [DocumentChange]) {

@@ -10,9 +10,18 @@ import Foundation
 import CoreData
 import UIKit
 
-class ConversationsListDataSourceDelegate: NSObject {
+protocol ConversationsListDataSourceDelegateProtocol: UITableViewDataSource, UITableViewDelegate {
+    var fetchedResultsController: NSFetchedResultsController<ChannelDB>? { get set }
+    var channelAPIManager: ChannelAPIManagerProtocol? { get set }
+    var presentationAssembly: PresentationAssemblyProtocol? { get set }
+    var controller: UIViewController? { get set }
+    var cellIdentifier: String { get }
+    var cellIdentifierUINib: UINib { get }
+}
+
+class ConversationsListDataSourceDelegate: NSObject, ConversationsListDataSourceDelegateProtocol {
     var fetchedResultsController: NSFetchedResultsController<ChannelDB>?
-    var channelAPIManager: ChannelAPIManager?
+    var channelAPIManager: ChannelAPIManagerProtocol?
     var presentationAssembly: PresentationAssemblyProtocol?
     weak var controller: UIViewController?
     

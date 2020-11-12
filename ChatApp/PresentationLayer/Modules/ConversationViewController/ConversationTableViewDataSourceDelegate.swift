@@ -10,7 +10,18 @@ import Foundation
 import CoreData
 import UIKit
 
-class ConversationTableViewDataSourceDelegate: NSObject {
+protocol ConversationTableViewDataSourceDelegateProtocol: UITableViewDataSource, UITableViewDelegate {
+    var fetchedResultsController: NSFetchedResultsController<MessageDB>? { get set }
+    var themesManager: ThemesManagerProtocol? { get set }
+    var cellIdentifierUpcoming: String { get }
+    var cellIdentifierIncoming: String { get }
+    var sectionHeaderIdentifier: String { get }
+    var cellIdentifierUpcomingUINib: UINib { get }
+    var cellIdentifierIncomingUINib: UINib { get }
+    var sectionHeaderIdentifierUINib: UINib { get }
+}
+
+class ConversationTableViewDataSourceDelegate: NSObject, ConversationTableViewDataSourceDelegateProtocol {
     var fetchedResultsController: NSFetchedResultsController<MessageDB>?
     var themesManager: ThemesManagerProtocol?
     

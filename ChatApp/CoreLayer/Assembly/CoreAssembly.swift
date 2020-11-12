@@ -9,15 +9,15 @@
 import Foundation
 
 protocol CoreAssemblyProtocol {
-    var coreDataStack: CoreDataStack { get } //todo protocol
-    var firestoreDataProvider: FirestoreDataProvider { get } //todo protocol
+    var persistant: PersistantProtocol { get }
+    var apiDataProvider: APIDataProviderProtocol { get }
     var gcdDataManager: ProfileDataManagerProtocol { get }
     var operationDataManager: ProfileDataManagerProtocol { get }
 }
 
 class CoreAssembly: CoreAssemblyProtocol {
-    lazy var coreDataStack: CoreDataStack = CoreDataStack(logger: logger)
-    lazy var firestoreDataProvider: FirestoreDataProvider = FirestoreDataProvider()
+    lazy var persistant: PersistantProtocol = CoreDataStack(logger: logger)
+    lazy var apiDataProvider: APIDataProviderProtocol = FirestoreDataProvider()
     lazy var gcdDataManager: ProfileDataManagerProtocol = GCDDataManager()
     lazy var operationDataManager: ProfileDataManagerProtocol = OperationDataManager()
     

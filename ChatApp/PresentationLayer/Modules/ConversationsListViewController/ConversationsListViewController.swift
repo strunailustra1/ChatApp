@@ -42,22 +42,22 @@ class ConversationsListViewController: UIViewController {
     
     private lazy var notificationCenter = NotificationCenter.default
     
-    private let channelRepository: ChannelRepository
+    private let channelRepository: ChannelRepositoryProtocol
     private let presentationAssembly: PresentationAssemblyProtocol
     private let themesManager: ThemesManagerProtocol
-    private let channelAPIManager: ChannelAPIManager
-    private let frcDelegate: ConversationsListFRCDelegate
-    private let tableViewDataSourceDelegate: ConversationsListDataSourceDelegate
-    private let profileRepository: ProfileRepository
+    private let channelAPIManager: ChannelAPIManagerProtocol
+    private let frcDelegate: ConversationsListFRCDelegateProtocol
+    private let tableViewDataSourceDelegate: ConversationsListDataSourceDelegateProtocol
+    private let profileRepository: ProfileRepositoryProtocol
     
     init(
-        channelRepository: ChannelRepository,
+        channelRepository: ChannelRepositoryProtocol,
         presentationAssembly: PresentationAssemblyProtocol,
         themesManager: ThemesManagerProtocol,
-        channelAPIManager: ChannelAPIManager,
-        frcDelegate: ConversationsListFRCDelegate,
-        tableViewDataSourceDelegate: ConversationsListDataSourceDelegate,
-        profileRepository: ProfileRepository
+        channelAPIManager: ChannelAPIManagerProtocol,
+        frcDelegate: ConversationsListFRCDelegateProtocol,
+        tableViewDataSourceDelegate: ConversationsListDataSourceDelegateProtocol,
+        profileRepository: ProfileRepositoryProtocol
     ) {
         self.channelRepository = channelRepository
         self.presentationAssembly = presentationAssembly
@@ -108,24 +108,22 @@ class ConversationsListViewController: UIViewController {
     }
     
     @objc func editProfile() {
-        if let profileVC = presentationAssembly.profileViewController() {
-            profileVC.closeHandler = { [weak self] in
-                self?.updateNavigationRightButtonImage()
-            }
-            let navVC = UINavigationController(rootViewController: profileVC)
-            navVC.modalPresentationStyle = .popover
-            present(navVC, animated: true, completion: nil)
+        guard let profileVC = presentationAssembly.profileViewController() else { return }
+        profileVC.closeHandler = { [weak self] in
+            self?.updateNavigationRightButtonImage()
         }
+        let navVC = UINavigationController(rootViewController: profileVC)
+        navVC.modalPresentationStyle = .popover
+        present(navVC, animated: true, completion: nil)
     }
     
     @objc func editTheme() {
-        if let themesVC = presentationAssembly.themesViewController() {
-            navigationController?.pushViewController(themesVC, animated: true)
-            navigationItem.backBarButtonItem = UIBarButtonItem(title: "Channels",
-                                                               style: .plain,
-                                                               target: nil,
-                                                               action: nil)
-        }
+        guard let themesVC = presentationAssembly.themesViewController() else { return }
+        navigationController?.pushViewController(themesVC, animated: true)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Channels",
+                                                           style: .plain,
+                                                           target: nil,
+                                                           action: nil)
     }
     
     @objc func addChannel() {

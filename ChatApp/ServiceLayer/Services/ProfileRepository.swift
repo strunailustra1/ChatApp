@@ -13,15 +13,29 @@ enum ProfileSaveMethod {
     case operation
 }
 
-class ProfileRepository {
+protocol ProfileRepositoryProtocol {
+    var profile: Profile { get set }
+    
+    func loadFromStorage(completion: ((Profile) -> Void)?)
+    
+    func saveToStorage(
+        by saveMethod: ProfileSaveMethod,
+        profile: Profile,
+        changedFields: ProfileChangedFields,
+        succesfullCompletion: @escaping() -> Void,
+        errorCompletion: @escaping() -> Void
+    )
+}
+
+class ProfileRepository: ProfileRepositoryProtocol {
     private static var shared = Profile(
         fullname: "Marina Dudarenko",
         description: "UX/UI designer, web-designer\nMoscow, Russia",
         profileImage: nil
     ) // default profile
     
-    var gcdDataManager: ProfileDataManagerProtocol
-    var operationDataManager: ProfileDataManagerProtocol
+    private var gcdDataManager: ProfileDataManagerProtocol
+    private var operationDataManager: ProfileDataManagerProtocol
     
     var profile: Profile {
         get {

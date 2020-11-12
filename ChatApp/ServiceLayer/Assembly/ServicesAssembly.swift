@@ -9,15 +9,13 @@
 import Foundation
 
 protocol ServicesAssemblyProtocol {
-    //todo protocols for everywhere
     var themesManager: ThemesManagerProtocol & ThemesPickerDelegate & ThemesPickerHandler { get }
-    var messageRepository: MessageRepository { get }
-    var channelRepository: ChannelRepository { get }
-    var channelAPIManager: ChannelAPIManager { get }
-    var messageAPIManager: MessageAPIManager { get }
-    var imageComparator: ImageCompare { get }
-    var profileRepository: ProfileRepository { get }
-    //todo profileDataManager
+    var messageRepository: MessageRepositoryProtocol { get }
+    var channelRepository: ChannelRepositoryProtocol { get }
+    var channelAPIManager: ChannelAPIManagerProtocol { get }
+    var messageAPIManager: MessageAPIManagerProtocol { get }
+    var imageComparator: ImageComparatorProtocol { get }
+    var profileRepository: ProfileRepositoryProtocol { get }
 }
 
 class ServicesAssembly: ServicesAssemblyProtocol {
@@ -30,28 +28,28 @@ class ServicesAssembly: ServicesAssemblyProtocol {
     
     lazy var themesManager: ThemesManagerProtocol & ThemesPickerDelegate & ThemesPickerHandler = ThemesManager()
     
-    lazy var messageRepository: MessageRepository = MessageRepository(
-        coreDataStack: coreAssembly.coreDataStack,
+    lazy var messageRepository: MessageRepositoryProtocol = MessageRepository(
+        persistant: coreAssembly.persistant,
         channelRepository: channelRepository
     )
     
-    lazy var channelRepository: ChannelRepository = ChannelRepository(
-        coreDataStack: coreAssembly.coreDataStack
+    lazy var channelRepository: ChannelRepositoryProtocol = ChannelRepository(
+        persistant: coreAssembly.persistant
     )
     
-    lazy var channelAPIManager: ChannelAPIManager = ChannelAPIManager(
+    lazy var channelAPIManager: ChannelAPIManagerProtocol = ChannelAPIManager(
         channelRepository: channelRepository,
-        firestoreDataProvider: coreAssembly.firestoreDataProvider
+        apiDataProvider: coreAssembly.apiDataProvider
     )
     
-    lazy var messageAPIManager: MessageAPIManager = MessageAPIManager(
+    lazy var messageAPIManager: MessageAPIManagerProtocol = MessageAPIManager(
         messageRepository: messageRepository,
-        firestoreDataProvider: coreAssembly.firestoreDataProvider
+        apiDataProvider: coreAssembly.apiDataProvider
     )
     
-    lazy var imageComparator: ImageCompare = ImageComparator()
+    lazy var imageComparator: ImageComparatorProtocol = ImageComparator()
     
-    lazy var profileRepository: ProfileRepository = ProfileRepository(
+    lazy var profileRepository: ProfileRepositoryProtocol = ProfileRepository(
         gcdDataManager: coreAssembly.gcdDataManager,
         operationDataManager: coreAssembly.operationDataManager
     )

@@ -343,11 +343,11 @@
 				1EA982132559E00E004B6FD6 /* Themes */,
 				1E6B8FC1250E319800A5632E /* Logger.swift */,
 				1EA98218255B14CA004B6FD6 /* ChannelAPIManager.swift */,
-				1EDF80EF255C55CB007C2E51 /* ImageComparator.swift */,
 				1EA9821A255B14D7004B6FD6 /* MessageAPIManager.swift */,
-				1E46BC2A2553257800DED981 /* MessageRepository.swift */,
-				1EDF80F1255C62D4007C2E51 /* ProfileRepository.swift */,
 				1E46BC282553256A00DED981 /* ChannelRepository.swift */,
+				1E46BC2A2553257800DED981 /* MessageRepository.swift */,
+				1EDF80EF255C55CB007C2E51 /* ImageComparator.swift */,
+				1EDF80F1255C62D4007C2E51 /* ProfileRepository.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";

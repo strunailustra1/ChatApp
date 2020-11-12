@@ -10,12 +10,20 @@ import Foundation
 import CoreData
 import Firebase
 
-class ChannelRepository {
+protocol ChannelRepositoryProtocol {
+    func createFetchedResultsController() -> NSFetchedResultsController<ChannelDB>
+    func fetchChannel(byIdentifier id: String, from context: NSManagedObjectContext?) -> ChannelDB?
+    func saveChannels(_ channelsWithChangeType: [(Channel, DocumentChangeType)])
+    func deleteChannel(_ channelDBFromMainContext: ChannelDB)
+    func deleteMissingChannels(_ channelsId: [String])
+}
+
+class ChannelRepository: ChannelRepositoryProtocol {
     
-    private let coreDataStack: CoreDataStack
+    private let persistant: PersistantProtocol
     
-    init(coreDataStack: CoreDataStack) {
-        self.coreDataStack = coreDataStack
+    init(persistant: PersistantProtocol) {
+        self.persistant = persistant
     }
     
     func createFetchedResultsController() -> NSFetchedResultsController<ChannelDB> {
@@ -24,7 +32,7 @@ class ChannelRepository {
         fetchRequest.fetchBatchSize = 30
         let fetchedResultsController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
-            managedObjectContext: coreDataStack.mainContext,
+            managedObjectContext: persistant.mainContext,
             sectionNameKeyPath: nil,
             cacheName: nil
         )
@@ -36,7 +44,7 @@ class ChannelRepository {
         let fetchChannelRequest: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
         fetchChannelRequest.predicate = NSPredicate(format: "identifier = %@", id)
         
-        let fetchContext = context ?? coreDataStack.mainContext
+        let fetchContext = context ?? persistant.mainContext
         
         let channelDBList = try? fetchContext.fetch(fetchChannelRequest)
         
@@ -46,7 +54,7 @@ class ChannelRepository {
     }
     
     func saveChannels(_ channelsWithChangeType: [(Channel, DocumentChangeType)]) {
-        coreDataStack.performSave { [weak self] (context) in
+        persistant.performSave { [weak self] (context) in
             for (channel, changeType) in channelsWithChangeType {
                 if let channelInDB = self?.fetchChannel(byIdentifier: channel.identifier, from: context) {
                     if changeType == .removed {
@@ -75,7 +83,7 @@ class ChannelRepository {
     }
     
     func deleteChannel(_ channelDBFromMainContext: ChannelDB) {
-        coreDataStack.performSave { (context) in
+        persistant.performSave { (context) in
             guard let channelDBFromSaveContext = context.object(with: channelDBFromMainContext.objectID)
                 as? ChannelDB else { return }
             context.delete(channelDBFromSaveContext)
@@ -83,7 +91,7 @@ class ChannelRepository {
     }
     
     func deleteMissingChannels(_ channelsId: [String]) {
-        coreDataStack.performSave { (context) in
+        persistant.performSave { (context) in
             let channelDBList = try? context.fetch(ChannelDB.fetchRequest()) as? [ChannelDB]
             channelDBList?.forEach({ (channelDB) in
                 if channelsId.firstIndex(of: channelDB.identifier) == nil {

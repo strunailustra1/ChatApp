@@ -45,19 +45,19 @@ class ConversationViewController: UIViewController {
     private var shouldAdjustForKeyboard = false
     private var customInput: InputBarView?
     
-    private let messageRepository: MessageRepository
+    private let messageRepository: MessageRepositoryProtocol
     private let themesManager: ThemesManagerProtocol
-    private let profileRepository: ProfileRepository
-    private let messageAPIManager: MessageAPIManager
-    private let frcDelegate: ConversationFRCDelegate
-    private let tableViewDataSourceDelegate: ConversationTableViewDataSourceDelegate
+    private let profileRepository: ProfileRepositoryProtocol
+    private let messageAPIManager: MessageAPIManagerProtocol
+    private let frcDelegate: ConversationFRCDelegateProtocol
+    private let tableViewDataSourceDelegate: ConversationTableViewDataSourceDelegateProtocol
     
-    init(messageRepository: MessageRepository,
+    init(messageRepository: MessageRepositoryProtocol,
          themesManager: ThemesManagerProtocol,
-         profileRepository: ProfileRepository,
-         messageAPIManager: MessageAPIManager,
-         frcDelegate: ConversationFRCDelegate,
-         tableViewDataSourceDelegate: ConversationTableViewDataSourceDelegate
+         profileRepository: ProfileRepositoryProtocol,
+         messageAPIManager: MessageAPIManagerProtocol,
+         frcDelegate: ConversationFRCDelegateProtocol,
+         tableViewDataSourceDelegate: ConversationTableViewDataSourceDelegateProtocol
     ) {
         self.messageRepository = messageRepository
         self.themesManager = themesManager

@@ -9,12 +9,18 @@
 import Foundation
 import CoreData
 
-//todo протокол для класса
-class CoreDataStack {
+protocol PersistantProtocol {
+    var didUpdateDataBase: ((PersistantProtocol) -> Void)? { get }
+    var mainContext: NSManagedObjectContext { get }
+    
+    func performSave(_ handler: @escaping (NSManagedObjectContext) -> Void)
+}
+
+class CoreDataStack: PersistantProtocol {
     
     private var logger: LoggerVerboseLevel
     
-    var didUpdateDataBase: ((CoreDataStack) -> Void)?
+    var didUpdateDataBase: ((PersistantProtocol) -> Void)?
     
     init(logger: LoggerVerboseLevel) {
         self.logger = logger
@@ -180,6 +186,7 @@ class CoreDataStack {
         // нужно запустить схему ChatAppInfo
         if logger.verboseLevel == .info {
             didUpdateDataBase = { stack in
+                guard let stack = stack as? CoreDataStack else { return }
                 stack.printStatFromDatabase()
             }
         }

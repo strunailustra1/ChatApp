@@ -9,28 +9,38 @@
 import Foundation
 import Firebase
 
-class MessageAPIManager {
-    private let messageRepository: MessageRepository
-    private let firestoreDataProvider: FirestoreDataProvider
+protocol MessageAPIManagerProtocol {
+    func createMessage(channel: Channel, profile: Profile, messageText: String)
+    func fetchMessages(channel: Channel, completion: (() -> Void)?)
+    func removeListener()
+}
+
+class MessageAPIManager: MessageAPIManagerProtocol {
+    private let messageRepository: MessageRepositoryProtocol
+    private let apiDataProvider: APIDataProviderProtocol
     
-    init(messageRepository: MessageRepository, firestoreDataProvider: FirestoreDataProvider) {
+    init(messageRepository: MessageRepositoryProtocol, apiDataProvider: APIDataProviderProtocol) {
         self.messageRepository = messageRepository
-        self.firestoreDataProvider = firestoreDataProvider
+        self.apiDataProvider = apiDataProvider
     }
     
     func createMessage(channel: Channel, profile: Profile, messageText: String) {
         let message = Message(content: messageText, profile: profile)
-        firestoreDataProvider.createMessage(in: channel, message: message)
+        apiDataProvider.createMessage(in: channel, message: message, errorCompletion: nil)
     }
     
     func fetchMessages(channel: Channel, completion: (() -> Void)? = nil) {
-        firestoreDataProvider.getMessages(in: channel, completion: { [weak self] changes in
-            self?.handleFirestoreDocumentChanges(changes, channel: channel, completion: completion)
-        })
+        apiDataProvider.getMessages(
+            in: channel,
+            completion: { [weak self] changes in
+                self?.handleFirestoreDocumentChanges(changes, channel: channel, completion: completion)
+            },
+            errorCompletion: nil
+        )
     }
     
     func removeListener() {
-        firestoreDataProvider.removeMessagesListener()
+        apiDataProvider.removeMessagesListener()
     }
     
     private func handleFirestoreDocumentChanges(
@@ -39,7 +49,7 @@ class MessageAPIManager {
         completion: (() -> Void)? = nil
     ) {
         var messagesWithChangeType = [(Message, DocumentChangeType)]()
-
+        
         for change in changes {
             guard let message = Message(document: change.document) else { continue }
             messagesWithChangeType.append((message, change.type))

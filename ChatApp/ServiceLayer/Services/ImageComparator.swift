@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-protocol ImageCompare {
+protocol ImageComparatorProtocol {
     func isEqualImages(
         leftImage: UIImage?,
         rightImage: UIImage?,
@@ -17,7 +17,7 @@ protocol ImageCompare {
     )
 }
 
-class ImageComparator: ImageCompare {
+class ImageComparator: ImageComparatorProtocol {
     func isEqualImages(
         leftImage: UIImage?,
         rightImage: UIImage?,

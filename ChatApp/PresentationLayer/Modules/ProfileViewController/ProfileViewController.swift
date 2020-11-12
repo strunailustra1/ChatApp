@@ -12,8 +12,8 @@ class ProfileViewController: UIViewController {
     
     static func storyboardInstance(
         themesManager: ThemesManagerProtocol,
-        imageComparator: ImageCompare,
-        profileRepository: ProfileRepository,
+        imageComparator: ImageComparatorProtocol,
+        profileRepository: ProfileRepositoryProtocol,
         profileTextFieldDelegate: TextFieldDelegateWithCompletion,
         profileTextViewDelegate: TextViewDelegateWithCompletion
     ) -> ProfileViewController? {
@@ -30,8 +30,8 @@ class ProfileViewController: UIViewController {
     }
 
     var themesManager: ThemesManagerProtocol?
-    var imageComparator: ImageCompare?
-    var profileRepository: ProfileRepository?
+    var imageComparator: ImageComparatorProtocol?
+    var profileRepository: ProfileRepositoryProtocol?
     var profileTextFieldDelegate: TextFieldDelegateWithCompletion?
     var profileTextViewDelegate: TextViewDelegateWithCompletion?
     

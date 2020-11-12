@@ -10,7 +10,11 @@ import Foundation
 import CoreData
 import UIKit
 
-class ConversationsListFRCDelegate: NSObject {
+protocol ConversationsListFRCDelegateProtocol: NSFetchedResultsControllerDelegate {
+    var tableView: UITableView? { get set }
+}
+
+class ConversationsListFRCDelegate: NSObject, ConversationsListFRCDelegateProtocol {
     var tableView: UITableView?
 }
 
