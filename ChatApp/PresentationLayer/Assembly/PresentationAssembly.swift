@@ -13,6 +13,7 @@ protocol PresentationAssemblyProtocol {
     func conversationViewController() -> ConversationViewController
     func profileViewController() -> ProfileViewController?
     func themesViewController() -> ThemesViewController?
+    func imageCollectionViewController() -> ImageCollectionViewController
 }
 
 class PresentationAssembly: PresentationAssemblyProtocol {
@@ -64,7 +65,8 @@ class PresentationAssembly: PresentationAssemblyProtocol {
             imageComparator: serviceAssembly.imageComparator,
             profileRepository: serviceAssembly.profileRepository,
             profileTextFieldDelegate: ProfileTextFieldDelegate(),
-            profileTextViewDelegate: ProfileTextViewDelegate()
+            profileTextViewDelegate: ProfileTextViewDelegate(),
+            presentationAssembly: self
         )
     }
     
@@ -75,5 +77,9 @@ class PresentationAssembly: PresentationAssemblyProtocol {
             themeChangeHandler: serviceAssembly.themesManager.themeChangeHandler
         )
         return themesVC
+    }
+    
+    func imageCollectionViewController() -> ImageCollectionViewController {
+        return ImageCollectionViewController(themesManager: serviceAssembly.themesManager)
     }
 }

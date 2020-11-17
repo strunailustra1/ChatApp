@@ -43,6 +43,11 @@
 		1E772F8E25379D38001A5F8A /* UIAlertController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E772F8D25379D38001A5F8A /* UIAlertController+Extensions.swift */; };
 		1EA44026251534BD00BFC316 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1EA44025251534BD00BFC316 /* Roboto-Regular.ttf */; };
 		1EA7151F255C8C1A007AA9A0 /* CustomButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA7151E255C8C1A007AA9A0 /* CustomButtons.swift */; };
+		1EA715212562C490007AA9A0 /* ImageCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA715202562C490007AA9A0 /* ImageCollectionViewController.swift */; };
+		1EA715242562C4F0007AA9A0 /* ImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA715222562C4F0007AA9A0 /* ImageCollectionViewCell.swift */; };
+		1EA715252562C4F0007AA9A0 /* ImageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1EA715232562C4F0007AA9A0 /* ImageCollectionViewCell.xib */; };
+		1EA715272562CE28007AA9A0 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA715262562CE28007AA9A0 /* NetworkManager.swift */; };
+		1EA715292562EB02007AA9A0 /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA715282562EB02007AA9A0 /* ImageView.swift */; };
 		1EA982122559CCC9004B6FD6 /* RootAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA982112559CCC9004B6FD6 /* RootAssembly.swift */; };
 		1EA982152559E0BC004B6FD6 /* ThemesPickerHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA982142559E0BC004B6FD6 /* ThemesPickerHandler.swift */; };
 		1EA982172559E193004B6FD6 /* ThemesManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA982162559E193004B6FD6 /* ThemesManagerProtocol.swift */; };
@@ -111,6 +116,11 @@
 		1E772F8D25379D38001A5F8A /* UIAlertController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertController+Extensions.swift"; sourceTree = "<group>"; };
 		1EA44025251534BD00BFC316 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		1EA7151E255C8C1A007AA9A0 /* CustomButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButtons.swift; sourceTree = "<group>"; };
+		1EA715202562C490007AA9A0 /* ImageCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewController.swift; sourceTree = "<group>"; };
+		1EA715222562C4F0007AA9A0 /* ImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewCell.swift; sourceTree = "<group>"; };
+		1EA715232562C4F0007AA9A0 /* ImageCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImageCollectionViewCell.xib; sourceTree = "<group>"; };
+		1EA715262562CE28007AA9A0 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		1EA715282562EB02007AA9A0 /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
 		1EA982112559CCC9004B6FD6 /* RootAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootAssembly.swift; sourceTree = "<group>"; };
 		1EA982142559E0BC004B6FD6 /* ThemesPickerHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesPickerHandler.swift; sourceTree = "<group>"; };
 		1EA982162559E193004B6FD6 /* ThemesManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesManagerProtocol.swift; sourceTree = "<group>"; };
@@ -313,6 +323,11 @@
 				1E30F120250B944100DDF8DC /* ProfileViewController.swift */,
 				1E4686B82540EE4400EFF407 /* ProfileEditImageAlertController.swift */,
 				1E4686B62540EB4900EFF407 /* ProfileImagePickerController.swift */,
+				1EA715202562C490007AA9A0 /* ImageCollectionViewController.swift */,
+				1EA715222562C4F0007AA9A0 /* ImageCollectionViewCell.swift */,
+				1EA715232562C4F0007AA9A0 /* ImageCollectionViewCell.xib */,
+				1EA715262562CE28007AA9A0 /* NetworkManager.swift */,
+				1EA715282562EB02007AA9A0 /* ImageView.swift */,
 				1EDF80F7255C7F84007C2E51 /* ProfileTextViewDelegate.swift */,
 				1EDF80F5255C7F5D007C2E51 /* ProfileTextFieldDelegate.swift */,
 				1E30F122250B944100DDF8DC /* ProfileViewController.storyboard */,
@@ -490,6 +505,7 @@
 			files = (
 				1E676A52251DF38E00E98C42 /* ConversationCell.xib in Resources */,
 				1E30F129250B944700DDF8DC /* LaunchScreen.storyboard in Resources */,
+				1EA715252562C4F0007AA9A0 /* ImageCollectionViewCell.xib in Resources */,
 				1E30F126250B944700DDF8DC /* Assets.xcassets in Resources */,
 				1EA44026251534BD00BFC316 /* Roboto-Regular.ttf in Resources */,
 				1EB5D4962549EBAD00D31945 /* GoogleService-Info.plist in Resources */,
@@ -595,6 +611,7 @@
 				1E46BC292553256A00DED981 /* ChannelRepository.swift in Sources */,
 				1E772F8C2537973C001A5F8A /* ProfileDataManagerProtocol.swift in Sources */,
 				1EDF80F6255C7F5D007C2E51 /* ProfileTextFieldDelegate.swift in Sources */,
+				1EA715212562C490007AA9A0 /* ImageCollectionViewController.swift in Sources */,
 				1ECC481F253DEAD200789DDA /* InputBarView.swift in Sources */,
 				1E676A56251DF48200E98C42 /* ConversationsListViewController.swift in Sources */,
 				1EBEF39E252270A200F6E541 /* MessageSectionHeader.swift in Sources */,
@@ -603,11 +620,14 @@
 				1E319EE72559C5770019078B /* ServicesAssembly.swift in Sources */,
 				1EA982122559CCC9004B6FD6 /* RootAssembly.swift in Sources */,
 				1EBEF38E251E255900F6E541 /* ConfigurableView.swift in Sources */,
+				1EA715272562CE28007AA9A0 /* NetworkManager.swift in Sources */,
 				1EA7151F255C8C1A007AA9A0 /* CustomButtons.swift in Sources */,
 				1E4686B1254043A700EFF407 /* Message.swift in Sources */,
+				1EA715292562EB02007AA9A0 /* ImageView.swift in Sources */,
 				1E5FFB1B2527374000F8187A /* ThemesViewController.swift in Sources */,
 				1E48E60F2534CA9000455C27 /* GCDDataManager.swift in Sources */,
 				1EA982172559E193004B6FD6 /* ThemesManagerProtocol.swift in Sources */,
+				1EA715242562C4F0007AA9A0 /* ImageCollectionViewCell.swift in Sources */,
 				1EFEF875255B36B10069F6BA /* ConversationsListFRCDelegate.swift in Sources */,
 				1EFEF877255B3A800069F6BA /* ConversationsListDataSourceDelegate.swift in Sources */,
 				1EFEF871255B284C0069F6BA /* ConversationFRCDelegate.swift in Sources */,

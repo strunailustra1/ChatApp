@@ -15,7 +15,8 @@ class ProfileViewController: UIViewController {
         imageComparator: ImageComparatorProtocol,
         profileRepository: ProfileRepositoryProtocol,
         profileTextFieldDelegate: TextFieldDelegateWithCompletion,
-        profileTextViewDelegate: TextViewDelegateWithCompletion
+        profileTextViewDelegate: TextViewDelegateWithCompletion,
+        presentationAssembly: PresentationAssemblyProtocol
     ) -> ProfileViewController? {
         let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
         let profileVC = storyboard.instantiateInitialViewController() as? ProfileViewController
@@ -25,6 +26,7 @@ class ProfileViewController: UIViewController {
         profileVC?.profileRepository = profileRepository
         profileVC?.profileTextFieldDelegate = profileTextFieldDelegate
         profileVC?.profileTextViewDelegate = profileTextViewDelegate
+        profileVC?.presentationAssembly = presentationAssembly
         
         return profileVC
     }
@@ -34,6 +36,7 @@ class ProfileViewController: UIViewController {
     var profileRepository: ProfileRepositoryProtocol?
     var profileTextFieldDelegate: TextFieldDelegateWithCompletion?
     var profileTextViewDelegate: TextViewDelegateWithCompletion?
+    var presentationAssembly: PresentationAssemblyProtocol?
     
     var closeHandler: (() -> Void)?
     
@@ -336,8 +339,19 @@ extension ProfileViewController {
         alert.configure(
             galleryHandler: { [unowned self] _ in
                 self.presentImagePickerControllerOrAlert(from: .photoLibrary)
-            }, photoHandler: { [unowned self] _ in
+            },
+            photoHandler: { [unowned self] _ in
                 self.presentImagePickerControllerOrAlert(from: .camera)
+            },
+            downloadHandler: { [unowned self] _ in
+                guard let imageVC = self.presentationAssembly?.imageCollectionViewController() else { return }
+                imageVC.didSelectItemCompletion = { [weak self] image in
+                    self?.qwe(image: image)
+                } //todo delegate
+
+                let navVC = UINavigationController(rootViewController: imageVC)
+                navVC.modalPresentationStyle = .fullScreen
+                self.present(navVC, animated: true, completion: nil)
             }
         )
         present(alert, animated: true, completion: nil)
@@ -347,24 +361,29 @@ extension ProfileViewController {
         let presentedVC = ProfileImagePickerController().configure(
             sourceType: sourceType,
             didFinishPickingMediaCompletion: { [weak self] image in
-                let profile = Profile(fullname: self?.newProfile?.fullname ?? "",
-                                      description: self?.newProfile?.description ?? "",
-                                      profileImage: image)
-                self?.newProfile = profile
-                
-                self?.imageComparator?.isEqualImages(
-                    leftImage: self?.oldProfile?.profileImage,
-                    rightImage: self?.newProfile?.profileImage,
-                    completion: { [weak self] isEqualImages in
-                        self?.photoHasBeenChanged = !isEqualImages
-                    }
-                )
-                
-                self?.setupPhotoView()
-            }
+                self?.qwe(image: image)
+            } //todo delegate
         )
         
         present(presentedVC, animated: true, completion: nil)
+    }
+    
+    //todo delegate
+    func qwe(image: UIImage) {
+        let profile = Profile(fullname: newProfile?.fullname ?? "",
+                              description: newProfile?.description ?? "",
+                              profileImage: image)
+        newProfile = profile
+        
+        imageComparator?.isEqualImages(
+            leftImage: oldProfile?.profileImage,
+            rightImage: newProfile?.profileImage,
+            completion: { [weak self] isEqualImages in
+                self?.photoHasBeenChanged = !isEqualImages
+            }
+        )
+        
+        setupPhotoView()
     }
 }
 
