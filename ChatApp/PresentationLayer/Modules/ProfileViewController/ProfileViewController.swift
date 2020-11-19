@@ -10,21 +10,16 @@ import UIKit
 
 class ProfileViewController: UIViewController {
     
-    static func storyboardInstance(
-        themesManager: ThemesManagerProtocol,
-        imageComparator: ImageComparatorProtocol,
-        profileRepository: ProfileRepositoryProtocol,
-        profileTextFieldDelegate: TextFieldDelegateWithCompletion,
-        profileTextViewDelegate: TextViewDelegateWithCompletion
-    ) -> ProfileViewController? {
+    static func storyboardInstance(settings: ProfileViewControllerSettings) -> ProfileViewController? {
         let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
         let profileVC = storyboard.instantiateInitialViewController() as? ProfileViewController
         
-        profileVC?.themesManager = themesManager
-        profileVC?.imageComparator = imageComparator
-        profileVC?.profileRepository = profileRepository
-        profileVC?.profileTextFieldDelegate = profileTextFieldDelegate
-        profileVC?.profileTextViewDelegate = profileTextViewDelegate
+        profileVC?.themesManager = settings.themesManager
+        profileVC?.imageComparator = settings.imageComparator
+        profileVC?.profileRepository = settings.profileRepository
+        profileVC?.profileTextFieldDelegate = settings.profileTextFieldDelegate
+        profileVC?.profileTextViewDelegate = settings.profileTextViewDelegate
+        profileVC?.presentationAssembly = settings.presentationAssembly
         
         return profileVC
     }
@@ -34,6 +29,7 @@ class ProfileViewController: UIViewController {
     var profileRepository: ProfileRepositoryProtocol?
     var profileTextFieldDelegate: TextFieldDelegateWithCompletion?
     var profileTextViewDelegate: TextViewDelegateWithCompletion?
+    var presentationAssembly: PresentationAssemblyProtocol?
     
     var closeHandler: (() -> Void)?
     
@@ -336,8 +332,17 @@ extension ProfileViewController {
         alert.configure(
             galleryHandler: { [unowned self] _ in
                 self.presentImagePickerControllerOrAlert(from: .photoLibrary)
-            }, photoHandler: { [unowned self] _ in
+            },
+            photoHandler: { [unowned self] _ in
                 self.presentImagePickerControllerOrAlert(from: .camera)
+            },
+            downloadHandler: { [unowned self] _ in
+                guard let imageVC = self.presentationAssembly?.imageCollectionViewController() else { return }
+                imageVC.changeProfilePhotoDelegate = self
+
+                let navVC = UINavigationController(rootViewController: imageVC)
+                navVC.modalPresentationStyle = .fullScreen
+                self.present(navVC, animated: true, completion: nil)
             }
         )
         present(alert, animated: true, completion: nil)
@@ -346,25 +351,29 @@ extension ProfileViewController {
     private func presentImagePickerControllerOrAlert(from sourceType: UIImagePickerController.SourceType) {
         let presentedVC = ProfileImagePickerController().configure(
             sourceType: sourceType,
-            didFinishPickingMediaCompletion: { [weak self] image in
-                let profile = Profile(fullname: self?.newProfile?.fullname ?? "",
-                                      description: self?.newProfile?.description ?? "",
-                                      profileImage: image)
-                self?.newProfile = profile
-                
-                self?.imageComparator?.isEqualImages(
-                    leftImage: self?.oldProfile?.profileImage,
-                    rightImage: self?.newProfile?.profileImage,
-                    completion: { [weak self] isEqualImages in
-                        self?.photoHasBeenChanged = !isEqualImages
-                    }
-                )
-                
-                self?.setupPhotoView()
-            }
+            changeProfilePhotoDelegate: self
         )
         
         present(presentedVC, animated: true, completion: nil)
+    }
+}
+
+extension ProfileViewController: ChangeProfilePhotoDelegate {
+    func changeProfilePhoto(_ image: UIImage) {
+        let profile = Profile(fullname: newProfile?.fullname ?? "",
+                              description: newProfile?.description ?? "",
+                              profileImage: image)
+        newProfile = profile
+        
+        imageComparator?.isEqualImages(
+            leftImage: oldProfile?.profileImage,
+            rightImage: newProfile?.profileImage,
+            completion: { [weak self] isEqualImages in
+                self?.photoHasBeenChanged = !isEqualImages
+            }
+        )
+        
+        setupPhotoView()
     }
 }
 

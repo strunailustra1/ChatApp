@@ -11,11 +11,11 @@ import UIKit
 
 class ProfileImagePickerController: UIImagePickerController {
 
-    var didFinishPickingMediaCompletion: ((UIImage) -> Void)?
+    weak var changeProfilePhotoDelegate: ChangeProfilePhotoDelegate?
     
     func configure(
         sourceType: UIImagePickerController.SourceType,
-        didFinishPickingMediaCompletion: ((UIImage) -> Void)? = nil
+        changeProfilePhotoDelegate: ChangeProfilePhotoDelegate
     ) -> UIViewController {
         if !UIImagePickerController.isSourceTypeAvailable(sourceType) {
             let message = sourceType == .camera
@@ -36,7 +36,7 @@ class ProfileImagePickerController: UIImagePickerController {
             if self.sourceType == .photoLibrary {
                 self.modalPresentationStyle = .fullScreen
             }
-            self.didFinishPickingMediaCompletion = didFinishPickingMediaCompletion
+            self.changeProfilePhotoDelegate = changeProfilePhotoDelegate
             return self
         }
     }
@@ -50,7 +50,7 @@ extension ProfileImagePickerController: UINavigationControllerDelegate, UIImageP
         
         guard let image = info[.editedImage] as? UIImage else { return }
         
-        didFinishPickingMediaCompletion?(image)
+        changeProfilePhotoDelegate?.changeProfilePhoto(image)
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {

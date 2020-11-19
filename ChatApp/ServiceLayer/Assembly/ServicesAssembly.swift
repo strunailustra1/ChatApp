@@ -16,6 +16,7 @@ protocol ServicesAssemblyProtocol {
     var messageAPIManager: MessageAPIManagerProtocol { get }
     var imageComparator: ImageComparatorProtocol { get }
     var profileRepository: ProfileRepositoryProtocol { get }
+    var pixabayService: PixabayServiceProtocol { get }
 }
 
 class ServicesAssembly: ServicesAssemblyProtocol {
@@ -52,5 +53,10 @@ class ServicesAssembly: ServicesAssemblyProtocol {
     lazy var profileRepository: ProfileRepositoryProtocol = ProfileRepository(
         gcdDataManager: coreAssembly.gcdDataManager,
         operationDataManager: coreAssembly.operationDataManager
+    )
+    
+    lazy var pixabayService: PixabayServiceProtocol = PixabayService(
+        requestSender: coreAssembly.requestSender,
+        responseCache: coreAssembly.responseCache
     )
 }
