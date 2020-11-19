@@ -10,11 +10,16 @@ import UIKit
 
 class ImageCollectionViewCell: UICollectionViewCell {
 
-    @IBOutlet weak var imageView: ImageView!
+    @IBOutlet weak var imageView: UIImageView!
     
-    func configure(with image: ApiImage) {
+    func configure(with image: ImageCollectionCellModel, pixabayService: PixabayServiceProtocol?) {
         imageView.contentMode = .scaleAspectFill
         imageView.image = UIImage(named: "placeholder")
-        imageView.fetchImage(from: image.webformatURL)
+        
+        pixabayService?.loadImage(from: image.imageUrl) { (image) in
+            DispatchQueue.main.async {
+                self.imageView.image = image
+            }
+        }
     }
 }

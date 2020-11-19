@@ -60,14 +60,14 @@ class PresentationAssembly: PresentationAssemblyProtocol {
     }
     
     func profileViewController() -> ProfileViewController? {
-        return ProfileViewController.storyboardInstance(
+        return ProfileViewController.storyboardInstance(settings: ProfileViewControllerSettings(
             themesManager: serviceAssembly.themesManager,
             imageComparator: serviceAssembly.imageComparator,
             profileRepository: serviceAssembly.profileRepository,
             profileTextFieldDelegate: ProfileTextFieldDelegate(),
             profileTextViewDelegate: ProfileTextViewDelegate(),
             presentationAssembly: self
-        )
+        ))
     }
     
     func themesViewController() -> ThemesViewController? {
@@ -80,6 +80,21 @@ class PresentationAssembly: PresentationAssemblyProtocol {
     }
     
     func imageCollectionViewController() -> ImageCollectionViewController {
-        return ImageCollectionViewController(themesManager: serviceAssembly.themesManager)
+        let model = imageCollectionModel()
+        
+        let controller = ImageCollectionViewController(
+            model: model,
+            themesManager: serviceAssembly.themesManager,
+            pixabayService: serviceAssembly.pixabayService,
+            collectionViewDataSourceDelegate: ImageCollectionViewDataSourceDelegate()
+        )
+        
+        model.delegate = controller
+        
+        return controller
+    }
+    
+    private func imageCollectionModel() -> ImageCollectionModelProtocol {
+        return ImageCollectionModel(pixabayService: serviceAssembly.pixabayService)
     }
 }

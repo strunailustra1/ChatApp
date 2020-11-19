@@ -10,23 +10,16 @@ import UIKit
 
 class ProfileViewController: UIViewController {
     
-    static func storyboardInstance(
-        themesManager: ThemesManagerProtocol,
-        imageComparator: ImageComparatorProtocol,
-        profileRepository: ProfileRepositoryProtocol,
-        profileTextFieldDelegate: TextFieldDelegateWithCompletion,
-        profileTextViewDelegate: TextViewDelegateWithCompletion,
-        presentationAssembly: PresentationAssemblyProtocol
-    ) -> ProfileViewController? {
+    static func storyboardInstance(settings: ProfileViewControllerSettings) -> ProfileViewController? {
         let storyboard = UIStoryboard(name: String(describing: self), bundle: nil)
         let profileVC = storyboard.instantiateInitialViewController() as? ProfileViewController
         
-        profileVC?.themesManager = themesManager
-        profileVC?.imageComparator = imageComparator
-        profileVC?.profileRepository = profileRepository
-        profileVC?.profileTextFieldDelegate = profileTextFieldDelegate
-        profileVC?.profileTextViewDelegate = profileTextViewDelegate
-        profileVC?.presentationAssembly = presentationAssembly
+        profileVC?.themesManager = settings.themesManager
+        profileVC?.imageComparator = settings.imageComparator
+        profileVC?.profileRepository = settings.profileRepository
+        profileVC?.profileTextFieldDelegate = settings.profileTextFieldDelegate
+        profileVC?.profileTextViewDelegate = settings.profileTextViewDelegate
+        profileVC?.presentationAssembly = settings.presentationAssembly
         
         return profileVC
     }
@@ -345,9 +338,7 @@ extension ProfileViewController {
             },
             downloadHandler: { [unowned self] _ in
                 guard let imageVC = self.presentationAssembly?.imageCollectionViewController() else { return }
-                imageVC.didSelectItemCompletion = { [weak self] image in
-                    self?.qwe(image: image)
-                } //todo delegate
+                imageVC.changeProfilePhotoDelegate = self
 
                 let navVC = UINavigationController(rootViewController: imageVC)
                 navVC.modalPresentationStyle = .fullScreen
@@ -360,16 +351,15 @@ extension ProfileViewController {
     private func presentImagePickerControllerOrAlert(from sourceType: UIImagePickerController.SourceType) {
         let presentedVC = ProfileImagePickerController().configure(
             sourceType: sourceType,
-            didFinishPickingMediaCompletion: { [weak self] image in
-                self?.qwe(image: image)
-            } //todo delegate
+            changeProfilePhotoDelegate: self
         )
         
         present(presentedVC, animated: true, completion: nil)
     }
-    
-    //todo delegate
-    func qwe(image: UIImage) {
+}
+
+extension ProfileViewController: ChangeProfilePhotoDelegate {
+    func changeProfilePhoto(_ image: UIImage) {
         let profile = Profile(fullname: newProfile?.fullname ?? "",
                               description: newProfile?.description ?? "",
                               profileImage: image)
