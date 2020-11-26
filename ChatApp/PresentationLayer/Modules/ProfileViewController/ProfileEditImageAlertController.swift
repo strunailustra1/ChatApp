@@ -16,12 +16,12 @@ class ProfileEditImageAlertController: UIAlertController {
         
         let galleryAction = UIAlertAction(title: "Photo Gallery", style: .default, handler: galleryHandler)
         let photoAction = UIAlertAction(title: "Camera", style: .default, handler: photoHandler)
-        let loadedImageAction = UIAlertAction(title: "Download", style: .default, handler: downloadHandler)
+        let downloadAction = UIAlertAction(title: "Download", style: .default, handler: downloadHandler)
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
         
         addAction(galleryAction)
         addAction(photoAction)
-        addAction(loadedImageAction)
+        addAction(downloadAction)
         addAction(cancelAction)
         
         setValue(NSAttributedString(string: "Edit photo",

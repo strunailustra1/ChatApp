@@ -14,5 +14,5 @@ struct ProfileViewControllerSettings {
     let profileRepository: ProfileRepositoryProtocol
     let profileTextFieldDelegate: TextFieldDelegateWithCompletion
     let profileTextViewDelegate: TextViewDelegateWithCompletion
-    let presentationAssembly: PresentationAssemblyProtocol
+    let router: RouterProtocol
 }

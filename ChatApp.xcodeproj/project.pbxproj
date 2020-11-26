@@ -22,6 +22,7 @@
 		1E319EE52559C5430019078B /* CoreAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E319EE42559C5430019078B /* CoreAssembly.swift */; };
 		1E319EE72559C5770019078B /* ServicesAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E319EE62559C5770019078B /* ServicesAssembly.swift */; };
 		1E319EE92559C58E0019078B /* PresentationAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E319EE82559C58E0019078B /* PresentationAssembly.swift */; };
+		1E3366EA256EFE6B00859EB8 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3366E9256EFE6B00859EB8 /* Router.swift */; };
 		1E4686B1254043A700EFF407 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4686B0254043A700EFF407 /* Message.swift */; };
 		1E4686B32540C05A00EFF407 /* KeyboardInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4686B22540C05900EFF407 /* KeyboardInfo.swift */; };
 		1E4686B52540D72900EFF407 /* FirestoreDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4686B42540D72900EFF407 /* FirestoreDataProvider.swift */; };
@@ -35,6 +36,7 @@
 		1E5FFB192524A67900F8187A /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5FFB182524A67900F8187A /* Profile.swift */; };
 		1E5FFB1B2527374000F8187A /* ThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5FFB1A2527374000F8187A /* ThemesViewController.swift */; };
 		1E5FFB212527566800F8187A /* ThemesViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E5FFB202527566800F8187A /* ThemesViewController.storyboard */; };
+		1E6020B0256D872D003DF197 /* EmblemEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6020AF256D872D003DF197 /* EmblemEmitter.swift */; };
 		1E676A51251DF38E00E98C42 /* ConversationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E676A4F251DF38E00E98C42 /* ConversationCell.swift */; };
 		1E676A52251DF38E00E98C42 /* ConversationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E676A50251DF38E00E98C42 /* ConversationCell.xib */; };
 		1E676A56251DF48200E98C42 /* ConversationsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E676A55251DF48200E98C42 /* ConversationsListViewController.swift */; };
@@ -64,6 +66,7 @@
 		1EA982172559E193004B6FD6 /* ThemesManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA982162559E193004B6FD6 /* ThemesManagerProtocol.swift */; };
 		1EA98219255B14CA004B6FD6 /* ChannelAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA98218255B14CA004B6FD6 /* ChannelAPIManager.swift */; };
 		1EA9821B255B14D7004B6FD6 /* MessageAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA9821A255B14D7004B6FD6 /* MessageAPIManager.swift */; };
+		1EB333D5256C593300B5F62E /* ShakeAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB333D4256C593300B5F62E /* ShakeAnimation.swift */; };
 		1EB5D48F25488CA800D31945 /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB5D48E25488CA800D31945 /* Array+Extensions.swift */; };
 		1EB5D4912548A8EE00D31945 /* NSManagedObjectDescriptionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB5D4902548A8EE00D31945 /* NSManagedObjectDescriptionProtocol.swift */; };
 		1EB5D4962549EBAD00D31945 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1EB5D4952549EBAD00D31945 /* GoogleService-Info.plist */; };
@@ -85,6 +88,7 @@
 		1EED3A452567179100F880B2 /* ProfileViewControllerSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EED3A442567179100F880B2 /* ProfileViewControllerSettings.swift */; };
 		1EED3A4825671B3600F880B2 /* ResponseCacheProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EED3A4725671B3600F880B2 /* ResponseCacheProtocol.swift */; };
 		1EED3A4A25671B4700F880B2 /* ResponseCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EED3A4925671B4700F880B2 /* ResponseCache.swift */; };
+		1EED3A4C256BF85D00F880B2 /* AnimatedTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EED3A4B256BF85D00F880B2 /* AnimatedTransition.swift */; };
 		1EFEF871255B284C0069F6BA /* ConversationFRCDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EFEF870255B284C0069F6BA /* ConversationFRCDelegate.swift */; };
 		1EFEF873255B2EE80069F6BA /* ConversationTableViewDataSourceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EFEF872255B2EE80069F6BA /* ConversationTableViewDataSourceDelegate.swift */; };
 		1EFEF875255B36B10069F6BA /* ConversationsListFRCDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EFEF874255B36B10069F6BA /* ConversationsListFRCDelegate.swift */; };
@@ -110,6 +114,7 @@
 		1E319EE42559C5430019078B /* CoreAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAssembly.swift; sourceTree = "<group>"; };
 		1E319EE62559C5770019078B /* ServicesAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServicesAssembly.swift; sourceTree = "<group>"; };
 		1E319EE82559C58E0019078B /* PresentationAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationAssembly.swift; sourceTree = "<group>"; };
+		1E3366E9256EFE6B00859EB8 /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
 		1E4686B0254043A700EFF407 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		1E4686B22540C05900EFF407 /* KeyboardInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardInfo.swift; sourceTree = "<group>"; };
 		1E4686B42540D72900EFF407 /* FirestoreDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreDataProvider.swift; sourceTree = "<group>"; };
@@ -123,6 +128,7 @@
 		1E5FFB182524A67900F8187A /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		1E5FFB1A2527374000F8187A /* ThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesViewController.swift; sourceTree = "<group>"; };
 		1E5FFB202527566800F8187A /* ThemesViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ThemesViewController.storyboard; sourceTree = "<group>"; };
+		1E6020AF256D872D003DF197 /* EmblemEmitter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmblemEmitter.swift; sourceTree = "<group>"; };
 		1E676A4F251DF38E00E98C42 /* ConversationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationCell.swift; sourceTree = "<group>"; };
 		1E676A50251DF38E00E98C42 /* ConversationCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConversationCell.xib; sourceTree = "<group>"; };
 		1E676A55251DF48200E98C42 /* ConversationsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsListViewController.swift; sourceTree = "<group>"; };
@@ -152,6 +158,7 @@
 		1EA982162559E193004B6FD6 /* ThemesManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesManagerProtocol.swift; sourceTree = "<group>"; };
 		1EA98218255B14CA004B6FD6 /* ChannelAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelAPIManager.swift; sourceTree = "<group>"; };
 		1EA9821A255B14D7004B6FD6 /* MessageAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageAPIManager.swift; sourceTree = "<group>"; };
+		1EB333D4256C593300B5F62E /* ShakeAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShakeAnimation.swift; sourceTree = "<group>"; };
 		1EB5D48E25488CA800D31945 /* Array+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extensions.swift"; sourceTree = "<group>"; };
 		1EB5D4902548A8EE00D31945 /* NSManagedObjectDescriptionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSManagedObjectDescriptionProtocol.swift; sourceTree = "<group>"; };
 		1EB5D4952549EBAD00D31945 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -173,6 +180,7 @@
 		1EED3A442567179100F880B2 /* ProfileViewControllerSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewControllerSettings.swift; sourceTree = "<group>"; };
 		1EED3A4725671B3600F880B2 /* ResponseCacheProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseCacheProtocol.swift; sourceTree = "<group>"; };
 		1EED3A4925671B4700F880B2 /* ResponseCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseCache.swift; sourceTree = "<group>"; };
+		1EED3A4B256BF85D00F880B2 /* AnimatedTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedTransition.swift; sourceTree = "<group>"; };
 		1EFEF870255B284C0069F6BA /* ConversationFRCDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationFRCDelegate.swift; sourceTree = "<group>"; };
 		1EFEF872255B2EE80069F6BA /* ConversationTableViewDataSourceDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationTableViewDataSourceDelegate.swift; sourceTree = "<group>"; };
 		1EFEF874255B36B10069F6BA /* ConversationsListFRCDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsListFRCDelegate.swift; sourceTree = "<group>"; };
@@ -245,6 +253,14 @@
 			path = Firestore;
 			sourceTree = "<group>";
 		};
+		1E3366E8256EFE5100859EB8 /* Router */ = {
+			isa = PBXGroup;
+			children = (
+				1E3366E9256EFE6B00859EB8 /* Router.swift */,
+			);
+			path = Router;
+			sourceTree = "<group>";
+		};
 		1E33EC2A2559BAF2009F1F37 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -258,6 +274,8 @@
 		1E46BC2F25586D2400DED981 /* PresentationLayer */ = {
 			isa = PBXGroup;
 			children = (
+				1E3366E8256EFE5100859EB8 /* Router */,
+				1EB333D3256C591100B5F62E /* Animations */,
 				1E46BC3425586EB300DED981 /* Assembly */,
 				1E46BC3525586ECB00DED981 /* Modules */,
 				1E99928F255887A00066CBE2 /* Protocols */,
@@ -493,6 +511,16 @@
 			path = Themes;
 			sourceTree = "<group>";
 		};
+		1EB333D3256C591100B5F62E /* Animations */ = {
+			isa = PBXGroup;
+			children = (
+				1EB333D4256C593300B5F62E /* ShakeAnimation.swift */,
+				1EED3A4B256BF85D00F880B2 /* AnimatedTransition.swift */,
+				1E6020AF256D872D003DF197 /* EmblemEmitter.swift */,
+			);
+			path = Animations;
+			sourceTree = "<group>";
+		};
 		1EBF12C32559C1FF00BBD279 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
@@ -704,6 +732,7 @@
 				1ECC4821253EF51900789DDA /* Channel.swift in Sources */,
 				1EB5D48F25488CA800D31945 /* Array+Extensions.swift in Sources */,
 				1E4686B72540EB4900EFF407 /* ProfileImagePickerController.swift in Sources */,
+				1EB333D5256C593300B5F62E /* ShakeAnimation.swift in Sources */,
 				1E16408F252BA55D00B37DD6 /* ThemesManager.swift in Sources */,
 				1EED3A43256714AA00F880B2 /* ChangeProfilePhotoDelegate.swift in Sources */,
 				1EA98219255B14CA004B6FD6 /* ChannelAPIManager.swift in Sources */,
@@ -732,8 +761,10 @@
 				1E856ACE2565B9F40029441F /* PixabayRequest.swift in Sources */,
 				1E319EE72559C5770019078B /* ServicesAssembly.swift in Sources */,
 				1EA982122559CCC9004B6FD6 /* RootAssembly.swift in Sources */,
+				1E6020B0256D872D003DF197 /* EmblemEmitter.swift in Sources */,
 				1EBEF38E251E255900F6E541 /* ConfigurableView.swift in Sources */,
 				1E856AD42565C5A20029441F /* SessionProtocol.swift in Sources */,
+				1E3366EA256EFE6B00859EB8 /* Router.swift in Sources */,
 				1EA7151F255C8C1A007AA9A0 /* CustomButtons.swift in Sources */,
 				1E4686B1254043A700EFF407 /* Message.swift in Sources */,
 				1E5FFB1B2527374000F8187A /* ThemesViewController.swift in Sources */,
@@ -744,6 +775,7 @@
 				1EFEF877255B3A800069F6BA /* ConversationsListDataSourceDelegate.swift in Sources */,
 				1EFEF871255B284C0069F6BA /* ConversationFRCDelegate.swift in Sources */,
 				1E970CF3256708D900B8877B /* ImageCollectionModel.swift in Sources */,
+				1EED3A4C256BF85D00F880B2 /* AnimatedTransition.swift in Sources */,
 				1E48E6112534CAA400455C27 /* OperationDataManager.swift in Sources */,
 				1E6B8FC2250E319800A5632E /* Logger.swift in Sources */,
 				1E4686B52540D72900EFF407 /* FirestoreDataProvider.swift in Sources */,

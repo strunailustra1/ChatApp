@@ -19,6 +19,10 @@ protocol PresentationAssemblyProtocol {
 class PresentationAssembly: PresentationAssemblyProtocol {
     private let serviceAssembly: ServicesAssemblyProtocol
     
+    private lazy var router: RouterProtocol = Router(presentationAssembly: self)
+    
+    private var emblemEmitter: EmblemEmitter?
+    
     init(serviceAssembly: ServicesAssemblyProtocol) {
         self.serviceAssembly = serviceAssembly
     }
@@ -28,8 +32,8 @@ class PresentationAssembly: PresentationAssemblyProtocol {
         serviceAssembly.themesManager.applyCurrentTheme()
         
         let rootVC = ConversationsListViewController(
+            router: router,
             channelRepository: serviceAssembly.channelRepository,
-            presentationAssembly: self,
             themesManager: serviceAssembly.themesManager,
             channelAPIManager: serviceAssembly.channelAPIManager,
             frcDelegate: ConversationsListFRCDelegate(),
@@ -44,6 +48,8 @@ class PresentationAssembly: PresentationAssemblyProtocol {
         
         let nav = ConversationsListNavigationController(rootViewController: rootVC)
         nav.themesManager = serviceAssembly.themesManager
+        
+        emblemEmitter = EmblemEmitter(view: nav.view)
         
         return nav
     }
@@ -66,7 +72,7 @@ class PresentationAssembly: PresentationAssemblyProtocol {
             profileRepository: serviceAssembly.profileRepository,
             profileTextFieldDelegate: ProfileTextFieldDelegate(),
             profileTextViewDelegate: ProfileTextViewDelegate(),
-            presentationAssembly: self
+            router: router
         ))
     }
     

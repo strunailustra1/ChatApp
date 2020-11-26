@@ -14,7 +14,7 @@ class ConversationsListViewController: UIViewController {
     private lazy var tableView: UITableView = {
         tableViewDataSourceDelegate.fetchedResultsController = fetchedResultsController
         tableViewDataSourceDelegate.channelAPIManager = channelAPIManager
-        tableViewDataSourceDelegate.presentationAssembly = presentationAssembly
+        tableViewDataSourceDelegate.router = router
         tableViewDataSourceDelegate.controller = self
         
         let tableView = UITableView(frame: view.frame, style: .plain)
@@ -42,8 +42,8 @@ class ConversationsListViewController: UIViewController {
     
     private lazy var notificationCenter = NotificationCenter.default
     
+    private let router: RouterProtocol
     private let channelRepository: ChannelRepositoryProtocol
-    private let presentationAssembly: PresentationAssemblyProtocol
     private let themesManager: ThemesManagerProtocol
     private let channelAPIManager: ChannelAPIManagerProtocol
     private let frcDelegate: ConversationsListFRCDelegateProtocol
@@ -51,8 +51,8 @@ class ConversationsListViewController: UIViewController {
     private let profileRepository: ProfileRepositoryProtocol
     
     init(
+        router: RouterProtocol,
         channelRepository: ChannelRepositoryProtocol,
-        presentationAssembly: PresentationAssemblyProtocol,
         themesManager: ThemesManagerProtocol,
         channelAPIManager: ChannelAPIManagerProtocol,
         frcDelegate: ConversationsListFRCDelegateProtocol,
@@ -60,7 +60,7 @@ class ConversationsListViewController: UIViewController {
         profileRepository: ProfileRepositoryProtocol
     ) {
         self.channelRepository = channelRepository
-        self.presentationAssembly = presentationAssembly
+        self.router = router
         self.themesManager = themesManager
         self.channelAPIManager = channelAPIManager
         self.frcDelegate = frcDelegate
@@ -108,22 +108,14 @@ class ConversationsListViewController: UIViewController {
     }
     
     @objc func editProfile() {
-        guard let profileVC = presentationAssembly.profileViewController() else { return }
-        profileVC.closeHandler = { [weak self] in
+        router.presentProfileVC(modalFrom: self, closeHandler: { [weak self] in
             self?.updateNavigationRightButtonImage()
-        }
-        let navVC = UINavigationController(rootViewController: profileVC)
-        navVC.modalPresentationStyle = .popover
-        present(navVC, animated: true, completion: nil)
+        })
     }
     
     @objc func editTheme() {
-        guard let themesVC = presentationAssembly.themesViewController() else { return }
-        navigationController?.pushViewController(themesVC, animated: true)
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Channels",
-                                                           style: .plain,
-                                                           target: nil,
-                                                           action: nil)
+        guard let navigationController = self.navigationController else { return }
+        router.presentThemeVC(in: navigationController)
     }
     
     @objc func addChannel() {

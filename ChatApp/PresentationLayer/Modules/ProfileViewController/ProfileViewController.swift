@@ -19,7 +19,7 @@ class ProfileViewController: UIViewController {
         profileVC?.profileRepository = settings.profileRepository
         profileVC?.profileTextFieldDelegate = settings.profileTextFieldDelegate
         profileVC?.profileTextViewDelegate = settings.profileTextViewDelegate
-        profileVC?.presentationAssembly = settings.presentationAssembly
+        profileVC?.router = settings.router
         
         return profileVC
     }
@@ -29,8 +29,7 @@ class ProfileViewController: UIViewController {
     var profileRepository: ProfileRepositoryProtocol?
     var profileTextFieldDelegate: TextFieldDelegateWithCompletion?
     var profileTextViewDelegate: TextViewDelegateWithCompletion?
-    var presentationAssembly: PresentationAssemblyProtocol?
-    
+    var router: RouterProtocol?
     var closeHandler: (() -> Void)?
     
     @IBOutlet weak var gcdButton: UIButton!
@@ -58,6 +57,12 @@ class ProfileViewController: UIViewController {
     private var photoHasBeenChanged = false {
         didSet {
             self.updateSaveButtonAvailability()
+        }
+    }
+    
+    private var onEditingMode = false {
+        didSet {
+            onEditingMode ? startEditingMode() : endEditingMode()
         }
     }
     
@@ -92,7 +97,6 @@ class ProfileViewController: UIViewController {
         descriptionTextView.delegate = profileTextViewDelegate
         
         view.addSubview(activityIndicator)
-        
         view.backgroundColor = themesManager?.getTheme().profileVCBackgroundColor
         
         updateSaveButtonAvailability()
@@ -149,17 +153,7 @@ class ProfileViewController: UIViewController {
     }
     
     @objc func editProfile() {
-        fullNameText.isUserInteractionEnabled = true
-        fullNameText.layer.borderColor = themesManager?.getTheme().labelBorderColor
-        fullNameText.layer.borderWidth = 1
-        
-        descriptionTextView.isUserInteractionEnabled = true
-        descriptionTextView.layer.borderColor = themesManager?.getTheme().labelBorderColor
-        descriptionTextView.layer.borderWidth = 1
-        
-        editButton.isEnabled = true
-        
-        fullNameText.becomeFirstResponder()
+        onEditingMode.toggle()
     }
     
     @objc func keyboardWillShow(sender: NSNotification) {
@@ -260,6 +254,27 @@ extension ProfileViewController {
             [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .semibold)],
             for: .normal)
     }
+    
+    private func startEditingMode() {
+        fullNameText.isUserInteractionEnabled = true
+        fullNameText.layer.borderColor = themesManager?.getTheme().labelBorderColor
+        fullNameText.layer.borderWidth = 1
+        
+        descriptionTextView.isUserInteractionEnabled = true
+        descriptionTextView.layer.borderColor = themesManager?.getTheme().labelBorderColor
+        descriptionTextView.layer.borderWidth = 1
+        
+        editButton.isEnabled = true
+        ShakeAnimation.startShaking(for: editButton)
+        
+        fullNameText.becomeFirstResponder()
+    }
+    
+    private func endEditingMode() {
+        setupTextInputs()
+        ShakeAnimation.stopShaking(for: editButton)
+        editButton.isEnabled = false
+    }
 }
 
 extension ProfileViewController {
@@ -280,8 +295,7 @@ extension ProfileViewController {
             ),
             succesfullCompletion: { [weak self] in
                 self?.activityIndicator.stopAnimating()
-                self?.setupTextInputs()
-                self?.editButton.isEnabled = false
+                self?.onEditingMode = false
                 self?.successSaveAlert()
                 if let newProfile = self?.newProfile {
                     self?.oldProfile = newProfile
@@ -337,23 +351,15 @@ extension ProfileViewController {
                 self.presentImagePickerControllerOrAlert(from: .camera)
             },
             downloadHandler: { [unowned self] _ in
-                guard let imageVC = self.presentationAssembly?.imageCollectionViewController() else { return }
-                imageVC.changeProfilePhotoDelegate = self
-
-                let navVC = UINavigationController(rootViewController: imageVC)
-                navVC.modalPresentationStyle = .fullScreen
-                self.present(navVC, animated: true, completion: nil)
+                self.router?.presentImageVC(modalFrom: self, changeProfilePhotoDelegate: self)
             }
         )
         present(alert, animated: true, completion: nil)
     }
     
     private func presentImagePickerControllerOrAlert(from sourceType: UIImagePickerController.SourceType) {
-        let presentedVC = ProfileImagePickerController().configure(
-            sourceType: sourceType,
-            changeProfilePhotoDelegate: self
-        )
-        
+        let presentedVC = ProfileImagePickerController().configure(sourceType: sourceType,
+                                                                   changeProfilePhotoDelegate: self)
         present(presentedVC, animated: true, completion: nil)
     }
 }
