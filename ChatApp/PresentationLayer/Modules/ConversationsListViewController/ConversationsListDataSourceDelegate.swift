@@ -13,7 +13,7 @@ import UIKit
 protocol ConversationsListDataSourceDelegateProtocol: UITableViewDataSource, UITableViewDelegate {
     var fetchedResultsController: NSFetchedResultsController<ChannelDB>? { get set }
     var channelAPIManager: ChannelAPIManagerProtocol? { get set }
-    var presentationAssembly: PresentationAssemblyProtocol? { get set }
+    var router: RouterProtocol? { get set }
     var controller: UIViewController? { get set }
     var cellIdentifier: String { get }
     var cellIdentifierUINib: UINib { get }
@@ -22,7 +22,7 @@ protocol ConversationsListDataSourceDelegateProtocol: UITableViewDataSource, UIT
 class ConversationsListDataSourceDelegate: NSObject, ConversationsListDataSourceDelegateProtocol {
     var fetchedResultsController: NSFetchedResultsController<ChannelDB>?
     var channelAPIManager: ChannelAPIManagerProtocol?
-    var presentationAssembly: PresentationAssemblyProtocol?
+    var router: RouterProtocol?
     weak var controller: UIViewController?
     
     let cellIdentifier = String(describing: ConversationCell.self)
@@ -54,15 +54,9 @@ extension ConversationsListDataSourceDelegate: UITableViewDataSource {
     
 extension ConversationsListDataSourceDelegate: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let conversationVC = presentationAssembly?.conversationViewController() else { return }
+        guard let navigationController = controller?.navigationController else { return }
         guard let channelDB = fetchedResultsController?.object(at: indexPath) else { return }
-        conversationVC.channel = Channel(channelDB: channelDB)
-        
-        controller?.navigationController?.pushViewController(conversationVC, animated: true)
-        controller?.navigationItem.backBarButtonItem = UIBarButtonItem(title: "",
-                                                                       style: .plain,
-                                                                       target: nil,
-                                                                       action: nil)
+        router?.presentConversationVC(in: navigationController, channel: Channel(channelDB: channelDB))
     }
     
     func tableView(

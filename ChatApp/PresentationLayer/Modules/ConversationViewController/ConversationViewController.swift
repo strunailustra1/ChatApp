@@ -148,6 +148,7 @@ class ConversationViewController: UIViewController {
 extension ConversationViewController {
     private func setupNavigationController() {
         navigationItem.title = channel?.name
+        navigationController?.navigationBar.topItem?.title = ""
         navigationController?.navigationBar.titleTextAttributes = [
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: .semibold),
             NSAttributedString.Key.foregroundColor: themesManager.getTheme().navigationTitleColor

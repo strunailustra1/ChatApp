@@ -19,7 +19,7 @@ class ProfileViewController: UIViewController {
         profileVC?.profileRepository = settings.profileRepository
         profileVC?.profileTextFieldDelegate = settings.profileTextFieldDelegate
         profileVC?.profileTextViewDelegate = settings.profileTextViewDelegate
-        profileVC?.presentationAssembly = settings.presentationAssembly
+        profileVC?.router = settings.router
         
         return profileVC
     }
@@ -29,8 +29,7 @@ class ProfileViewController: UIViewController {
     var profileRepository: ProfileRepositoryProtocol?
     var profileTextFieldDelegate: TextFieldDelegateWithCompletion?
     var profileTextViewDelegate: TextViewDelegateWithCompletion?
-    var presentationAssembly: PresentationAssemblyProtocol?
-    
+    var router: RouterProtocol?
     var closeHandler: (() -> Void)?
     
     @IBOutlet weak var gcdButton: UIButton!
@@ -98,7 +97,6 @@ class ProfileViewController: UIViewController {
         descriptionTextView.delegate = profileTextViewDelegate
         
         view.addSubview(activityIndicator)
-        
         view.backgroundColor = themesManager?.getTheme().profileVCBackgroundColor
         
         updateSaveButtonAvailability()
@@ -353,23 +351,15 @@ extension ProfileViewController {
                 self.presentImagePickerControllerOrAlert(from: .camera)
             },
             downloadHandler: { [unowned self] _ in
-                guard let imageVC = self.presentationAssembly?.imageCollectionViewController() else { return }
-                imageVC.changeProfilePhotoDelegate = self
-
-                let navVC = UINavigationController(rootViewController: imageVC)
-                navVC.modalPresentationStyle = .fullScreen
-                self.present(navVC, animated: true, completion: nil)
+                self.router?.presentImageVC(modalFrom: self, changeProfilePhotoDelegate: self)
             }
         )
         present(alert, animated: true, completion: nil)
     }
     
     private func presentImagePickerControllerOrAlert(from sourceType: UIImagePickerController.SourceType) {
-        let presentedVC = ProfileImagePickerController().configure(
-            sourceType: sourceType,
-            changeProfilePhotoDelegate: self
-        )
-        
+        let presentedVC = ProfileImagePickerController().configure(sourceType: sourceType,
+                                                                   changeProfilePhotoDelegate: self)
         present(presentedVC, animated: true, completion: nil)
     }
 }
