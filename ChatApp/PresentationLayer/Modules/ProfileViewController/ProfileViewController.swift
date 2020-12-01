@@ -120,10 +120,6 @@ class ProfileViewController: UIViewController {
         
         logoLabel.layer.cornerRadius = logoLabel.frame.width / 2
         logoLabel.clipsToBounds = true
-        
-        gcdButton.layer.cornerRadius = 14
-        operationButton.layer.cornerRadius = 14
-        
         if view.frame.width < 375 { // Iphone SE
             logoLabel.font = UIFont(name: "Roboto-Regular", size: 80)
         }
@@ -176,10 +172,12 @@ extension ProfileViewController {
         gcdButton.layer.backgroundColor = themesManager?.getTheme().profileVCButtonBackgroundColor
         gcdButton.clipsToBounds = true
         gcdButton.setTitle("GCD", for: .normal)
+        gcdButton.layer.cornerRadius = 14
         
         operationButton.layer.backgroundColor = themesManager?.getTheme().profileVCButtonBackgroundColor
         operationButton.clipsToBounds = true
         operationButton.setTitle("Operation", for: .normal)
+        operationButton.layer.cornerRadius = 14
     }
     
     private func setupEditButton() {
@@ -202,6 +200,7 @@ extension ProfileViewController {
         fullNameText.backgroundColor = themesManager?.getTheme().profileVCBackgroundColor
         fullNameText.textColor = themesManager?.getTheme().labelTextColor
         fullNameText.layer.borderWidth = 0
+        fullNameText.accessibilityIdentifier = "fullNameTextIdentifier"
         fullNameText.resignFirstResponder()
         
         let descriptionParagraphStyle = NSMutableParagraphStyle()
@@ -222,8 +221,9 @@ extension ProfileViewController {
         descriptionTextView.backgroundColor = themesManager?.getTheme().profileVCBackgroundColor
         descriptionTextView.textColor = themesManager?.getTheme().labelTextColor
         descriptionTextView.layer.borderWidth = 0
+        descriptionTextView.accessibilityIdentifier = "descriptionTextIdentifier"
         descriptionTextView.resignFirstResponder()
-        
+
         fullNameText.isUserInteractionEnabled = false
         descriptionTextView.isUserInteractionEnabled = false
     }

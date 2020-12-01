@@ -115,6 +115,7 @@ class ThemesViewController: UIViewController {
         classicThemeButton.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
         dayThemeButton.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
         nightThemeButton.backgroundColor = UIColor(red: 0.024, green: 0.024, blue: 0.024, alpha: 1)
+        nightThemeButton.accessibilityIdentifier = "nightThemeApply"
         
         for button in themesButtons {
             button.clipsToBounds = true
