@@ -29,8 +29,8 @@ struct Channel {
         lastActivity = channelDB.lastActivity
     }
     
-    init?(document: QueryDocumentSnapshot) {
-        let data = document.data()
+    init?(document: FirestoreChangedDocument) {
+        let data = document.data
         
         guard let name = data["name"] as? String else {
             return nil

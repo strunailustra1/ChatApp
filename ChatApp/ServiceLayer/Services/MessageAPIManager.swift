@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Firebase
 
 protocol MessageAPIManagerProtocol {
     func createMessage(channel: Channel, profile: Profile, messageText: String)
@@ -44,14 +43,14 @@ class MessageAPIManager: MessageAPIManagerProtocol {
     }
     
     private func handleFirestoreDocumentChanges(
-        _ changes: [DocumentChange],
+        _ changes: [FirestoreChangedDocument],
         channel: Channel,
         completion: (() -> Void)? = nil
     ) {
-        var messagesWithChangeType = [(Message, DocumentChangeType)]()
+        var messagesWithChangeType = [(Message, FirestoreChangedDocumentType)]()
         
         for change in changes {
-            guard let message = Message(document: change.document) else { continue }
+            guard let message = Message(document: change) else { continue }
             messagesWithChangeType.append((message, change.type))
         }
         

@@ -139,6 +139,7 @@ extension ConversationsListViewController {
         updateNavigationRightButtonImage()
         
         let settingImage = themesManager.getTheme().settingImageColor
+        settingImage.accessibilityIdentifier = "goToThemesVCElement"
         let themesTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.editTheme))
         settingImage.addGestureRecognizer(themesTapGestureRecognizer)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: settingImage)
@@ -154,6 +155,7 @@ extension ConversationsListViewController {
             imageView.contentMode = imageView.frame.width > imageView.frame.height ? .scaleAspectFit : .scaleAspectFill
             imageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
             imageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
+            imageView.accessibilityIdentifier = "goToProfileVCFromImage"
             
             let profileTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.editProfile))
             imageView.addGestureRecognizer(profileTapGestureRecognizer)
@@ -168,6 +170,7 @@ extension ConversationsListViewController {
             button.backgroundColor = UIColor(red: 0.894, green: 0.908, blue: 0.17, alpha: 1)
             button.setTitleColor(UIColor(red: 0.212, green: 0.216, blue: 0.22, alpha: 1), for: .normal)
             button.titleLabel?.font = UIFont(name: "Roboto-Regular", size: 22)
+            button.accessibilityIdentifier = "goToProfileVCFromButton"
             
             let addButton = UIButton(type: .system)
             addButton.addTarget(self, action: #selector(addChannel), for: .touchUpInside)

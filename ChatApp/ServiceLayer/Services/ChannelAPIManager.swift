@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Firebase
 
 protocol ChannelAPIManagerProtocol {
     func createChannel(channelName: String)
@@ -54,11 +53,11 @@ class ChannelAPIManager: ChannelAPIManagerProtocol {
         apiDataProvider.removeChannelsListener()
     }
     
-    private func handleFirestoreDocumentChanges(_ changes: [DocumentChange]) {
-        var channelsWithChangeType = [(Channel, DocumentChangeType)]()
+    private func handleFirestoreDocumentChanges(_ changes: [FirestoreChangedDocument]) {
+        var channelsWithChangeType = [(Channel, FirestoreChangedDocumentType)]()
         
         for change in changes {
-            guard let channel = Channel(document: change.document) else { continue }
+            guard let channel = Channel(document: change) else { continue }
             channelsWithChangeType.append((channel, change.type))
         }
         
