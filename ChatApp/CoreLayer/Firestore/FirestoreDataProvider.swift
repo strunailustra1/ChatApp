@@ -10,7 +10,7 @@ import Foundation
 import Firebase
 
 protocol APIDataProviderProtocol {
-    func getChannels(completion: @escaping ([DocumentChange]) -> Void,
+    func getChannels(completion: @escaping ([FirestoreChangedDocument]) -> Void,
                      errorCompletion: ((Error) -> Void)?)
     
     func getChannelsId(completion: @escaping ([String]) -> Void)
@@ -24,7 +24,7 @@ protocol APIDataProviderProtocol {
     func removeChannelsListener()
     
     func getMessages(in channel: Channel,
-                     completion: @escaping ([DocumentChange]) -> Void,
+                     completion: @escaping ([FirestoreChangedDocument]) -> Void,
                      errorCompletion: ((Error) -> Void)?)
     
     func createMessage(in channel: Channel,
@@ -40,16 +40,19 @@ class FirestoreDataProvider: APIDataProviderProtocol {
     private var channelsListener: ListenerRegistration?
     private var messagesListener: ListenerRegistration?
     
-    func getChannels(completion: @escaping ([DocumentChange]) -> Void, errorCompletion: ((Error) -> Void)? = nil) {
-        channelsListener = db.collection("channels").addSnapshotListener { querySnapshot, error in
+    func getChannels(completion: @escaping ([FirestoreChangedDocument]) -> Void,
+                     errorCompletion: ((Error) -> Void)? = nil) {
+        channelsListener = db.collection("channels").addSnapshotListener { [weak self] querySnapshot, error in
             guard let snapshot = querySnapshot else {
                 if let e = error {
                     errorCompletion?(e)
                 }
                 return
             }
-
-            completion(snapshot.documentChanges)
+            
+            guard let changes = self?.parseSnapshot(snapshot) else { return }
+            
+            completion(changes)
         }
     }
     
@@ -87,11 +90,11 @@ class FirestoreDataProvider: APIDataProviderProtocol {
     }
     
     func getMessages(in channel: Channel,
-                     completion: @escaping ([DocumentChange]) -> Void,
+                     completion: @escaping ([FirestoreChangedDocument]) -> Void,
                      errorCompletion: ((Error) -> Void)? = nil) {
         messagesListener = db.collection("channels").document(channel.identifier).collection("messages")
             .order(by: "created")
-            .addSnapshotListener { querySnapshot, error in
+            .addSnapshotListener { [weak self] querySnapshot, error in
                 guard let snapshot = querySnapshot else {
                     if let e = error {
                         errorCompletion?(e)
@@ -99,7 +102,9 @@ class FirestoreDataProvider: APIDataProviderProtocol {
                     return
                 }
                 
-                completion(snapshot.documentChanges)
+                guard let changes = self?.parseSnapshot(snapshot) else { return }
+                
+                completion(changes)
         }
     }
     
@@ -117,4 +122,24 @@ class FirestoreDataProvider: APIDataProviderProtocol {
     func removeMessagesListener() {
         messagesListener?.remove()
     }
+    
+    private func parseSnapshot(_ snapshot: QuerySnapshot) -> [FirestoreChangedDocument] {
+        return snapshot.documentChanges.map { change in
+            return FirestoreChangedDocument(
+                type: FirestoreChangedDocumentType(rawValue: change.type.rawValue) ?? .added,
+                documentID: change.document.documentID,
+                data: change.document.data()
+            )
+        }
+    }
+}
+
+enum FirestoreChangedDocumentType: Int {
+    case added, modified, removed
+}
+
+struct FirestoreChangedDocument {
+    let type: FirestoreChangedDocumentType
+    let documentID: String
+    let data: [String: Any]
 }

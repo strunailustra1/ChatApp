@@ -34,3 +34,19 @@ struct ProfileChangedFields {
     let descriptionChanged: Bool
     let profileImageChanged: Bool
 }
+
+extension Profile: Equatable {
+    static func == (lhs: Profile, rhs: Profile) -> Bool {
+        return lhs.fullname == rhs.fullname
+            && lhs.description == rhs.description
+            && lhs.profileImage == rhs.profileImage
+    }
+}
+
+extension ProfileChangedFields: Equatable {
+    static func == (lhs: ProfileChangedFields, rhs: ProfileChangedFields) -> Bool {
+        return  lhs.descriptionChanged == rhs.descriptionChanged
+            && lhs.fullnameChanged == rhs.fullnameChanged
+            && lhs.profileImageChanged == rhs.profileImageChanged
+    }
+}

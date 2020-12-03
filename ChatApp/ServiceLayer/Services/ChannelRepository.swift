@@ -8,12 +8,11 @@
 
 import Foundation
 import CoreData
-import Firebase
 
 protocol ChannelRepositoryProtocol {
     func createFetchedResultsController() -> NSFetchedResultsController<ChannelDB>
     func fetchChannel(byIdentifier id: String, from context: NSManagedObjectContext?) -> ChannelDB?
-    func saveChannels(_ channelsWithChangeType: [(Channel, DocumentChangeType)])
+    func saveChannels(_ channelsWithChangeType: [(Channel, FirestoreChangedDocumentType)])
     func deleteChannel(_ channelDBFromMainContext: ChannelDB)
     func deleteMissingChannels(_ channelsId: [String])
 }
@@ -53,7 +52,7 @@ class ChannelRepository: ChannelRepositoryProtocol {
         return channelDB
     }
     
-    func saveChannels(_ channelsWithChangeType: [(Channel, DocumentChangeType)]) {
+    func saveChannels(_ channelsWithChangeType: [(Channel, FirestoreChangedDocumentType)]) {
         persistant.performSave { [weak self] (context) in
             for (channel, changeType) in channelsWithChangeType {
                 if let channelInDB = self?.fetchChannel(byIdentifier: channel.identifier, from: context) {

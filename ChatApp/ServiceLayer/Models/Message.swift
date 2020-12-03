@@ -48,8 +48,8 @@ struct Message {
         senderName = messageDB.senderName
     }
     
-    init?(document: QueryDocumentSnapshot) {
-        let data = document.data()
+    init?(document: FirestoreChangedDocument) {
+        let data = document.data
         
         guard let content = data["content"] as? String,
             let created = data["created"] as? Timestamp,

@@ -8,12 +8,11 @@
 
 import Foundation
 import CoreData
-import Firebase 
 
 protocol MessageRepositoryProtocol {
     func createFetchedResultsController(channel: Channel?) -> NSFetchedResultsController<MessageDB>
     func fetchMessage(byIdentifier id: String, from context: NSManagedObjectContext?) -> MessageDB?
-    func saveMessages(_ messagesWithChangeType: [(Message, DocumentChangeType)], channelId: String)
+    func saveMessages(_ messagesWithChangeType: [(Message, FirestoreChangedDocumentType)], channelId: String)
 }
 
 class MessageRepository: MessageRepositoryProtocol {
@@ -54,7 +53,7 @@ class MessageRepository: MessageRepositoryProtocol {
         return messageDB
     }
     
-    func saveMessages(_ messagesWithChangeType: [(Message, DocumentChangeType)], channelId: String) {
+    func saveMessages(_ messagesWithChangeType: [(Message, FirestoreChangedDocumentType)], channelId: String) {
         persistant.performSave { [weak self] (context) in
             guard let channelDB = self?.channelRepository.fetchChannel(byIdentifier: channelId, from: context)
                 else { return }

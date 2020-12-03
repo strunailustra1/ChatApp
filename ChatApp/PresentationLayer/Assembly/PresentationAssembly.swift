@@ -42,7 +42,11 @@ class PresentationAssembly: PresentationAssemblyProtocol {
         )
         
         // Загружаем профиль и обновляем фото в navigation bar
-        serviceAssembly.profileRepository.loadFromStorage { _ in
+        let storageType: ProfileStorageType = Bool.random()
+            ? ProfileStorageType.gcd
+            : ProfileStorageType.operation
+        
+        serviceAssembly.profileRepository.loadFromStorage(by: storageType) { _ in
             rootVC.updateNavigationRightButtonImage()
         }
         

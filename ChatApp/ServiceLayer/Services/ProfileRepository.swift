@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum ProfileSaveMethod {
+enum ProfileStorageType {
     case gcd
     case operation
 }
@@ -16,10 +16,10 @@ enum ProfileSaveMethod {
 protocol ProfileRepositoryProtocol {
     var profile: Profile { get set }
     
-    func loadFromStorage(completion: ((Profile) -> Void)?)
+    func loadFromStorage(by loadMethod: ProfileStorageType, completion: ((Profile) -> Void)?)
     
     func saveToStorage(
-        by saveMethod: ProfileSaveMethod,
+        by saveMethod: ProfileStorageType,
         profile: Profile,
         changedFields: ProfileChangedFields,
         succesfullCompletion: @escaping() -> Void,
@@ -54,24 +54,20 @@ class ProfileRepository: ProfileRepositoryProtocol {
         self.operationDataManager = operationDataManager
     }
 
-    func loadFromStorage(completion: ((Profile) -> Void)? = nil) {
+    func loadFromStorage(by loadMethod: ProfileStorageType,
+                         completion: ((Profile) -> Void)? = nil) {
         let fetchDataCompletion: (Profile) -> Void = { (profile) in
             self.profile = profile
             completion?(profile)
         }
-        
-        let profileDataManager: ProfileDataManagerProtocol = Bool.random()
-            ? gcdDataManager
-            : operationDataManager
-        
-        profileDataManager.fetch(
+
+        dataManager(by: loadMethod).fetch(
             defaultProfile: self.profile,
-            succesfullCompletion: fetchDataCompletion
-        )
+            succesfullCompletion: fetchDataCompletion)
     }
     
     func saveToStorage(
-        by saveMethod: ProfileSaveMethod,
+        by saveMethod: ProfileStorageType,
         profile: Profile,
         changedFields: ProfileChangedFields,
         succesfullCompletion: @escaping() -> Void,
@@ -88,8 +84,8 @@ class ProfileRepository: ProfileRepositoryProtocol {
         )
     }
     
-    private func dataManager(by saveMethod: ProfileSaveMethod) -> ProfileDataManagerProtocol {
-        switch saveMethod {
+    private func dataManager(by storageType: ProfileStorageType) -> ProfileDataManagerProtocol {
+        switch storageType {
         case .gcd:
             return gcdDataManager
         case .operation:

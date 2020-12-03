@@ -278,7 +278,7 @@ extension ProfileViewController {
 }
 
 extension ProfileViewController {
-    private func saveProfile(by saveMethod: ProfileSaveMethod) {
+    private func saveProfile(by saveMethod: ProfileStorageType) {
         guard let savedProfile = newProfile else { return }
         
         gcdButton.isEnabled = false
@@ -319,7 +319,7 @@ extension ProfileViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    private func errorSaveAlert(by saveMethod: ProfileSaveMethod) {
+    private func errorSaveAlert(by saveMethod: ProfileStorageType) {
         let alert = UIAlertController(title: "Error", message: "Failed to save data", preferredStyle: .alert)
         let OkAction = UIAlertAction(title: "OK", style: .default)
         let repeatAction = UIAlertAction(title: "Repeat", style: .default, handler: { [unowned self] _ in
