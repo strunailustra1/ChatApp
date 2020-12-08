@@ -19,15 +19,15 @@ or alternatively using `brew install fastlane`
 ```
 fastlane build_for_testing
 ```
-Install dependencies, build for testing
+Install dependencies, make build for testing
 ### run_app_tests
 ```
 fastlane run_app_tests
 ```
-Run tests on build app
-### build_and_tests
+Run tests on building app
+### build_and_test
 ```
-fastlane build_and_tests
+fastlane build_and_test
 ```
 Build project and run tests
 

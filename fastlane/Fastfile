@@ -14,8 +14,8 @@
 # update_fastlane
 setup_travis
 
-desc "Install dependencies, build for testing"
-lane :build_for_testing do
+desc "Install dependencies, make build for testing"
+lane :build_for_testing do |options|
 	cocoapods(
 		clean_install: true,
 		use_bundle_exec: true
@@ -25,69 +25,58 @@ lane :build_for_testing do
 		workspace: "ChatApp.xcworkspace",
 		scheme: "ChatApp",
 		build_for_testing: true,
-		clean: false #todo set it to true
+		clean: true
 	)
+
+    if !options[:silent]
+		succeess_lane_notify()
+	end
 end
 
-desc "Run tests on build app"
-lane :run_app_tests do
-	begin
-		scan(
-			workspace: "ChatApp.xcworkspace",
-			scheme: "ChatApp",
-			device: "iPhone 11",
-			test_without_building: true
-		)
-	rescue => ex
-		puts ex
+desc "Run tests on building app"
+lane :run_app_tests do |options|
+	scan(
+		workspace: "ChatApp.xcworkspace",
+		scheme: "ChatApp",
+		device: "iPhone 11",
+		test_without_building: true
+	)
+
+	if !options[:silent]
+		succeess_lane_notify()
 	end
 end
 
 desc "Build project and run tests"
-lane :build_and_tests do
-	branch = git_branch
-	
-	# begin
-	# 	build_for_testing
-	# rescue => ex
-	# 	UI.error(ex)
-	# end
-
-	# begin
-	# 	run_app_tests
-	# rescue => ex
-	# 	UI.error(ex)
-	# 	next
-	# end
-
-	puts "all fine"
-	webhook_url = ENV["DISCORD_WEBHOOK_URL"]
-	puts webhook_url
-	# discord_notifier(
-	# 	webhook_url = ENV["DISCORD_WEBHOOK_URL"],
-	# 	title: "ChatApp",
-	# 	description: "Build succeded and tests passed on branch #{branch}",
-	# 	discord_user_id: "439363007823216676",
-	# 	thumbnail_url: "https://stickerboom.ru/files/2015/06/15/3036x845a-300x300.png",
-	# 	success: true
-	# )
+lane :build_and_test do
+	build_for_testing(silent: true)
+	run_app_tests(silent: true)
+	succeess_lane_notify()
 end
-
 
 error do |lane, exception|
-	puts "Qwe Qwe Qwe"
-	puts "#{lane} - #{exception}"
-	puts "Qaz Qaz Qaz"
-	# discord_notifier(
-	# 	webhook_url = ENV["DISCORD_WEBHOOK_URL"],
-	# 	title: "ChatApp",
-	# 	description: "Build and tests failed on branch #{branch}",
-	# 	#discord_user_id: "439363007823216676",
-	# 	thumbnail_url: "https://stickerboom.ru/files/2015/06/15/3036x845a-300x300.png",
-	#     success: false
-	# )
+	branch = git_branch
+
+	description = "Lane #{lane} failed. #{exception} on branch #{branch}"
+
+	discord_notify(description, false)
 end
 
+def discord_notify(description, success)
+	if ENV["DISCORD_WEBHOOK_URL"]
+		discord_notifier(
+			webhook_url: ENV["DISCORD_WEBHOOK_URL"],
+			title: "ChatApp",
+			description: description,
+			thumbnail_url: "https://stickerboom.ru/files/2015/06/15/3036x845a-300x300.png",
+		    success: success
+		)
+	end
+end
 
-
-
+def succeess_lane_notify()
+	lane = lane_context[SharedValues::LANE_NAME]
+    branch = git_branch
+	description = "Lane #{lane} succeeded on branch #{branch}"
+	discord_notify(description, true)
+end
