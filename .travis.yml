@@ -1,0 +1,9 @@
+language: swift
+osx_image: xcode12.2
+before_unstall:
+  - yes | gem update --system --force
+  - gem install bundler
+install: 
+  - bundle install
+script: 
+  - fastlane build_for_testing

@@ -1,0 +1,93 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+setup_travis
+
+desc "Install dependencies, build for testing"
+lane :build_for_testing do
+	cocoapods(
+		clean_install: true,
+		use_bundle_exec: true
+	)
+
+	scan(
+		workspace: "ChatApp.xcworkspace",
+		scheme: "ChatApp",
+		build_for_testing: true,
+		clean: false #todo set it to true
+	)
+end
+
+desc "Run tests on build app"
+lane :run_app_tests do
+	begin
+		scan(
+			workspace: "ChatApp.xcworkspace",
+			scheme: "ChatApp",
+			device: "iPhone 11",
+			test_without_building: true
+		)
+	rescue => ex
+		puts ex
+	end
+end
+
+desc "Build project and run tests"
+lane :build_and_tests do
+	branch = git_branch
+	
+	# begin
+	# 	build_for_testing
+	# rescue => ex
+	# 	UI.error(ex)
+	# end
+
+	# begin
+	# 	run_app_tests
+	# rescue => ex
+	# 	UI.error(ex)
+	# 	next
+	# end
+
+	puts "all fine"
+	webhook_url = ENV["DISCORD_WEBHOOK_URL"]
+	puts webhook_url
+	# discord_notifier(
+	# 	webhook_url = ENV["DISCORD_WEBHOOK_URL"],
+	# 	title: "ChatApp",
+	# 	description: "Build succeded and tests passed on branch #{branch}",
+	# 	discord_user_id: "439363007823216676",
+	# 	thumbnail_url: "https://stickerboom.ru/files/2015/06/15/3036x845a-300x300.png",
+	# 	success: true
+	# )
+end
+
+
+error do |lane, exception|
+	puts "Qwe Qwe Qwe"
+	puts "#{lane} - #{exception}"
+	puts "Qaz Qaz Qaz"
+	# discord_notifier(
+	# 	webhook_url = ENV["DISCORD_WEBHOOK_URL"],
+	# 	title: "ChatApp",
+	# 	description: "Build and tests failed on branch #{branch}",
+	# 	#discord_user_id: "439363007823216676",
+	# 	thumbnail_url: "https://stickerboom.ru/files/2015/06/15/3036x845a-300x300.png",
+	#     success: false
+	# )
+end
+
+
+
+
