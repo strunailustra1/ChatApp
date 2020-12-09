@@ -232,6 +232,7 @@
 		1EED3A4725671B3600F880B2 /* ResponseCacheProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseCacheProtocol.swift; sourceTree = "<group>"; };
 		1EED3A4925671B4700F880B2 /* ResponseCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseCache.swift; sourceTree = "<group>"; };
 		1EED3A4B256BF85D00F880B2 /* AnimatedTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedTransition.swift; sourceTree = "<group>"; };
+		1EF426CF25814D3B00722354 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		1EFEF870255B284C0069F6BA /* ConversationFRCDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationFRCDelegate.swift; sourceTree = "<group>"; };
 		1EFEF872255B2EE80069F6BA /* ConversationTableViewDataSourceDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationTableViewDataSourceDelegate.swift; sourceTree = "<group>"; };
 		1EFEF874255B36B10069F6BA /* ConversationsListFRCDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsListFRCDelegate.swift; sourceTree = "<group>"; };
@@ -436,6 +437,7 @@
 				1E30F127250B944700DDF8DC /* LaunchScreen.storyboard */,
 				1EB5D4952549EBAD00D31945 /* GoogleService-Info.plist */,
 				1E30F12A250B944700DDF8DC /* Info.plist */,
+				1EF426CF25814D3B00722354 /* Config.xcconfig */,
 			);
 			path = SupportingFiles;
 			sourceTree = "<group>";
@@ -782,7 +784,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1170;
-				LastUpgradeCheck = 1170;
+				LastUpgradeCheck = 1220;
 				ORGANIZATIONNAME = "Наталья Мирная";
 				TargetAttributes = {
 					1E30F118250B944100DDF8DC = {
@@ -1138,6 +1140,7 @@
 /* Begin XCBuildConfiguration section */
 		1E30F12B250B944700DDF8DC /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1EF426CF25814D3B00722354 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1162,6 +1165,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -1198,6 +1202,7 @@
 		};
 		1E30F12C250B944700DDF8DC /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1EF426CF25814D3B00722354 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1222,6 +1227,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;

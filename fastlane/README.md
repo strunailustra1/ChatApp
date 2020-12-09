@@ -30,6 +30,11 @@ Run tests on building app
 fastlane build_and_test
 ```
 Build project and run tests
+### generate_secret_config
+```
+fastlane generate_secret_config
+```
+Generate secret xcconfig
 
 ----
 

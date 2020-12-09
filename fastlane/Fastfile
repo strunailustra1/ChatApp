@@ -21,6 +21,8 @@ lane :build_for_testing do |options|
 		use_bundle_exec: true
 	)
 
+	generate_secret_config
+
 	scan(
 		workspace: "ChatApp.xcworkspace",
 		scheme: "ChatApp",
@@ -28,7 +30,7 @@ lane :build_for_testing do |options|
 		clean: true
 	)
 
-    if !options[:silent]
+	if !options[:silent]
 		succeess_lane_notify()
 	end
 end
@@ -54,29 +56,52 @@ lane :build_and_test do
 	succeess_lane_notify()
 end
 
+desc "Generate secret xcconfig"
+lane :generate_secret_config do
+	pixabay_api_key = ENV["PIXABAY_API_KEY"]
+	firebase_api_key = ENV["FIREBASE_API_KEY"]
+
+	sh("echo '' > ../ChatApp/SupportingFiles/ConfigSecret.xcconfig")
+
+	set_xcconfig_value(
+		path: "ChatApp/SupportingFiles/ConfigSecret.xcconfig",
+		name: "PIXABAY_API_KEY",
+		value: pixabay_api_key
+	)
+
+	set_xcconfig_value(
+		path: "ChatApp/SupportingFiles/ConfigSecret.xcconfig",
+		name: "FIREBASE_API_KEY",
+		value: firebase_api_key
+	)	
+end
+
 error do |lane, exception|
 	branch = git_branch
-
 	description = "Lane #{lane} failed. #{exception} on branch #{branch}"
-
 	discord_notify(description, false)
 end
 
 def discord_notify(description, success)
 	if ENV["DISCORD_WEBHOOK_URL"]
+		commit = last_git_commit
 		discord_notifier(
 			webhook_url: ENV["DISCORD_WEBHOOK_URL"],
 			title: "ChatApp",
 			description: description,
 			thumbnail_url: "https://stickerboom.ru/files/2015/06/15/3036x845a-300x300.png",
-		    success: success
+			success: success,
+			fields: [{
+				name: "Author:", 
+				value: commit[:author]
+			}]
 		)
 	end
 end
 
 def succeess_lane_notify()
 	lane = lane_context[SharedValues::LANE_NAME]
-    branch = git_branch
+	branch = git_branch
 	description = "Lane #{lane} succeeded on branch #{branch}"
 	discord_notify(description, true)
 end
