@@ -26,10 +26,7 @@ class ThemesViewControllerUITests: FBSnapshotTestCase {
         app.launchArguments += ["-SelectedTheme", "YES"]
         app.launch()
         
-        let size = UIScreen.main.nativeBounds.size
-        let pixelCount = size.width * size.height
-        let empericalNumber: CGFloat = 7500
-        snapshotTolerance = empericalNumber / pixelCount
+        snapshotTolerance = 0.03
         snapshotPixelTolerance = 0.0157
     }
     
