@@ -3,8 +3,11 @@
 ### Приложение предназначено для обмена текстовыми сообщениями
 #### Разработано в рамках школы Тинькофф Финтех
 #### Описание
-![chat list view](https://raw.githubusercontent.com/strunailustra1/ChatApp/hw13/Images/Simulator1.png)
-![chat view](https://raw.githubusercontent.com/strunailustra1/ChatApp/hw13/Images/Simulator2.png)
+![chat list view](https://raw.githubusercontent.com/strunailustra1/ChatApp/master/Images/Simulator1.png)
+![chat view](https://raw.githubusercontent.com/strunailustra1/ChatApp/master/Images/Simulator2.png)
+![chat theme](https://raw.githubusercontent.com/strunailustra1/ChatApp/master/Images/Simulator3.png)
+![chat profile](https://raw.githubusercontent.com/strunailustra1/ChatApp/master/Images/Simulator4.png)
+![chat image](https://raw.githubusercontent.com/strunailustra1/ChatApp/master/Images/Simulator5.png)
 #### Требования
 Для работы необходим iOS версии 12.0 и выше.
 #### Зависимости
