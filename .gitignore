@@ -8,3 +8,16 @@ xcuserdata/
 ## compatibility with Xcode 3 and earlier (ignoring not required starting Xcode 4)
 build/
 DerivedData/
+Pods/
+vendor/
+
+
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+fastlane/.env
+
+ChatAppUITests/FailureDiffs/
+
+ChatApp/SupportingFiles/ConfigSecret.xcconfig

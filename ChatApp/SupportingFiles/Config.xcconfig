@@ -1,0 +1,15 @@
+//
+//  Config.xcconfig
+//  ChatApp
+//
+//  Created by Наталья Мирная on 09.12.2020.
+//  Copyright © 2020 Наталья Мирная. All rights reserved.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+// run bundle exec fastlane generate_secret_config for create ConfigSecret.xcconfig
+#include "ConfigSecret.xcconfig"
+
+PIXABAY_API_URL = https:/$()/pixabay.com/api/

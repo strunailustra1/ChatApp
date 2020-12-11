@@ -1,0 +1,107 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+setup_travis
+
+desc "Install dependencies, make build for testing"
+lane :build_for_testing do |options|
+	cocoapods(
+		clean_install: true,
+		use_bundle_exec: true
+	)
+
+	generate_secret_config
+
+	scan(
+		workspace: "ChatApp.xcworkspace",
+		scheme: "ChatApp",
+		build_for_testing: true,
+		clean: true
+	)
+
+	if !options[:silent]
+		succeess_lane_notify()
+	end
+end
+
+desc "Run tests on building app"
+lane :run_app_tests do |options|
+	scan(
+		workspace: "ChatApp.xcworkspace",
+		scheme: "ChatApp",
+		device: "iPhone 11",
+		test_without_building: true
+	)
+
+	if !options[:silent]
+		succeess_lane_notify()
+	end
+end
+
+desc "Build project and run tests"
+lane :build_and_test do
+	build_for_testing(silent: true)
+	run_app_tests(silent: true)
+	succeess_lane_notify()
+end
+
+desc "Generate secret xcconfig"
+lane :generate_secret_config do
+	pixabay_api_key = ENV["PIXABAY_API_KEY"]
+	firebase_api_key = ENV["FIREBASE_API_KEY"]
+
+	sh("echo '' > ../ChatApp/SupportingFiles/ConfigSecret.xcconfig")
+
+	set_xcconfig_value(
+		path: "ChatApp/SupportingFiles/ConfigSecret.xcconfig",
+		name: "PIXABAY_API_KEY",
+		value: pixabay_api_key
+	)
+
+	set_xcconfig_value(
+		path: "ChatApp/SupportingFiles/ConfigSecret.xcconfig",
+		name: "FIREBASE_API_KEY",
+		value: firebase_api_key
+	)	
+end
+
+error do |lane, exception|
+	branch = git_branch
+	description = "Lane #{lane} failed. #{exception} on branch #{branch}"
+	discord_notify(description, false)
+end
+
+def discord_notify(description, success)
+	if ENV["DISCORD_WEBHOOK_URL"]
+		commit = last_git_commit
+		discord_notifier(
+			webhook_url: ENV["DISCORD_WEBHOOK_URL"],
+			title: "ChatApp",
+			description: description,
+			thumbnail_url: "https://stickerboom.ru/files/2015/06/15/3036x845a-300x300.png",
+			success: success,
+			fields: [{
+				name: "Author:", 
+				value: commit[:author]
+			}]
+		)
+	end
+end
+
+def succeess_lane_notify()
+	lane = lane_context[SharedValues::LANE_NAME]
+	branch = git_branch
+	description = "Lane #{lane} succeeded on branch #{branch}"
+	discord_notify(description, true)
+end
