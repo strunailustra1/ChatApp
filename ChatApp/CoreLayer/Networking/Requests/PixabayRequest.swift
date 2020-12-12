@@ -25,21 +25,21 @@ class PixabayRequest: RequestProtocol {
 
 class PixabaySearchImagesRequest: PixabayRequest {
     
-    private let baseUrl = "https://pixabay.com/api/"
-    
-    private let apiKey: String
+    private let baseUrl = Bundle.main.object(forInfoDictionaryKey: "PixabayApiUrl") as? String
+    private let apiKey = Bundle.main.object(forInfoDictionaryKey: "PixabayApiKey") as? String
     private let searchQuery: String
     private let limit: Int
     
     override var command: String {
-        guard let queryEncoded = searchQuery.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+        guard let queryEncoded = searchQuery.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let baseUrl = self.baseUrl,
+              let apiKey = self.apiKey
             else { return "" }
         
         return "\(baseUrl)?key=\(apiKey)&q=\(queryEncoded)&image_type=photo&pretty=true&per_page=\(limit)"
     }
     
-    init(apiKey: String, searchQuery: String, limit: Int = 120) {
-        self.apiKey = apiKey
+    init(searchQuery: String, limit: Int = 120) {
         self.searchQuery = searchQuery
         self.limit = limit
     }

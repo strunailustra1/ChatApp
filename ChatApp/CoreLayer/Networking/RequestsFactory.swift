@@ -17,7 +17,6 @@ struct RequestFactory {
         
         static func searchImagesConfig(searchQuery: String) -> RequestConfig<PixabaySearchImageParser> {
             let request = PixabaySearchImagesRequest(
-                apiKey: "19137210-0a0bbcfeab89161406b938546",
                 searchQuery: searchQuery
             )
             

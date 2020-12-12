@@ -9,5 +9,15 @@ xcuserdata/
 build/
 DerivedData/
 Pods/
+vendor/
+
+
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+fastlane/.env
 
 ChatAppUITests/FailureDiffs/
+
+ChatApp/SupportingFiles/ConfigSecret.xcconfig

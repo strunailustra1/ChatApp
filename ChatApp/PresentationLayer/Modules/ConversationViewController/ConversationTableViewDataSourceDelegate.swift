@@ -112,7 +112,7 @@ extension ConversationTableViewDataSourceDelegate: UITableViewDelegate {
             with: .init(title: sections[section].indexTitle ?? ""),
             theme: themesManager?.getTheme()
         )
-        
+        headerView.tintColor = .clear
         return headerView
     }
 }
